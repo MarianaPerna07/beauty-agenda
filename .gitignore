@@ -1,0 +1,42 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log*
+dist/
+build/
+
+# React
+frontend/build/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.env
+backend/beauty.db
+backend/app/beauty.db
+
+# Virtual environments
+venv/
+.env/
+.env.*
+
+# IDEs / editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# Misc
+*.swp
+
