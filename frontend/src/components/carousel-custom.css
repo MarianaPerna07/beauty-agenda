@@ -1,0 +1,149 @@
+/* Base carousel container styling */
+.carousel-container-wrapper {
+  position: relative;
+  padding: 2rem 0;
+  margin: 2rem 0;
+  overflow: hidden;
+}
+
+/* Decorative elements */
+.carousel-decorative-top {
+  position: relative;
+  height: 20px;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.carousel-wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V30 H0 V0Z' fill='%23a5bf99' fill-opacity='0.15'/%3E%3C/svg%3E");
+  background-size: cover;
+}
+
+.carousel-gold-accent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, rgba(192, 160, 128, 0), rgba(233, 211, 163, 0.8), rgba(192, 160, 128, 0));
+}
+
+.carousel-decorative-bottom {
+  position: relative;
+  height: 10px;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Image container styling */
+.carousel-image-container {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.carousel-image-wrapper {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(92, 113, 96, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.carousel-image-wrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(92, 113, 96, 0.25);
+}
+
+.carousel-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.7s ease;
+  filter: brightness(0.95);
+}
+
+.carousel-image-wrapper:hover .carousel-image {
+  transform: scale(1.05);
+  filter: brightness(1);
+}
+
+/* Caption styling */
+.carousel-caption-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(92, 113, 96, 0.8), transparent);
+  padding: 30px 15px 15px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.carousel-caption {
+  color: #F5F1E9;
+  text-align: center;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Custom styling for react-multi-carousel components */
+.react-multi-carousel-list {
+  padding: 0 20px;
+}
+
+.react-multi-carousel-item {
+  padding: 10px;
+}
+
+/* Custom arrow styling */
+.react-multiple-carousel__arrow {
+  background-color: rgba(165, 191, 153, 0.7) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 8px rgba(92, 113, 96, 0.25) !important;
+  transition: all 0.3s ease !important;
+}
+
+.react-multiple-carousel__arrow:hover {
+  background-color: rgba(92, 113, 96, 0.8) !important;
+}
+
+/* Custom dots styling */
+.react-multi-carousel-dot button {
+  border-color: #a5bf99 !important;
+  background: transparent !important;
+  margin: 5px !important;
+  transition: all 0.3s ease !important;
+}
+
+.react-multi-carousel-dot--active button {
+  background: #a5bf99 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .carousel-image {
+    height: 250px;
+  }
+  
+  .carousel-caption {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-image {
+    height: 200px;
+  }
+  
+  .carousel-caption {
+    font-size: 1.1rem;
+  }
+}

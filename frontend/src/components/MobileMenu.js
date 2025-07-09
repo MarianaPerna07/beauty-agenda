@@ -9,8 +9,8 @@ function MobileMenu({ mobileMenuActive, setMobileMenuActive, slide }) {
           fixed right-0 
           w-full md:w-2/5 
           h-full
-          top-12
-          z-30 p-2 
+          top-24
+          z-40 p-2 
           text-center
           glass
           text-[#F5F1E9]

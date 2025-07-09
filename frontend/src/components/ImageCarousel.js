@@ -1,48 +1,103 @@
 import React from 'react'
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import "./carousel-custom.css"; // We'll create this file next
+
 function ImageCarousel(props) {  
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
       items: 3,
-      slidesToSlide: 3 // optional, default to 1.
+      slidesToSlide: 1
     },
     tablet: {
       breakpoint: { max: 1024, min: 464 },
       items: 2,
-      slidesToSlide: 2 // optional, default to 1.
+      slidesToSlide: 1
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
       items: 1,
-      slidesToSlide: 1 // optional, default to 1.
+      slidesToSlide: 1
     }
   };
   
+  // Beautiful spa & beauty images
+  const images = [
+    {
+      src: 'https://images.pexels.com/photos/3997993/pexels-photo-3997993.jpeg',
+      alt: 'Spa Treatment',
+      caption: 'Relaxing Spa Treatments'
+    },
+    {
+      src: 'https://images.pexels.com/photos/3865557/pexels-photo-3865557.jpeg',
+      alt: 'Facial Treatment',
+      caption: 'Revitalizing Facial Care'
+    },
+    {
+      src: 'https://images.pexels.com/photos/3997379/pexels-photo-3997379.jpeg',
+      alt: 'Beauty Products',
+      caption: 'Premium Beauty Products'
+    },
+    {
+      src: 'https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg',
+      alt: 'Nail Treatment',
+      caption: 'Professional Manicures'
+    },
+    {
+      src: 'https://images.pexels.com/photos/3738348/pexels-photo-3738348.jpeg',
+      alt: 'Massage Therapy',
+      caption: 'Therapeutic Massages'
+    }
+  ];
+  
   return (
-    <Carousel
-    swipeable={true}
-    draggable={false}
-    showDots={true}
-    responsive={responsive}
-    ssr={false}
-    infinite={true}
-    autoPlay={false}
-    keyBoardControl={true}
-    customTransition="transform 300ms ease-in-out"
-    transitionDuration={500}
-    containerClass="carousel-container"
-    removeArrowOnDeviceType={["tablet", "mobile"]}
-    deviceType={props?.deviceType}
-    dotListClass="custom-dot-list-style"
-    itemClass="carousel-item-padding-40-px"
-  >
-    <img src='https://images.pexels.com/photos/1319460/pexels-photo-1319460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'></img>
-    <img src='https://images.pexels.com/photos/1319459/pexels-photo-1319459.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'></img>
-    <img src='https://images.pexels.com/photos/1453005/pexels-photo-1453005.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'></img>
-    <img src='https://images.pexels.com/photos/4969838/pexels-photo-4969838.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'></img>
-  </Carousel>
+    <div className="carousel-container-wrapper">
+      {/* Decorative elements */}
+      <div className="carousel-decorative-top">
+        <div className="carousel-wave"></div>
+        <div className="carousel-gold-accent"></div>
+      </div>
+      
+      <Carousel
+        swipeable={true}
+        draggable={true}
+        showDots={true}
+        responsive={responsive}
+        ssr={false}
+        infinite={true}
+        autoPlay={true}
+        autoPlaySpeed={4000}
+        keyBoardControl={true}
+        customTransition="all 800ms ease"
+        transitionDuration={500}
+        containerClass="carousel-container"
+        removeArrowOnDeviceType={["mobile"]}
+        deviceType={props?.deviceType}
+        dotListClass="custom-dot-list-style"
+        itemClass="carousel-item"
+      >
+        {images.map((image, index) => (
+          <div key={index} className="carousel-image-container">
+            <div className="carousel-image-wrapper">
+              <img 
+                src={image.src} 
+                alt={image.alt}
+                className="carousel-image" 
+              />
+              <div className="carousel-caption-wrapper">
+                <p className="carousel-caption handwriting">{image.caption}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Carousel>
+      
+      {/* Decorative elements */}
+      <div className="carousel-decorative-bottom">
+        <div className="carousel-gold-accent"></div>
+      </div>
+    </div>
   )
 }
 
