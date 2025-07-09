@@ -21,9 +21,10 @@ function VideoBanner() {
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#c0a080] via-[#e9d3a3] to-[#c0a080] z-20"></div>
       
+      {/* Modificada a curva da onda para criar uma transição mais suave */}
       <div className="absolute bottom-0 left-0 w-full h-16 z-20">
         <svg viewBox="0 0 1200 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full">
-          <path d="M0,60 C150,20 350,60 500,40 C650,20 750,50 900,40 C1050,30 1200,50 1200,50 V0 H0 V60Z" fill="#F5F1E9"/>
+          <path d="M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V60 H0 V0Z" fill="#F5F1E9"/>
         </svg>
       </div>
       
@@ -50,29 +51,12 @@ function VideoBanner() {
           <span 
             className="glass-green absolute inset-0 rounded-full backdrop-blur-md bg-white/20 group-hover:bg-white/30 
                      border border-white/50 group-hover:border-white/60 shadow-lg transition-all duration-300"
-            // style={{
-            //   background: 'linear-gradient(120deg, rgba(165, 191, 153, 0.7), rgba(92, 113, 96, 0.6))',
-            //   boxShadow: '0 4px 15px rgba(165, 191, 153, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.1)'
-            // }}
           ></span>
-          
-          {/* Shine effect */}
-          {/* <span 
-            className="absolute inset-0 rounded-full overflow-hidden"
-            style={{ opacity: 0.4 }}
-          >
-            <span 
-              className="absolute top-0 left-1/2 w-1/2 h-full bg-gradient-to-r from-transparent via-white to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"
-            ></span>
-          </span> */}
           
           {/* Button text */}
           <span className="relative z-10 font-medium text-white tracking-wide text-lg">
             Agendar Agora
           </span>
-          
-          {/* Golden accent at bottom */}
-          {/* <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-[#c0a080] group-hover:w-2/3 transition-all duration-300"></span> */}
         </Link>
       </div>
       

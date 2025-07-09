@@ -6,6 +6,12 @@
   overflow: hidden;
 }
 
+.carousel-content-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
 /* Decorative elements */
 .carousel-decorative-top {
   position: relative;
@@ -40,10 +46,16 @@
   margin-top: 1rem;
 }
 
+/* Carousel container */
+.carousel-container {
+  padding: 0;
+}
+
 /* Image container styling */
 .carousel-image-container {
   padding: 10px;
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
 }
 
 .carousel-image-wrapper {
@@ -52,6 +64,9 @@
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(92, 113, 96, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: calc(100% - 20px);
+  height: 300px;
+  margin: 0 10px;
 }
 
 .carousel-image-wrapper:hover {
@@ -61,10 +76,10 @@
 
 .carousel-image {
   width: 100%;
-  height: 300px;
+  height: 100%;
   object-fit: cover;
   border-radius: 10px;
-  transition: transform 0.7s ease;
+  transition: transform 0.5s ease;
   filter: brightness(0.95);
 }
 
@@ -96,11 +111,28 @@
 
 /* Custom styling for react-multi-carousel components */
 .react-multi-carousel-list {
-  padding: 0 20px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.react-multi-carousel-track {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, transition;
 }
 
 .react-multi-carousel-item {
-  padding: 10px;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 /* Custom arrow styling */
@@ -109,13 +141,36 @@
   border-radius: 50% !important;
   box-shadow: 0 2px 8px rgba(92, 113, 96, 0.25) !important;
   transition: all 0.3s ease !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
 }
 
 .react-multiple-carousel__arrow:hover {
   background-color: rgba(92, 113, 96, 0.8) !important;
 }
 
+.react-multiple-carousel__arrow--left {
+  left: 10px !important;
+}
+
+.react-multiple-carousel__arrow--right {
+  right: 10px !important;
+}
+
 /* Custom dots styling */
+.custom-dot-list-style {
+  display: flex !important;
+  justify-content: center !important;
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  right: 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-align: center;
+}
+
 .react-multi-carousel-dot button {
   border-color: #a5bf99 !important;
   background: transparent !important;
@@ -128,6 +183,12 @@
 }
 
 /* Responsive adjustments */
+@media (max-width: 1024px) {
+  .carousel-image-wrapper {
+    height: 250px;
+  }
+}
+
 @media (max-width: 768px) {
   .carousel-image {
     height: 250px;
@@ -136,14 +197,25 @@
   .carousel-caption {
     font-size: 1.3rem;
   }
+  
+  .react-multiple-carousel__arrow {
+    min-width: 30px !important;
+    min-height: 30px !important;
+  }
 }
 
 @media (max-width: 480px) {
-  .carousel-image {
+  .carousel-image-wrapper {
     height: 200px;
+    width: 90%;
+    margin: 0 auto;
   }
   
   .carousel-caption {
     font-size: 1.1rem;
+  }
+  
+  .carousel-image-container {
+    padding: 5px;
   }
 }
