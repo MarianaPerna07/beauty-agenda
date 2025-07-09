@@ -3,6 +3,25 @@
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Lato:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
 
+@layer utilities {
+  .glass {
+    /* semi-transparent background */
+    background-color: rgba(255, 255, 255, 0.2);
+    /* which Tailwind would also let you write as bg-white/10 */
+
+    /* blur backdrop */
+    -webkit-backdrop-filter: blur(16px) brightness(0.5);
+    backdrop-filter: blur(16px) brightness(0.5);
+
+    /* optional subtle border for definition */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   font-family: 'Quicksand', sans-serif;
   background-color: rgb(212, 212, 212);
