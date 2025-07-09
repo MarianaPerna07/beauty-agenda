@@ -127,7 +127,7 @@ function Nav() {
               </span>
               
               {/* Golden accent at bottom */}
-              <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-[#c0a080] group-hover:w-2/3 transition-all duration-300"></span>
+              {/* <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-[#c0a080] group-hover:w-2/3 transition-all duration-300"></span> */}
             </Link>
           </li>
         </ul>
