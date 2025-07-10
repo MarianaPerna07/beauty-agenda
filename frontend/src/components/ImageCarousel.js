@@ -22,32 +22,49 @@ function ImageCarousel(props) {
     }
   };
   
-  // Beautiful spa & beauty images
-  const images = [
+  // Serviços em destaque
+  const services = [
     {
-      src: 'https://images.pexels.com/photos/3997993/pexels-photo-3997993.jpeg',
-      alt: 'Spa Treatment',
-      caption: 'Relaxing Treatments'
+      src: 'https://p2.trrsf.com/image/fget/cf/1200/900/middle/images.terra.com/2023/11/27/245499322-mitos-verdades-micropigmentacao.jpg',
+      alt: 'Micropigmentação',
+      title: 'Micropigmentação',
+      caption: 'Traços leves, resultados duradouros',
+      price: '180€'
     },
     {
-      src: 'https://images.pexels.com/photos/3865557/pexels-photo-3865557.jpeg',
-      alt: 'Facial Treatment',
-      caption: 'Revitalizing Care'
+      src: 'https://altoastral.joaobidu.com.br/wp-content/uploads/2023/03/o-que-e-micropigmentacao-labial.jpg',
+      alt: 'Micropigmentação Labial',
+      title: 'Micropigmentação Labial',
+      caption: 'O detalhe que faz a diferença',
+      price: '240€'
     },
     {
-      src: 'https://images.pexels.com/photos/3997379/pexels-photo-3997379.jpeg',
-      alt: 'Beauty Products',
-      caption: 'Premium Products'
+      src: 'https://static.wixstatic.com/media/186ea16b01a346a086fe3e396511f97e.jpg/v1/fill/w_480,h_335,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/186ea16b01a346a086fe3e396511f97e.jpg',
+      alt: 'Microblading',
+      title: 'Microblading',
+      caption: 'Beleza moldada fio a fio',
+      price: '180€'
     },
     {
-      src: 'https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg',
-      alt: 'Nail Treatment',
-      caption: 'Professional Manicures'
+      src: 'https://img.freepik.com/fotos-premium/esteticista-do-conceito-de-micropigmentacao-fazendo-procedimento-de-delineador-de-maquiagem-permanente-para-jovem_116547-72228.jpg',
+      alt: 'Eyeliner',
+      title: 'Eyeliner',
+      caption: 'Perfeito todos os dias, sem esforço',
+      price: '100€'
     },
     {
-      src: 'https://images.pexels.com/photos/3738348/pexels-photo-3738348.jpeg',
-      alt: 'Massage Therapy',
-      caption: 'Therapeutic Massages'
+      src: 'https://skinboutique.pt/wp-content/uploads/2025/01/67_microneedling.jpg',
+      alt: 'Microagulhamento',
+      title: 'Microagulhamento',
+      caption: 'Revitaliza a tua pele, revela a tua beleza',
+      price: 'Sob consulta'
+    },
+    {
+      src: 'https://www.gioesteticaavancada.com.br/wp-content/uploads/2022/05/post_thumbnail-a44bae8ed55e240b125f5bda1802430d.jpeg',
+      alt: 'Depilação a Laser',
+      title: 'Depilação a Laser',
+      caption: 'Diz adeus aos pelos de vez!',
+      price: 'Sob consulta'
     }
   ];
   
@@ -78,16 +95,18 @@ function ImageCarousel(props) {
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item"
         >
-          {images.map((image, index) => (
+          {services.map((service, index) => (
             <div key={index} className="carousel-image-container">
               <div className="carousel-image-wrapper">
                 <img 
-                  src={image.src} 
-                  alt={image.alt}
+                  src={service.src} 
+                  alt={service.alt}
                   className="carousel-image" 
                 />
-                <div className="carousel-caption-wrapper">
-                  <p className="carousel-caption handwriting">{image.caption}</p>
+                <div className="carousel-overlay">
+                  <h3 className="carousel-title">{service.title}</h3>
+                  <p className="carousel-caption">{service.caption}</p>
+                  <div className="carousel-price">{service.price}</div>
                 </div>
               </div>
             </div>
@@ -95,7 +114,6 @@ function ImageCarousel(props) {
         </Carousel>
       </div>
       
-      {/* Decorative elements */}
       <div className="carousel-decorative-bottom">
         <div className="carousel-gold-accent"></div>
       </div>

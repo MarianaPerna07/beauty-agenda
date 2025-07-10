@@ -1,6 +1,7 @@
 import React from 'react'
-import logo from '../images/logo.png'
+import logo from '../images/new_logo.png'
 import { Link } from 'react-router-dom'
+import { FaFacebookF, FaInstagram, FaWhatsapp } from 'react-icons/fa'
 
 function Footer() {
   return (
@@ -56,7 +57,7 @@ function Footer() {
                 </li>
                 <li className="flex items-center text-sm">
                   <span className="mr-2 text-[#a5bf99]">📱</span>
-                  <span>+351 123 456 789</span>
+                  <span>+351 933 817 786</span>
                 </li>
                 <li className="flex items-center text-sm">
                   <span className="mr-2 text-[#a5bf99]">✉️</span>
@@ -72,16 +73,41 @@ function Footer() {
                 <span className="absolute -bottom-1 left-0 w-2/3 h-0.5 bg-[#a5bf99]"></span>
               </h4>
               <div className="flex space-x-3 mb-4">
-                <a href="#" className="w-8 h-8 rounded-full flex items-center justify-center border border-[#a5bf99] transition-all hover:bg-[#a5bf99] hover:text-white text-[#5c7160]">
-                  <i className="fab fa-facebook-f text-xs"></i>
+                {/* Facebook Link */}
+                <a 
+                  href="https://www.facebook.com/people/Cardoso-beauty/100076114537149/?locale=en_GB" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full flex items-center justify-center border border-[#a5bf99] transition-all hover:bg-[#a5bf99] hover:text-white text-[#5c7160]"
+                  aria-label="Facebook - Maria Cardoso Estética"
+                >
+                  <FaFacebookF className="text-xs" />
                 </a>
-                <a href="#" className="w-8 h-8 rounded-full flex items-center justify-center border border-[#a5bf99] transition-all hover:bg-[#a5bf99] hover:text-white text-[#5c7160]">
-                  <i className="fab fa-instagram text-xs"></i>
+                
+                {/* Instagram Link */}
+                <a 
+                  href="https://www.instagram.com/larailucy?igsh=MXdqdnVqbXN0ZTNybQ==" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full flex items-center justify-center border border-[#a5bf99] transition-all hover:bg-[#a5bf99] hover:text-white text-[#5c7160]"
+                  aria-label="Instagram - larailucy"
+                >
+                  <FaInstagram className="text-xs" />
                 </a>
-                <a href="#" className="w-8 h-8 rounded-full flex items-center justify-center border border-[#a5bf99] transition-all hover:bg-[#a5bf99] hover:text-white text-[#5c7160]">
-                  <i className="fab fa-pinterest-p text-xs"></i>
+                
+                {/* WhatsApp Link */}
+                <a 
+                  href="https://wa.me/351933817786" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full flex items-center justify-center border border-[#a5bf99] transition-all hover:bg-[#a5bf99] hover:text-white text-[#5c7160]"
+                  aria-label="WhatsApp - 933 817 786"
+                >
+                  <FaWhatsapp className="text-xs" />
                 </a>
               </div>
+              
+              {/* Agendar Button */}
               <Link 
                 to="/reservations" 
                 className="relative group px-6 py-2 flex items-center justify-center transition-all duration-300"
@@ -109,8 +135,6 @@ function Footer() {
                 <span className="relative z-10 font-medium text-white tracking-wide text-sm">
                   Agendar
                 </span>
-                
-                {/* <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-[#c0a080] group-hover:w-2/3 transition-all duration-300"></span> */}
               </Link>
             </div>
           </div>

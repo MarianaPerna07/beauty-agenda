@@ -31,8 +31,8 @@ function VideoBanner() {
       {/* Content container */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-30 px-6 text-center">
         <h2 className="text-[#F5F1E9] text-4xl md:text-5xl font-light mb-3 tracking-wide">
-          <span className="block">Descubra a Arte</span>
-          <span className="block mt-2">do Autocuidado</span>
+          <span className="block">ARTE E CUIDADO EM</span>
+          <span className="block mt-2">CADA TRAÇO</span>
         </h2>
         
         <p className="text-[#F5F1E9]/90 max-w-2xl mx-auto text-lg md:text-xl font-light mb-8 tracking-wide">
