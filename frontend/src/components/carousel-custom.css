@@ -117,7 +117,7 @@
 .carousel-title {
   color: white;
   font-size: 1.7rem;
-  font-weight: 350;
+  font-weight: 450;
   text-align: center;
   margin-top: 8px;
   text-shadow: 0 2px 6px rgba(0,0,0,0.6);
@@ -126,23 +126,23 @@
 
 /* Opções para a descrição promocional */
 /* Opção 1: Esconder completamente */
-/* .carousel-caption {
+.carousel-caption {
   display: none;
-} */
+}
 
 /* Opção 2: Tornar mais sutil e mover para baixo do título */
 
-.carousel-caption {
+/* .carousel-caption {
   color: rgba(255,255,255,0.9);
   text-align: center;
   font-size: 0.95rem;
-  font-weight: 300; /* Alterado de 300 para 600 para ficar em negrito */
+  font-weight: 300; 
   margin: 0 auto;
   text-shadow: 0 1px 3px rgba(0,0,0,0.5);
   max-width: 80%;
   letter-spacing: 0.5px;
   font-style: italic;
-}
+} */
 
 /* Preço mais sofisticado */
 .carousel-price {

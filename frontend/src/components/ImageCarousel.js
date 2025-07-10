@@ -90,7 +90,7 @@ function ImageCarousel(props) {
           customTransition="all 500ms ease"
           transitionDuration={500}
           containerClass="carousel-container"
-          removeArrowOnDeviceType={["mobile"]}
+          //removeArrowOnDeviceType={["mobile"]}
           deviceType={props?.deviceType}
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item"
