@@ -1,20 +1,802 @@
-import React, { useEffect } from 'react'
-import BarberShopReservation from '../components/BarberShopReservation'
+import React, { useEffect, useState } from 'react'
 import scrollToTop from '../helpers/scrollToTop'
 
 function Reservations() {
   useEffect(() => {
     scrollToTop()
-  },[])
-  return (
-    <div className='min-h-screen'>
-        <div className='relative'>
-            <img className='brightness-75 grayscale object-cover h-[40vh] object-left-bottom w-full' src='https://lella.qodeinteractive.com/wp-content/uploads/2019/08/title-area-img-2.jpg'></img>
-            <h2 className="absolute h-full top-0 flex items-center left-1/2 -translate-x-1/2 text-center py-4 text-6xl text-red-800">Make A Reservation</h2>
+  }, [])
+
+  // Estados para controlar as etapas e seleções
+  const [currentStep, setCurrentStep] = useState(1)
+  const [selectedService, setSelectedService] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedProfessional, setProfessional] = useState(null)
+  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedTime, setSelectedTime] = useState('')
+  const [customerInfo, setCustomerInfo] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  })
+  
+  // Dados de exemplo (no futuro poderão vir de uma API)
+  const serviceCategories = [
+    { id: 'manicure', name: 'Manicure' },
+    { id: 'pedicure', name: 'Pedicure' },
+    { id: 'depilacao_mulher', name: 'Depilação a Cera ♀' },
+    { id: 'depilacao_homem', name: 'Depilação a Cera ♂' },
+    { id: 'depilacao_laser', name: 'Depilação a Laser' },
+    { id: 'pestanas', name: 'Extensão de Pestanas' },
+    { id: 'sobrancelhas', name: 'Sobrancelhas' },
+    { id: 'destaques', name: 'Serviços Especializados' }
+  ]
+
+  const services = {
+    manicure: [
+      { id: 1, name: 'Manicure Simples', duration: '30 min', price: '7€' },
+      { id: 2, name: 'Manicure simples com pintura', duration: '45 min', price: '8.50€' },
+      { id: 3, name: 'Verniz Gel', duration: '60 min', price: '15€' },
+      { id: 4, name: 'Manutenção de Gel', duration: '90 min', price: '20€' },
+      { id: 5, name: 'Unha partida', duration: '15 min', price: '2€' }
+    ],
+    pedicure: [
+      { id: 6, name: 'Pedicure simples', duration: '30 min', price: '10€' },
+      { id: 7, name: 'Pedicure simples com verniz', duration: '45 min', price: '10.50€' },
+      { id: 8, name: 'Pedicure completa', duration: '60 min', price: '17€' }
+    ],
+    depilacao_mulher: [
+      { id: 9, name: 'Buço', duration: '10 min', price: '3€' },
+      { id: 10, name: 'Sobrancelha', duration: '15 min', price: '5€' },
+      { id: 11, name: 'Axilas', duration: '10 min', price: '4€' }
+    ],
+    depilacao_homem: [
+      { id: 12, name: 'Peito/Abdómen', duration: '20 min', price: '12€' },
+      { id: 13, name: 'Costas', duration: '15 min', price: '10€' }
+    ],
+    depilacao_laser: [
+      { id: 14, name: '1 zona', duration: '15 min', price: '15€' },
+      { id: 15, name: '2 zonas', duration: '30 min', price: '20€' }
+    ],
+    pestanas: [
+      { id: 16, name: '1ª aplicação de pestanas brasileiras', duration: '90 min', price: '30€' },
+      { id: 17, name: 'Aplicação pestanas Egípcia', duration: '90 min', price: '30€' }
+    ],
+    sobrancelhas: [
+      { id: 18, name: 'Brown Lamination', duration: '60 min', price: '25€' },
+      { id: 19, name: 'Henna', duration: '60 min', price: '15€' }
+    ],
+    destaques: [
+      { id: 20, name: 'Micropigmentação', duration: '120 min', price: '180€' },
+      { id: 21, name: 'Eyeliner', duration: '90 min', price: '100€' }
+    ]
+  }
+
+  const professionals = [
+    { id: 1, name: 'Maria Santos', specialty: 'Estética Avançada', image: 'https://images.pexels.com/photos/3762892/pexels-photo-3762892.jpeg' },
+    { id: 2, name: 'Lara Costa', specialty: 'Manicure e Pedicure', image: 'https://images.pexels.com/photos/5009495/pexels-photo-5009495.jpeg' },
+    { id: 3, name: 'Mariana Silva', specialty: 'Depilação', image: 'https://images.pexels.com/photos/3764012/pexels-photo-3764012.jpeg' }
+  ]
+
+  const salons = [
+    { id: 1, name: 'Principio Ativo', address: 'Rua Júlio Dinis n.38, Gafanha da Nazaré', phone: '234 567 890' }
+  ]
+
+  // Gerador de horários disponíveis
+  const generateAvailableTimeSlots = (date) => {
+    // Aqui você poderia implementar uma lógica para verificar os horários realmente disponíveis
+    // Por enquanto, vamos apenas gerar alguns horários de exemplo
+    const timeSlots = [];
+    const startHour = 9; // 9 AM
+    const endHour = 19; // 7 PM
+    
+    for (let hour = startHour; hour < endHour; hour++) {
+      // Adiciona slots de hora e meia hora
+      timeSlots.push(`${hour}:00`);
+      timeSlots.push(`${hour}:30`);
+    }
+    
+    // Simular alguns horários ocupados aleatoriamente
+    return timeSlots.filter(() => Math.random() > 0.3);
+  }
+
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+  
+  // Atualizar horários disponíveis quando a data for alterada
+  useEffect(() => {
+    if (selectedDate) {
+      setAvailableTimeSlots(generateAvailableTimeSlots(selectedDate));
+    }
+  }, [selectedDate]);
+
+  // Funções para navegação entre etapas
+  const nextStep = () => {
+    if (currentStep < 5) setCurrentStep(currentStep + 1);
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
+  };
+
+  const handleServiceCategorySelect = (category) => {
+    setSelectedCategory(category);
+    setSelectedService(null); // Reset service selection when changing category
+  };
+
+  const handleServiceSelect = (service) => {
+    setSelectedService(service);
+  };
+
+  const handleProfessionalSelect = (professional) => {
+    setProfessional(professional);
+  };
+
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+    setSelectedTime(''); // Reset time when date changes
+  };
+
+  const handleTimeSelect = (time) => {
+    setSelectedTime(time);
+  };
+
+  const handleCustomerInfoChange = (e) => {
+    const { name, value } = e.target;
+    setCustomerInfo({
+      ...customerInfo,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Aqui você adicionaria a lógica para submeter a reserva
+    alert('Reserva realizada com sucesso!');
+    // Reset do formulário
+    setCurrentStep(1);
+    setSelectedService(null);
+    setSelectedCategory(null);
+    setProfessional(null);
+    setSelectedDate('');
+    setSelectedTime('');
+    setCustomerInfo({
+      name: '',
+      email: '',
+      phone: ''
+    });
+  };
+
+  // Componente para a Etapa 1: Seleção de Serviço
+  const ServiceSelectionStep = () => (
+    <div className="animate-fadeIn">
+      <div className="mb-8">
+        <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione a Categoria</h3>
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
+          {serviceCategories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => handleServiceCategorySelect(category)}
+              className={`px-4 py-2 rounded-full transition-all duration-300 ${
+                selectedCategory?.id === category.id
+                  ? "bg-[#5c7160] text-white shadow-md"
+                  : "bg-white text-[#5c7160] border border-[#5c7160]/30 hover:bg-[#a5bf99]/20"
+              }`}
+            >
+              {category.name}
+            </button>
+          ))}
         </div>
-        <section>
-            <BarberShopReservation/>
-        </section>
+      </div>
+
+      {selectedCategory && (
+        <>
+          <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione o Serviço</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {services[selectedCategory.id].map((service) => (
+              <div
+                key={service.id}
+                onClick={() => handleServiceSelect(service)}
+                className={`p-4 rounded-lg cursor-pointer transition-all duration-300 ${
+                  selectedService?.id === service.id
+                    ? "bg-[#5c7160] text-white shadow-lg"
+                    : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
+                }`}
+              >
+                <h4 className="text-lg font-medium mb-2">{service.name}</h4>
+                <div className="flex justify-between text-sm">
+                  <span>{service.duration}</span>
+                  <span className={selectedService?.id === service.id ? "font-bold" : "font-bold text-[#c0a080]"}>
+                    {service.price}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      <div className="mt-8 flex justify-end">
+        <button
+          onClick={nextStep}
+          disabled={!selectedService}
+          className={`px-6 py-3 rounded-full flex items-center ${
+            selectedService
+              ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          <span>Próximo</span>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+
+  // Componente para a Etapa 2: Seleção de Profissional
+  const ProfessionalSelectionStep = () => (
+    <div className="animate-fadeIn">
+      <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha a Profissional</h3>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {professionals.map((professional) => (
+          <div
+            key={professional.id}
+            onClick={() => handleProfessionalSelect(professional)}
+            className={`bg-white rounded-lg overflow-hidden shadow-md cursor-pointer transition-all duration-300 ${
+              selectedProfessional?.id === professional.id ? "ring-2 ring-[#5c7160] transform scale-[1.02]" : "hover:shadow-lg"
+            }`}
+          >
+            <div className="h-48 overflow-hidden">
+              <img
+                src={professional.image}
+                alt={professional.name}
+                className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+              />
+            </div>
+            <div className="p-4">
+              <h4 className="text-xl font-medium text-[#5c7160]">{professional.name}</h4>
+              <p className="text-[#5c7160]/70">{professional.specialty}</p>
+              
+              {selectedProfessional?.id === professional.id && (
+                <div className="mt-3 flex items-center text-[#a5bf99]">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Selecionada</span>
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 flex justify-between">
+        <button
+          onClick={prevStep}
+          className="px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>Anterior</span>
+        </button>
+        <button
+          onClick={nextStep}
+          disabled={!selectedProfessional}
+          className={`px-6 py-3 rounded-full flex items-center ${
+            selectedProfessional
+              ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          <span>Próximo</span>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+
+  // Componente para a Etapa 3: Seleção de Salão
+  const SalonSelectionStep = () => (
+    <div className="animate-fadeIn">
+      <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha o Salão</h3>
+      
+      <div className="max-w-2xl mx-auto">
+        {salons.map((salon) => (
+          <div
+            key={salon.id}
+            className="bg-white rounded-lg shadow-md p-6 border-l-4 border-[#5c7160]"
+          >
+            <h4 className="text-xl font-medium text-[#5c7160] mb-2">{salon.name}</h4>
+            <div className="flex items-start mt-4">
+              <div className="bg-[#5c7160]/10 rounded-full p-3 mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm text-[#5c7160]/70 mb-1">Morada</p>
+                <p className="text-lg text-[#5c7160]">{salon.address}</p>
+              </div>
+            </div>
+            <div className="flex items-start mt-4">
+              <div className="bg-[#5c7160]/10 rounded-full p-3 mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm text-[#5c7160]/70 mb-1">Telefone</p>
+                <p className="text-lg text-[#5c7160]">{salon.phone}</p>
+              </div>
+            </div>
+            
+            <div className="mt-6 h-48 rounded-lg overflow-hidden">
+              {/* Incorporar mapa com iframe do Google Maps */}
+              <iframe 
+                title="Localização do Salão"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3029.506977302153!2d-8.714771684599639!3d40.6088909793428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd23981f7f843abd%3A0xbf2d8e74e1a1b2a!2sR.%20J%C3%BAlio%20Dinis%2038%2C%20Gafanha%20da%20Nazar%C3%A9!5e0!3m2!1spt-PT!2spt!4v1595268867362!5m2!1spt-PT!2spt" 
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen="" 
+                loading="lazy"
+              ></iframe>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 flex justify-between">
+        <button
+          onClick={prevStep}
+          className="px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>Anterior</span>
+        </button>
+        <button
+          onClick={nextStep}
+          className="px-6 py-3 bg-[#5c7160] text-white rounded-full hover:bg-[#5c7160]/90 flex items-center"
+        >
+          <span>Próximo</span>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+
+  // Componente para a Etapa 4: Seleção de Data e Hora
+  const DateTimeSelectionStep = () => {
+    // Calcula a data mínima (hoje)
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const minDate = `${yyyy}-${mm}-${dd}`;
+    
+    // Agrupa os horários disponíveis em períodos do dia
+    const morningSlots = availableTimeSlots.filter(time => {
+      const hour = parseInt(time.split(':')[0]);
+      return hour >= 9 && hour < 12;
+    });
+    
+    const afternoonSlots = availableTimeSlots.filter(time => {
+      const hour = parseInt(time.split(':')[0]);
+      return hour >= 12 && hour < 17;
+    });
+    
+    const eveningSlots = availableTimeSlots.filter(time => {
+      const hour = parseInt(time.split(':')[0]);
+      return hour >= 17;
+    });
+    
+    return (
+      <div className="animate-fadeIn">
+        <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha a Data e Hora</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h4 className="text-lg font-medium text-[#5c7160] mb-3">Data</h4>
+            <input
+              type="date"
+              min={minDate}
+              value={selectedDate}
+              onChange={(e) => handleDateSelect(e.target.value)}
+              className="w-full px-4 py-3 border border-[#5c7160]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
+            />
+
+            {selectedDate && (
+              <div className="mt-4 bg-[#F5F1E9]/50 p-4 rounded-lg">
+                <div className="flex items-center text-[#5c7160]">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>
+                    {new Date(selectedDate).toLocaleDateString('pt-PT', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {selectedDate && (
+            <div>
+              <h4 className="text-lg font-medium text-[#5c7160] mb-3">Hora</h4>
+              
+              {availableTimeSlots.length > 0 ? (
+                <div>
+                  {morningSlots.length > 0 && (
+                    <div className="mb-4">
+                      <h5 className="text-sm text-[#5c7160]/70 mb-2">Manhã</h5>
+                      <div className="flex flex-wrap gap-2">
+                        {morningSlots.map((time) => (
+                          <button
+                            key={time}
+                            onClick={() => handleTimeSelect(time)}
+                            className={`px-3 py-2 rounded-md transition-all ${
+                              selectedTime === time
+                                ? "bg-[#5c7160] text-white"
+                                : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {afternoonSlots.length > 0 && (
+                    <div className="mb-4">
+                      <h5 className="text-sm text-[#5c7160]/70 mb-2">Tarde</h5>
+                      <div className="flex flex-wrap gap-2">
+                        {afternoonSlots.map((time) => (
+                          <button
+                            key={time}
+                            onClick={() => handleTimeSelect(time)}
+                            className={`px-3 py-2 rounded-md transition-all ${
+                              selectedTime === time
+                                ? "bg-[#5c7160] text-white"
+                                : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {eveningSlots.length > 0 && (
+                    <div>
+                      <h5 className="text-sm text-[#5c7160]/70 mb-2">Fim de Tarde</h5>
+                      <div className="flex flex-wrap gap-2">
+                        {eveningSlots.map((time) => (
+                          <button
+                            key={time}
+                            onClick={() => handleTimeSelect(time)}
+                            className={`px-3 py-2 rounded-md transition-all ${
+                              selectedTime === time
+                                ? "bg-[#5c7160] text-white"
+                                : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="p-4 bg-[#F5F1E9]/50 rounded-lg text-center text-[#5c7160]">
+                  <p>Não há horários disponíveis para esta data.</p>
+                  <p className="text-sm mt-2">Por favor, selecione outra data.</p>
+                </div>
+              )}
+
+              {selectedTime && (
+                <div className="mt-4 bg-[#a5bf99]/20 p-3 rounded-lg">
+                  <div className="flex items-center text-[#5c7160]">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Horário selecionado: {selectedTime}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="mt-8 flex justify-between">
+          <button
+            onClick={prevStep}
+            className="px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Anterior</span>
+          </button>
+          <button
+            onClick={nextStep}
+            disabled={!selectedDate || !selectedTime}
+            className={`px-6 py-3 rounded-full flex items-center ${
+              selectedDate && selectedTime
+                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            <span>Próximo</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // Componente para a Etapa 5: Confirmação e Dados do Cliente
+  const ConfirmationStep = () => {
+    // Formata a data para exibição
+    const formattedDate = selectedDate 
+      ? new Date(selectedDate).toLocaleDateString('pt-PT', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        }) 
+      : '';
+    
+    return (
+      <div className="animate-fadeIn">
+        <h3 className="text-2xl font-light text-[#5c7160] mb-6">Confirme a sua Reserva</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h4 className="text-lg font-medium text-[#5c7160] mb-4 border-b border-[#5c7160]/20 pb-2">Detalhes da Reserva</h4>
+            
+            <div className="space-y-3">
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Serviço:</div>
+                <div className="w-2/3 font-medium text-[#5c7160]">{selectedService?.name}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Duração:</div>
+                <div className="w-2/3 text-[#5c7160]">{selectedService?.duration}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Preço:</div>
+                <div className="w-2/3 font-medium text-[#c0a080]">{selectedService?.price}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Profissional:</div>
+                <div className="w-2/3 text-[#5c7160]">{selectedProfessional?.name}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Salão:</div>
+                <div className="w-2/3 text-[#5c7160]">Principio Ativo</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Data:</div>
+                <div className="w-2/3 text-[#5c7160]">{formattedDate}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Hora:</div>
+                <div className="w-2/3 text-[#5c7160]">{selectedTime}</div>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h4 className="text-lg font-medium text-[#5c7160] mb-4">Seus Dados</h4>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm text-[#5c7160]/80 mb-1">Nome Completo</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={customerInfo.name}
+                  onChange={handleCustomerInfoChange}
+                  required
+                  className="w-full px-4 py-2.5 border border-[#5c7160]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
+                  placeholder="Seu nome completo"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="email" className="block text-sm text-[#5c7160]/80 mb-1">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={customerInfo.email}
+                  onChange={handleCustomerInfoChange}
+                  required
+                  className="w-full px-4 py-2.5 border border-[#5c7160]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
+                  placeholder="Seu email"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="phone" className="block text-sm text-[#5c7160]/80 mb-1">Telefone</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={customerInfo.phone}
+                  onChange={handleCustomerInfoChange}
+                  required
+                  className="w-full px-4 py-2.5 border border-[#5c7160]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
+                  placeholder="Seu número de telefone"
+                />
+              </div>
+              
+              <div className="pt-2">
+                <label className="flex items-start">
+                  <input
+                    type="checkbox"
+                    className="mt-1 text-[#5c7160]"
+                    required
+                  />
+                  <span className="ml-2 text-sm text-[#5c7160]/80">
+                    Concordo com a <a href="#" className="text-[#5c7160] underline">política de privacidade</a> e os <a href="#" className="text-[#5c7160] underline">termos de serviço</a>.
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex justify-between">
+          <button
+            onClick={prevStep}
+            className="px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Anterior</span>
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={!customerInfo.name || !customerInfo.email || !customerInfo.phone}
+            className={`px-6 py-3 rounded-full flex items-center ${
+              customerInfo.name && customerInfo.email && customerInfo.phone
+                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            <span>Confirmar Reserva</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // Renderizar a etapa atual
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <ServiceSelectionStep />;
+      case 2:
+        return <ProfessionalSelectionStep />;
+      case 3:
+        return <SalonSelectionStep />;
+      case 4:
+        return <DateTimeSelectionStep />;
+      case 5:
+        return <ConfirmationStep />;
+      default:
+        return <ServiceSelectionStep />;
+    }
+  };
+
+  return (
+    <div className='min-h-screen bg-[#F5F1E9]'>
+      {/* Hero Section */}
+      <div className='relative'>
+        <img 
+          className='object-cover h-[50vh] w-full' 
+          src='https://images.pexels.com/photos/3985333/pexels-photo-3985333.jpeg' 
+          alt="Agendamento de serviços"
+        />
+        <div className='absolute inset-0 bg-gradient-to-b from-[#5c7160]/40 to-[#5c7160]/70'></div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h2 className="text-[#F5F1E9] text-4xl md:text-5xl lg:text-6xl font-light tracking-wide">
+            Agende Seu Serviço
+          </h2>
+        </div>
+        
+        {/* Wave shape at the bottom */}
+        <div className="absolute bottom-0 left-0 w-full h-16">
+          <svg viewBox="0 0 1200 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full">
+            <path d="M0,60 V30 C150,50 350,40 500,35 C650,30 750,25 900,30 C1050,35 1200,45 1200,45 V60 H0 Z" fill="#F5F1E9"/>
+          </svg>
+        </div>
+      </div>
+      
+      {/* Stepper */}
+      <div className="pt-8 pb-4 px-6">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex justify-between items-center">
+            {[1, 2, 3, 4, 5].map((step) => (
+              <div key={step} className="flex flex-col items-center">
+                <div 
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    currentStep === step 
+                      ? "bg-[#5c7160] text-white" 
+                      : currentStep > step 
+                        ? "bg-[#a5bf99] text-white" 
+                        : "bg-[#5c7160]/20 text-[#5c7160]"
+                  }`}
+                >
+                  {currentStep > step ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    step
+                  )}
+                </div>
+                <span className={`text-xs mt-2 hidden md:block ${
+                  currentStep === step 
+                    ? "text-[#5c7160] font-medium" 
+                    : "text-[#5c7160]/60"
+                }`}>
+                  {step === 1 && "Serviço"}
+                  {step === 2 && "Profissional"}
+                  {step === 3 && "Salão"}
+                  {step === 4 && "Data/Hora"}
+                  {step === 5 && "Confirmação"}
+                </span>
+              </div>
+            ))}
+
+            {/* Connecting lines */}
+            <div className="absolute left-0 right-0 flex justify-center">
+              <div className="h-0.5 bg-[#5c7160]/20 w-4/5 absolute top-5 -z-10"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <section className="py-8 px-6">
+        <div className="container mx-auto max-w-6xl">
+          {renderStep()}
+        </div>
+      </section>
+
+      {/* Decorative Element */}
+      <div className="py-12 px-6 relative">
+        <div className="absolute top-0 left-0 w-full h-12 overflow-hidden">
+          <svg viewBox="0 0 1200 30" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full">
+            <path d="M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V30 H0 V0Z" fill="#5c7160" fillOpacity="0.05"/>
+          </svg>
+        </div>
+      </div>
     </div>
   )
 }

@@ -56,7 +56,7 @@ function About() {
               </h3>
               <p className="italic text-[#5c7160]/80">Lisboa | Desde 2023</p>
               <p className="text-base font-light text-[#5c7160]">
-                No Beauty Space, nossa jornada começou com uma paixão profunda pela arte da beleza e um forte compromisso em servir nossa comunidade. Nossa história se desenrola em um espaço aconchegante onde nossa fundadora aperfeiçoou sua arte e construiu relacionamentos duradouros. À medida que nossa reputação cresceu, também cresceu nosso espaço, com profissionais sempre focados em proporcionar tratamentos que deixam nossos clientes confiantes e radiantes.
+                No Your Moments Estética, nossa jornada começou com uma paixão profunda pela arte da beleza...
               </p>
               
               {/* Decorative divider */}

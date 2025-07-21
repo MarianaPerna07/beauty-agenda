@@ -17,7 +17,7 @@ function App() {
       {/* Welcome Section */}
       <section className="py-12 px-6">
         <h2 className="text-center font-light text-4xl md:text-5xl lg:text-6xl text-[#5c7160] mb-3">
-          Beauty Space
+          Your Moments Estética
         </h2>
         <p className="italic text-center text-lg md:text-xl text-[#5c7160]/80 max-w-3xl mx-auto">
           Um refúgio onde beleza e bem-estar se encontram para criar momentos de autocuidado memoráveis.
@@ -68,7 +68,7 @@ function App() {
             <div className="rounded-lg overflow-hidden shadow-lg">
               <img 
                 src="https://images.pexels.com/photos/3738348/pexels-photo-3738348.jpeg" 
-                alt="Beauty Space" 
+                alt="Your Moments Estética" 
                 className="w-full h-auto object-cover" 
               />
               <div className="absolute inset-0 border border-white/20 rounded-lg"></div>

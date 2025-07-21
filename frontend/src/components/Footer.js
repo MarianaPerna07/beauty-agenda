@@ -25,7 +25,7 @@ function Footer() {
               <img src={logo} alt="Beauty Space Logo" className="w-36" />
             </Link>
             <p className="text-sm font-light text-[#5c7160] opacity-80">
-              O seu espaço de beleza onde a expertise encontra a elegância. Agende a sua sessão de autocuidado hoje.
+              O seu espaço de estética onde a expertise encontra a elegância. Agende a sua sessão de autocuidado hoje.
             </p>
           </div>
           
@@ -61,7 +61,7 @@ function Footer() {
                 </li>
                 <li className="flex items-center text-sm">
                   <span className="mr-2 text-[#a5bf99]">✉️</span>
-                  <span>info@beautyspace.pt</span>
+                  <span>info@yourmomentos.pt</span>
                 </li>
               </ul>
             </div>
@@ -147,7 +147,7 @@ function Footer() {
           
           <div className="pt-6 text-center">
             <p className="text-[#5c7160] text-xs opacity-70 font-light">
-              © {new Date().getFullYear()} Beauty Space. Todos os direitos reservados.
+              © {new Date().getFullYear()} Your Moments Estética. Todos os direitos reservados.
             </p>
           </div>
         </div>

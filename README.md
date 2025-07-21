@@ -49,6 +49,7 @@ If you have any questions or points to review, we’re at your disposal!
 2. **Install frontend dependencies**  
    ```bash
    cd beauty-agenda/frontend
+   npm install react-icons
    npm install
    ```
 3. **Start the frontend**  

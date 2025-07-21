@@ -96,7 +96,7 @@ function Nav() {
           <img
             src={logo}
             className="px-2 w-48 mx-auto"
-            alt="Beauty Space Logo"
+            alt="Your Moments Estética Logo"
           />
         </Link>
 
