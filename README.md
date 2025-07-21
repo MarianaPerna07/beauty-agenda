@@ -50,6 +50,7 @@ If you have any questions or points to review, we’re at your disposal!
    ```bash
    cd beauty-agenda/frontend
    npm install react-icons
+   npm install react-datepicker --save
    npm install
    ```
 3. **Start the frontend**  

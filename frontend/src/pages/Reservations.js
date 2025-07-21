@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import scrollToTop from '../helpers/scrollToTop'
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import pt from 'date-fns/locale/pt';
+import "../styles/datepicker-custom.css";
+import ptCustom from '../utils/datepicker-locale';
+
+// Registrar o idioma português personalizado
+registerLocale('pt-custom', ptCustom);
 
 function Reservations() {
   useEffect(() => {
@@ -119,14 +127,24 @@ function Reservations() {
     const startHour = 9; // 9 AM
     const endHour = 19; // 7 PM
     
-    for (let hour = startHour; hour < endHour; hour++) {
-      // Adiciona slots de hora e meia hora
-      timeSlots.push(`${hour}:00`);
-      timeSlots.push(`${hour}:30`);
+    for (let hour = startHour; hour <= endHour; hour++) {
+      // Adiciona slots a cada 15 minutos (00, 15, 30, 45)
+      const formattedHour = hour.toString().padStart(2, '0');
+      
+      if (hour < endHour) {
+        timeSlots.push(`${formattedHour}:00`);
+        timeSlots.push(`${formattedHour}:15`);
+        timeSlots.push(`${formattedHour}:30`);
+        timeSlots.push(`${formattedHour}:45`);
+      } else {
+        // Para a última hora (19h), só incluímos o horário inicial
+        timeSlots.push(`${formattedHour}:00`);
+      }
     }
     
     // Simular alguns horários ocupados aleatoriamente
-    return timeSlots.filter(() => Math.random() > 0.3);
+    // Reduzindo a probabilidade para termos mais horários disponíveis
+    return timeSlots.filter(() => Math.random() > 0.2);
   }
 
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
@@ -408,10 +426,6 @@ function Reservations() {
   const DateTimeSelectionStep = () => {
     // Calcula a data mínima (hoje)
     const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const minDate = `${yyyy}-${mm}-${dd}`;
     
     // Agrupa os horários disponíveis em períodos do dia
     const morningSlots = availableTimeSlots.filter(time => {
@@ -429,6 +443,21 @@ function Reservations() {
       return hour >= 17;
     });
     
+    // Função para manipular a mudança de data
+    const handleDateChange = (date) => {
+      handleDateSelect(date.toISOString().split('T')[0]);
+    };
+    
+    const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
+    
+    // Dias personalizados da semana em português
+    const dayNames = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
+    
+    // Renderizar conteúdo dos dias
+    const renderDayContents = (day) => {
+      return <span className="font-light">{day}</span>;
+    };
+    
     return (
       <div className="animate-fadeIn">
         <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha a Data e Hora</h3>
@@ -436,31 +465,53 @@ function Reservations() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <h4 className="text-lg font-medium text-[#5c7160] mb-3">Data</h4>
-            <input
-              type="date"
-              min={minDate}
-              value={selectedDate}
-              onChange={(e) => handleDateSelect(e.target.value)}
-              className="w-full px-4 py-3 border border-[#5c7160]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
-            />
-
-            {selectedDate && (
-              <div className="mt-4 bg-[#F5F1E9]/50 p-4 rounded-lg">
-                <div className="flex items-center text-[#5c7160]">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span>
-                    {new Date(selectedDate).toLocaleDateString('pt-PT', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                  </span>
-                </div>
-              </div>
-            )}
+            
+            <div className="custom-datepicker-wrapper">
+              <DatePicker
+                selected={selectedDateObj}
+                onChange={handleDateChange}
+                minDate={today}
+                locale="pt-custom"
+                dateFormat="dd/MM/yyyy"
+                renderDayContents={renderDayContents}
+                formatWeekDay={(nameOfDay) => nameOfDay.substring(0, 3)}
+                dayClassName={() => "custom-day"}
+                className="w-full px-4 py-3 border border-[#5c7160]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
+                calendarClassName="custom-calendar"
+                showPopperArrow={false}
+                inline
+                showMonthYearPicker={false}
+                renderCustomHeader={({
+                  date,
+                  decreaseMonth,
+                  increaseMonth,
+                  prevMonthButtonDisabled,
+                  nextMonthButtonDisabled
+                }) => (
+                  <div className="custom-header">
+                    <span className="month-year">
+                      {date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+                    </span>
+                    <div className="navigation">
+                      <button 
+                        onClick={decreaseMonth} 
+                        disabled={prevMonthButtonDisabled}
+                        className="prev-month"
+                      >
+                        &lt;
+                      </button>
+                      <button 
+                        onClick={increaseMonth}
+                        disabled={nextMonthButtonDisabled}
+                        className="next-month"
+                      >
+                        &gt;
+                      </button>
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
           </div>
           
           {selectedDate && (
