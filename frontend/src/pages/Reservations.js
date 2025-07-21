@@ -36,38 +36,68 @@ function Reservations() {
       { id: 1, name: 'Manicure Simples', duration: '30 min', price: '7€' },
       { id: 2, name: 'Manicure simples com pintura', duration: '45 min', price: '8.50€' },
       { id: 3, name: 'Verniz Gel', duration: '60 min', price: '15€' },
-      { id: 4, name: 'Manutenção de Gel', duration: '90 min', price: '20€' },
-      { id: 5, name: 'Unha partida', duration: '15 min', price: '2€' }
+      { id: 4, name: '1ª Manutenção de Gel sobre a unha', duration: '90 min', price: '25€' },
+      { id: 5, name: 'Manutenção de Gel', duration: '90 min', price: '20€' },
+      { id: 6, name: 'Manutenção de Acrygel', duration: '90 min', price: '25€' },
+      { id: 7, name: '1ª Aplicação De gel com extensão', duration: '90 min', price: '30€' },
+      { id: 8, name: '1ª aplicação acrygel com extensão', duration: '90 min', price: '35€' },
+      { id: 9, name: 'Unha partida', duration: '15 min', price: '2€' },
+      { id: 10, name: 'Remoção Verniz Gel, acrygel', duration: '45 min', price: '10€' }
     ],
     pedicure: [
-      { id: 6, name: 'Pedicure simples', duration: '30 min', price: '10€' },
-      { id: 7, name: 'Pedicure simples com verniz', duration: '45 min', price: '10.50€' },
-      { id: 8, name: 'Pedicure completa', duration: '60 min', price: '17€' }
+      { id: 11, name: 'Pedicure simples', duration: '30 min', price: '10€' },
+      { id: 12, name: 'Pedicure simples com verniz', duration: '45 min', price: '10.50€' },
+      { id: 13, name: 'Pedicure completa', duration: '60 min', price: '17€' },
+      { id: 14, name: 'Pedicure completa com verniz', duration: '75 min', price: '17.50€' },
+      { id: 15, name: 'Pintura com verniz gel', duration: '40 min', price: '15€' },
+      { id: 16, name: 'Pedicure com verniz gel', duration: '90 min', price: '22.50€' }
     ],
     depilacao_mulher: [
-      { id: 9, name: 'Buço', duration: '10 min', price: '3€' },
-      { id: 10, name: 'Sobrancelha', duration: '15 min', price: '5€' },
-      { id: 11, name: 'Axilas', duration: '10 min', price: '4€' }
+      { id: 17, name: 'Buço', duration: '10 min', price: '3€' },
+      { id: 18, name: 'Sobrancelha', duration: '15 min', price: '5€' },
+      { id: 19, name: 'Mento', duration: '10 min', price: '3€' },
+      { id: 20, name: 'Axilas', duration: '10 min', price: '4€' },
+      { id: 21, name: 'Virilha cavada', duration: '20 min', price: '6€' },
+      { id: 22, name: 'Virilha completa', duration: '20 min', price: '9€' },
+      { id: 23, name: 'Braços completos', duration: '30 min', price: '8€' },
+      { id: 24, name: 'Meia perna', duration: '20 min', price: '7€' },
+      { id: 25, name: 'Perna inteira', duration: '40 min', price: '12€' },
+      { id: 26, name: 'Perna inteira + virilha + axila', duration: '60 min', price: '22€' }
     ],
     depilacao_homem: [
-      { id: 12, name: 'Peito/Abdómen', duration: '20 min', price: '12€' },
-      { id: 13, name: 'Costas', duration: '15 min', price: '10€' }
+      { id: 27, name: 'Peito/Abdómen', duration: '20 min', price: '12€' },
+      { id: 28, name: 'Costas', duration: '15 min', price: '10€' },
+      { id: 29, name: 'Glúteos', duration: '15 min', price: '5€' },
+      { id: 30, name: 'Virilha', duration: '20 min', price: '8€' },
+      { id: 31, name: 'Axilas', duration: '10 min', price: '5€' },
+      { id: 32, name: 'Pernas', duration: '30 min', price: '14€' },
+      { id: 33, name: 'Braços completos', duration: '30 min', price: '8€' }
     ],
     depilacao_laser: [
-      { id: 14, name: '1 zona', duration: '15 min', price: '15€' },
-      { id: 15, name: '2 zonas', duration: '30 min', price: '20€' }
+      { id: 34, name: '1 zona', duration: '15 min', price: '15€' },
+      { id: 35, name: '2 zonas', duration: '30 min', price: '20€' },
+      { id: 36, name: '3 zonas', duration: '45 min', price: '30€' },
+      { id: 37, name: '4 zonas', duration: '40 min', price: '40€' },
+      { id: 38, name: '5 zonas', duration: '55 min', price: '50€' },
+      { id: 39, name: 'Corpo inteiro', duration: '90 min', price: '70€' }
     ],
     pestanas: [
-      { id: 16, name: '1ª aplicação de pestanas brasileiras', duration: '90 min', price: '30€' },
-      { id: 17, name: 'Aplicação pestanas Egípcia', duration: '90 min', price: '30€' }
+      { id: 40, name: '1ª aplicação de pestanas brasileiras', duration: '90 min', price: '30€' },
+      { id: 41, name: 'Aplicação pestanas Egípcia', duration: '90 min', price: '30€' },
+      { id: 42, name: 'Aplicação De pestanas Híbridas', duration: '90 min', price: '30€' },
+      { id: 43, name: 'Manutenção (3 em 3 semanas)', duration: '90 min', price: '25€' }
     ],
     sobrancelhas: [
-      { id: 18, name: 'Brown Lamination', duration: '60 min', price: '25€' },
-      { id: 19, name: 'Henna', duration: '60 min', price: '15€' }
+      { id: 44, name: 'Brown Lamination', duration: '60 min', price: '25€' },
+      { id: 45, name: 'Henna', duration: '60 min', price: '15€' },
+      { id: 46, name: 'Microblading (inclui 2 manutenções)', duration: '90 min', price: '150€' }
     ],
     destaques: [
-      { id: 20, name: 'Micropigmentação', duration: '120 min', price: '180€' },
-      { id: 21, name: 'Eyeliner', duration: '90 min', price: '100€' }
+      { id: 47, name: 'Micropigmentação', duration: '120 min', price: '180€' },
+      { id: 48, name: 'Eyeliner', duration: '90 min', price: '100€' },
+      { id: 49, name: 'Microagulhamento', duration: '60 min', price: 'Sob consulta' },
+      { id: 50, name: 'Micropigmentação Labial', duration: '120 min', price: '240€' },
+      { id: 51, name: 'Microblading', duration: '90 min', price: '150€' }
     ]
   }
 
