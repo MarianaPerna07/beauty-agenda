@@ -106,6 +106,29 @@
     background-color: #F5F1E9;
     border-radius: 50%;
   }
+
+  /* Remover quadrado azul do focus */
+  .react-datepicker__day:focus {
+    outline: none !important;
+  }
+
+  .react-datepicker__day:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Melhorar a aparência no hover */
+  .react-datepicker__day:hover:not(.react-datepicker__day--selected):not(.react-datepicker__day--disabled) {
+    background-color: rgba(165, 191, 153, 0.1) !important;
+    color: #5c7160 !important;
+    border-radius: 50%;
+  }
+  
+  /* Corrigir highlight do navegador */
+  .react-datepicker * {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
   
   /* Dia selecionado */
   .react-datepicker__day--selected {
@@ -150,4 +173,46 @@
   .react-datepicker__month-container {
     float: none;
     width: 100%;
+  }
+
+  /* Adicionar estas regras ao fim do arquivo */
+
+  /* Remover completamente o outline/ring azul do Tailwind */
+  .react-datepicker__day,
+  .react-datepicker__day--selected,
+  .react-datepicker__day--keyboard-selected,
+  .react-datepicker button {
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    --tw-ring-offset-width: 0 !important;
+    --tw-ring-offset-color: transparent !important;
+    --tw-ring-offset-shadow: none !important;
+    --tw-ring-shadow: none !important;
+    --tw-shadow: none !important;
+    border-color: transparent !important;
+    border-radius: 50% !important;
+  }
+
+  .react-datepicker__day--keyboard-selected {
+    background-color: rgba(165, 191, 153, 0.2) !important;
+    color: #5c7160 !important;
+  }
+
+  /* Garantir que o dia selecionado mantenha a cor verde */
+  .react-datepicker__day--selected,
+  .react-datepicker__day--selected:hover,
+  .react-datepicker__day--selected:focus {
+    background-color: #a5bf99 !important;
+    color: white !important;
+  }
+
+  /* Reforçar para Firefox */
+  .react-datepicker *::-moz-focus-inner {
+    border: 0;
+  }
+
+  /* Reforçar para Safari */
+  .react-datepicker * {
+    -webkit-appearance: none;
   }

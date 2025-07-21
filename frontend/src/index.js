@@ -12,7 +12,6 @@ import About from './pages/About';
 import Team from './pages/Team';
 import Reservations from './pages/Reservations';
 import Footer from './components/Footer';
-import TeamMember from './pages/TeamMember';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -24,7 +23,6 @@ root.render(
     <Route path='/contact' Component={Contact}></Route>
     <Route path='/about' Component={About}></Route>
     <Route path='/team' Component={Team}></Route>
-    <Route path='/team/:id' Component={TeamMember}></Route>
     <Route path='/reservations' Component={Reservations}></Route>
     <Route path='*' Component={NotFound}></Route>
   </Routes>

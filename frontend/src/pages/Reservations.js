@@ -122,7 +122,6 @@ function Reservations() {
   // Gerador de horários disponíveis
   const generateAvailableTimeSlots = (date) => {
     // Aqui você poderia implementar uma lógica para verificar os horários realmente disponíveis
-    // Por enquanto, vamos apenas gerar alguns horários de exemplo
     const timeSlots = [];
     const startHour = 9; // 9 AM
     const endHour = 19; // 7 PM
@@ -132,19 +131,17 @@ function Reservations() {
       const formattedHour = hour.toString().padStart(2, '0');
       
       if (hour < endHour) {
-        timeSlots.push(`${formattedHour}:00`);
-        timeSlots.push(`${formattedHour}:15`);
-        timeSlots.push(`${formattedHour}:30`);
-        timeSlots.push(`${formattedHour}:45`);
+        timeSlots.push({ time: `${formattedHour}:00`, available: Math.random() > 0.2 });
+        timeSlots.push({ time: `${formattedHour}:15`, available: Math.random() > 0.2 });
+        timeSlots.push({ time: `${formattedHour}:30`, available: Math.random() > 0.2 });
+        timeSlots.push({ time: `${formattedHour}:45`, available: Math.random() > 0.2 });
       } else {
         // Para a última hora (19h), só incluímos o horário inicial
-        timeSlots.push(`${formattedHour}:00`);
+        timeSlots.push({ time: `${formattedHour}:00`, available: Math.random() > 0.2 });
       }
     }
     
-    // Simular alguns horários ocupados aleatoriamente
-    // Reduzindo a probabilidade para termos mais horários disponíveis
-    return timeSlots.filter(() => Math.random() > 0.2);
+    return timeSlots;
   }
 
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
@@ -162,7 +159,78 @@ function Reservations() {
   };
 
   const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 1) {
+      // Limpar dados do passo atual antes de voltar
+      if (currentStep === 5) {
+        // Se estiver saindo da etapa de Confirmação, limpar dados do cliente
+        setCustomerInfo({
+          name: '',
+          email: '',
+          phone: ''
+        });
+      } else if (currentStep === 4) {
+        // Se estiver saindo da etapa de Data/Hora, limpar seleções
+        setSelectedDate('');
+        setSelectedTime('');
+        setAvailableTimeSlots([]);
+      } else if (currentStep === 3) {
+        // Se estiver saindo da etapa de Salão, não é necessário limpar nada
+      } else if (currentStep === 2) {
+        // Se estiver saindo da etapa de Profissional, limpar seleção
+        setProfessional(null);
+      }
+      
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const goToStep = (step) => {
+    // Só permite navegar para passos anteriores ou o atual
+    if (step <= currentStep) {
+      // Se estiver indo para um passo anterior, limpar dados dos passos subsequentes
+      if (step <= 1) {
+        // Voltar para o início - limpar tudo exceto a categoria de serviço
+        setProfessional(null);
+        setSelectedDate('');
+        setSelectedTime('');
+        setAvailableTimeSlots([]);
+        setCustomerInfo({
+          name: '',
+          email: '',
+          phone: ''
+        });
+      } else if (step <= 2) {
+        // Voltar para seleção de profissional - limpar datas e cliente
+        setSelectedDate('');
+        setSelectedTime('');
+        setAvailableTimeSlots([]);
+        setCustomerInfo({
+          name: '',
+          email: '',
+          phone: ''
+        });
+      } else if (step <= 3) {
+        // Voltar para seleção de salão - limpar datas e cliente
+        setSelectedDate('');
+        setSelectedTime('');
+        setAvailableTimeSlots([]);
+        setCustomerInfo({
+          name: '',
+          email: '',
+          phone: ''
+        });
+      } else if (step <= 4) {
+        // Voltar para seleção de data/hora - limpar cliente
+        setCustomerInfo({
+          name: '',
+          email: '',
+          phone: ''
+        });
+      }
+      
+      // Atualizar o passo atual
+      setCurrentStep(step);
+    }
   };
 
   const handleServiceCategorySelect = (category) => {
@@ -184,21 +252,60 @@ function Reservations() {
   };
 
   const handleTimeSelect = (time) => {
+    // Só permite selecionar horários disponíveis
     setSelectedTime(time);
   };
 
   const handleCustomerInfoChange = (e) => {
     const { name, value } = e.target;
-    setCustomerInfo({
-      ...customerInfo,
+    setCustomerInfo(prevState => ({
+      ...prevState,
       [name]: value
-    });
+    }));
   };
 
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aqui você adicionaria a lógica para submeter a reserva
+    
+    // Criar string ISO para o datetime da reserva que preserva o fuso horário local
+    const timeComponents = selectedTime.split(':');
+    const hour = parseInt(timeComponents[0]);
+    const minute = parseInt(timeComponents[1]);
+    
+    // Extrair componentes da data
+    const [year, month, day] = selectedDate.split('-');
+    
+    // Construir manualmente uma string ISO com timezone local (UTC+01:00 para Portugal)
+    const reservationTimeISO = `${year}-${month}-${day}T${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00+01:00`;
+    
+    // Criar objeto simplificado com os dados da reserva
+    const reservationData = {
+      service_id: selectedService.id,
+      location_id: salons[0].id,
+      worker_id: selectedProfessional.id,
+      reservation_time: reservationTimeISO,
+      client_name: customerInfo.name, 
+      client_email: customerInfo.email,
+      client_phone: customerInfo.phone
+    };
+    
+    // Simular envio para o backend com console.log
+    console.log("DADOS DA RESERVA:");
+    console.log(JSON.stringify(reservationData, null, 2));
+    
+    // Aqui seria o código para enviar ao backend:
+    // const response = await fetch('/api/reservations', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(reservationData),
+    // });
+    
+    // Mostrar alerta de sucesso
     alert('Reserva realizada com sucesso!');
+    
     // Reset do formulário
     setCurrentStep(1);
     setSelectedService(null);
@@ -269,7 +376,7 @@ function Reservations() {
           className={`px-6 py-3 rounded-full flex items-center ${
             selectedService
               ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed"
           }`}
         >
           <span>Próximo</span>
@@ -335,7 +442,7 @@ function Reservations() {
           className={`px-6 py-3 rounded-full flex items-center ${
             selectedProfessional
               ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed"
           }`}
         >
           <span>Próximo</span>
@@ -428,30 +535,45 @@ function Reservations() {
     const today = new Date();
     
     // Agrupa os horários disponíveis em períodos do dia
-    const morningSlots = availableTimeSlots.filter(time => {
-      const hour = parseInt(time.split(':')[0]);
+    const morningSlots = availableTimeSlots.filter(slot => {
+      const hour = parseInt(slot.time.split(':')[0]);
       return hour >= 9 && hour < 12;
     });
     
-    const afternoonSlots = availableTimeSlots.filter(time => {
-      const hour = parseInt(time.split(':')[0]);
+    const afternoonSlots = availableTimeSlots.filter(slot => {
+      const hour = parseInt(slot.time.split(':')[0]);
       return hour >= 12 && hour < 17;
     });
     
-    const eveningSlots = availableTimeSlots.filter(time => {
-      const hour = parseInt(time.split(':')[0]);
+    const eveningSlots = availableTimeSlots.filter(slot => {
+      const hour = parseInt(slot.time.split(':')[0]);
       return hour >= 17;
     });
     
     // Função para manipular a mudança de data
     const handleDateChange = (date) => {
-      handleDateSelect(date.toISOString().split('T')[0]);
+      const localDate = new Date(date);
+      const year = localDate.getFullYear();
+      const month = String(localDate.getMonth() + 1).padStart(2, '0');
+      const day = String(localDate.getDate()).padStart(2, '0');
+      
+      // Formato com data e hora (meia-noite)
+      const formattedDate = `${year}-${month}-${day}T00:00:00+01:00`;
+      
+      // Simular requisição GET para backend
+      console.log("VERIFICAR DISPONIBILIDADE:");
+      console.log(JSON.stringify({
+        date: formattedDate,
+        location_id: salons[0].id,
+        service_id: selectedService?.id || "todos",   
+        worker_id: selectedProfessional?.id || "todos"
+      }, null, 2));
+      
+      // Para o seletor de data, continuamos usando apenas a parte da data
+      handleDateSelect(`${year}-${month}-${day}`);
     };
     
     const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
-    
-    // Dias personalizados da semana em português
-    const dayNames = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
     
     // Renderizar conteúdo dos dias
     const renderDayContents = (day) => {
@@ -524,17 +646,22 @@ function Reservations() {
                     <div className="mb-4">
                       <h5 className="text-sm text-[#5c7160]/70 mb-2">Manhã</h5>
                       <div className="flex flex-wrap gap-2">
-                        {morningSlots.map((time) => (
+                        {morningSlots.map((slot) => (
                           <button
-                            key={time}
-                            onClick={() => handleTimeSelect(time)}
-                            className={`px-3 py-2 rounded-md transition-all ${
-                              selectedTime === time
-                                ? "bg-[#5c7160] text-white"
-                                : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
-                            }`}
+                            key={slot.time}
+                            onClick={() => slot.available && handleTimeSelect(slot.time)}
+                            disabled={!slot.available}
+                            className={`
+                              px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
+                              ${!slot.available 
+                                ? "bg-gray-100 text-gray-600 cursor-not-allowed border border-gray-200"   // cinzentos mais claros + texto mais escuro
+                                : selectedTime === slot.time
+                                  ? "bg-[#5c7160] text-white"
+                                  : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
+                              }
+                            `}
                           >
-                            {time}
+                            {slot.time}
                           </button>
                         ))}
                       </div>
@@ -545,17 +672,22 @@ function Reservations() {
                     <div className="mb-4">
                       <h5 className="text-sm text-[#5c7160]/70 mb-2">Tarde</h5>
                       <div className="flex flex-wrap gap-2">
-                        {afternoonSlots.map((time) => (
+                        {afternoonSlots.map((slot) => (
                           <button
-                            key={time}
-                            onClick={() => handleTimeSelect(time)}
-                            className={`px-3 py-2 rounded-md transition-all ${
-                              selectedTime === time
-                                ? "bg-[#5c7160] text-white"
-                                : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
-                            }`}
+                            key={slot.time}
+                            onClick={() => slot.available && handleTimeSelect(slot.time)}
+                            disabled={!slot.available}
+                            className={`
+                              px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
+                              ${!slot.available 
+                                ? "bg-gray-100 text-gray-600 cursor-not-allowed border border-gray-200"   // cinzentos mais claros + texto mais escuro
+                                : selectedTime === slot.time
+                                  ? "bg-[#5c7160] text-white"
+                                  : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
+                              }
+                            `}
                           >
-                            {time}
+                            {slot.time}
                           </button>
                         ))}
                       </div>
@@ -566,17 +698,22 @@ function Reservations() {
                     <div>
                       <h5 className="text-sm text-[#5c7160]/70 mb-2">Fim de Tarde</h5>
                       <div className="flex flex-wrap gap-2">
-                        {eveningSlots.map((time) => (
+                        {eveningSlots.map((slot) => (
                           <button
-                            key={time}
-                            onClick={() => handleTimeSelect(time)}
-                            className={`px-3 py-2 rounded-md transition-all ${
-                              selectedTime === time
-                                ? "bg-[#5c7160] text-white"
-                                : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
-                            }`}
+                            key={slot.time}
+                            onClick={() => slot.available && handleTimeSelect(slot.time)}
+                            disabled={!slot.available}
+                            className={`
+                              px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
+                              ${!slot.available 
+                                ? "bg-gray-100 text-gray-600 cursor-not-allowed border border-gray-200"   // cinzentos mais claros + texto mais escuro
+                                : selectedTime === slot.time
+                                  ? "bg-[#5c7160] text-white"
+                                  : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
+                              }
+                            `}
                           >
-                            {time}
+                            {slot.time}
                           </button>
                         ))}
                       </div>
@@ -620,7 +757,7 @@ function Reservations() {
             className={`px-6 py-3 rounded-full flex items-center ${
               selectedDate && selectedTime
                 ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
             }`}
           >
             <span>Próximo</span>
@@ -698,6 +835,9 @@ function Reservations() {
                   value={customerInfo.name}
                   onChange={handleCustomerInfoChange}
                   required
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck="false"
                   className="w-full px-4 py-2.5 border border-[#5c7160]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
                   placeholder="Seu nome completo"
                 />
@@ -712,6 +852,9 @@ function Reservations() {
                   value={customerInfo.email}
                   onChange={handleCustomerInfoChange}
                   required
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck="false"
                   className="w-full px-4 py-2.5 border border-[#5c7160]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
                   placeholder="Seu email"
                 />
@@ -726,6 +869,9 @@ function Reservations() {
                   value={customerInfo.phone}
                   onChange={handleCustomerInfoChange}
                   required
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck="false"
                   className="w-full px-4 py-2.5 border border-[#5c7160]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
                   placeholder="Seu número de telefone"
                 />
@@ -763,7 +909,7 @@ function Reservations() {
             className={`px-6 py-3 rounded-full flex items-center ${
               customerInfo.name && customerInfo.email && customerInfo.phone
                 ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
             }`}
           >
             <span>Confirmar Reserva</span>
@@ -819,19 +965,34 @@ function Reservations() {
       </div>
       
       {/* Stepper */}
-      <div className="pt-8 pb-4 px-6">
+      <div className="pt-8 pb-4 px-6 relative">
         <div className="container mx-auto max-w-6xl">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center relative">
+            {/* Linha de fundo (não completado) */}
+            <div className="absolute left-0 right-0 top-5 h-0.5 bg-[#5c7160]/10"></div>
+            
+            {/* Linha de progresso (completado) */}
+            <div 
+              className="absolute left-0 top-5 h-0.5 bg-[#a5bf99]"
+              style={{ 
+                width: `${((currentStep - 1) / 4) * 100}%`,
+                transition: 'width 0.3s ease-in-out' 
+              }}
+            ></div>
+            
+            {/* Pontos do stepper */}
             {[1, 2, 3, 4, 5].map((step) => (
-              <div key={step} className="flex flex-col items-center">
+              <div key={step} className="flex flex-col items-center z-10">
                 <div 
+                  onClick={() => goToStep(step)}
                   className={`w-10 h-10 rounded-full flex items-center justify-center ${
                     currentStep === step 
                       ? "bg-[#5c7160] text-white" 
                       : currentStep > step 
-                        ? "bg-[#a5bf99] text-white" 
-                        : "bg-[#5c7160]/20 text-[#5c7160]"
+                        ? "bg-[#a5bf99] text-white cursor-pointer" 
+                        : "bg-white text-[#5c7160] border border-[#5c7160]/20"
                   }`}
+                  style={step < currentStep ? { cursor: 'pointer' } : {}}
                 >
                   {currentStep > step ? (
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -854,11 +1015,6 @@ function Reservations() {
                 </span>
               </div>
             ))}
-
-            {/* Connecting lines */}
-            <div className="absolute left-0 right-0 flex justify-center">
-              <div className="h-0.5 bg-[#5c7160]/20 w-4/5 absolute top-5 -z-10"></div>
-            </div>
           </div>
         </div>
       </div>
