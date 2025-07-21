@@ -7,6 +7,7 @@ from aux import get_available_slots
 app = Flask(__name__)
 CORS(app)
 
+# Endpoint to get available slots
 @app.route("/availability", methods=["GET"])
 def get_availability():
     service_id_str = request.args.get("service_id")
@@ -43,7 +44,7 @@ def get_availability():
     
     #TODO: Validate location_id against a list of available locations (query from database)
     
-    date_str = request.args.get("reservation_time")
+    date_str = request.args.get("date")
     try:
         date = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
         print(f"Parsed date: {date}")
@@ -60,7 +61,7 @@ def get_availability():
     print(f"Available slots: {slots_availability}")
     return jsonify({"available_slots": slots_availability})
 
-
+# Endpoint to create a reservation
 @app.route("/reservation", methods=["POST"])
 def create_reservation():
     data = request.get_json()
@@ -138,6 +139,7 @@ def create_reservation():
     return jsonify({"message": "Reservation created successfully", "data": data}), 201
 
 
+# Endpoint to get available services
 @app.route("/services", methods=["GET"])
 def get_services():
     return jsonify({
