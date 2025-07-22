@@ -168,7 +168,10 @@ function Reservations() {
 
   // Funções para navegação entre etapas
   const nextStep = () => {
-    if (currentStep < 5) setCurrentStep(currentStep + 1);
+    if (currentStep < 5) {
+      setCurrentStep(currentStep + 1);
+      scrollToTop(); // Adicionar chamada para scrollToTop
+    }
   };
 
   const prevStep = () => {
@@ -194,6 +197,7 @@ function Reservations() {
       }
       
       setCurrentStep(currentStep - 1);
+      scrollToTop();
     }
   };
 
@@ -243,6 +247,7 @@ function Reservations() {
       
       // Atualizar o passo atual
       setCurrentStep(step);
+      scrollToTop();
     }
   };
 
