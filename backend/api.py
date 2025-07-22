@@ -16,7 +16,7 @@ def get_availability():
         print(f"Parsed service_id: {service_id}")
     except ValueError:
         return jsonify({"error": "Invalid service_id format"}), 400
-    if not service_id:
+    if service_id is None:
         return jsonify({"error": "Missing service_id parameter"}), 400
     
     #TODO: Validate service_id against a list of available services (query from database) and get service duration
@@ -28,7 +28,7 @@ def get_availability():
         print(f"Parsed worker_id: {worker_id}")
     except ValueError:
         return jsonify({"error": "Invalid worker_id format"}), 400
-    if not worker_id:
+    if worker_id is None:
         return jsonify({"error": "Missing worker_id parameter"}), 400
     
     #TODO: Validate worker_id against a list of available workers (query from database)
@@ -39,7 +39,7 @@ def get_availability():
         print(f"Parsed location_id: {location_id}")
     except ValueError:
         return jsonify({"error": "Invalid location_id format"}), 400
-    if not location_id:
+    if location_id is None:
         return jsonify({"error": "Missing location_id parameter"}), 400
     
     #TODO: Validate location_id against a list of available locations (query from database)
@@ -50,7 +50,7 @@ def get_availability():
         print(f"Parsed date: {date}")
     except ValueError:
         return jsonify({"error": "Invalid date format"}), 400
-    if not date:
+    if date is None:
         return jsonify({"error": "Missing date parameter"}), 400
     if date < datetime.now().date():
         return jsonify({"error": "Date cannot be in the past"}), 400
@@ -72,7 +72,7 @@ def create_reservation():
         print(f"Parsed name: {name}")
     except ValueError:
         return jsonify({"error": "Invalid name format"}), 400
-    if not name:
+    if name is None:
         return jsonify({"error": "Missing name parameter"}), 400
     
     email_str = data.get("email")
@@ -81,7 +81,7 @@ def create_reservation():
         print(f"Parsed email: {email}")
     except ValueError:
         return jsonify({"error": "Invalid email format"}), 400
-    if not email:
+    if email is None:
         return jsonify({"error": "Missing email parameter"}), 400
     
     phone_str = data.get("phone")
@@ -90,7 +90,7 @@ def create_reservation():
         print(f"Parsed phone: {phone}")
     except ValueError:
         return jsonify({"error": "Invalid phone format"}), 400
-    if not phone:
+    if phone is None:
         return jsonify({"error": "Missing phone parameter"}), 400   
     
     service_id_str = data.get("service_id")
@@ -99,7 +99,7 @@ def create_reservation():
         print(f"Parsed service_id: {service_id}")
     except ValueError:
         return jsonify({"error": "Invalid service_id format"}), 400
-    if not service_id:
+    if service_id is None:
         return jsonify({"error": "Missing service_id parameter"}), 400
     
     worker_id_str = data.get("worker_id")
@@ -108,7 +108,7 @@ def create_reservation():
         print(f"Parsed worker_id: {worker_id}")
     except ValueError:
         return jsonify({"error": "Invalid worker_id format"}), 400
-    if not worker_id:
+    if worker_id is None:
         return jsonify({"error": "Missing worker_id parameter"}), 400
     
     location_id_str = data.get("location_id")
@@ -117,7 +117,7 @@ def create_reservation():
         print(f"Parsed location_id: {location_id}")
     except ValueError:
         return jsonify({"error": "Invalid location_id format"}), 400
-    if not location_id:
+    if location_id is None:
         return jsonify({"error": "Missing location_id parameter"}), 400
     
     date_str = data.get("reservation_time")
@@ -126,7 +126,7 @@ def create_reservation():
         print(f"Parsed date: {date}")
     except ValueError:
         return jsonify({"error": "Invalid date format"}), 400
-    if not date:
+    if date is None:
         return jsonify({"error": "Missing date parameter"}), 400
     if date < datetime.now().date():
         return jsonify({"error": "Date cannot be in the past"}), 400
@@ -152,4 +152,4 @@ def get_services():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True, port=5001)
