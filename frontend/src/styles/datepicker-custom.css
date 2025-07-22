@@ -1,24 +1,26 @@
 .react-datepicker {
     font-family: inherit;
-    border: none;
-    border-radius: 0.75rem;
+    border: none !important;
+    border-radius: 0.5rem;
     background-color: #fff;
-    box-shadow: 0px 2px 10px rgba(92, 113, 96, 0.05);
-    width: 100%;
-    max-width: 320px;
+    box-shadow: 0px 2px 10px rgba(237, 238, 237, 0.05);
+    width: 100% !important;
+    max-width: 360px !important;
+    margin: 0 auto;
+    padding: 0.5rem 0;
   }
   
   /* Cabeçalho personalizado */
   .custom-header {
+    padding: 1rem;
+    font-size: 1.1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.5rem;
   }
   
   .custom-header .month-year {
-    font-size: 1rem;
+    font-size: 1.2rem;
     color: #5c7160;
     text-transform: lowercase;
     font-weight: normal;
@@ -57,9 +59,9 @@
   
   .react-datepicker__day-names {
     display: flex;
-    justify-content: space-between;
-    padding: 0 0.5rem;
-    margin-bottom: 0.25rem;
+    justify-content: center;
+    white-space: nowrap;
+    margin: 0;
   }
   
   .react-datepicker__day-name {
@@ -67,8 +69,8 @@
     opacity: 0.6;
     font-weight: normal;
     text-transform: lowercase;
-    font-size: 0.85rem;
-    width: 2.5rem;
+    font-size: 0.95rem !important;
+    width: 2.6rem !important;
     margin: 0;
     display: flex;
     justify-content: center;
@@ -78,27 +80,29 @@
   /* Mês */
   .react-datepicker__month {
     margin: 0;
-    padding: 0 0.5rem 0.5rem;
+    padding: 0;
   }
   
   /* Semana */
   .react-datepicker__week {
     display: flex;
-    justify-content: space-between;
-    margin: 0.25rem 0;
+    justify-content: center;
+    white-space: nowrap;
+    margin: 0;
+    width: 100%;
   }
   
   /* Dia */
   .react-datepicker__day {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.6rem !important;  /* Maior largura */
+    height: 2.6rem !important; /* Maior altura */
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0;
     color: #5c7160;
     border-radius: 50%;
-    font-size: 0.9rem;
+    font-size: 1rem !important; /* Texto maior */
     font-weight: 300;
   }
   
@@ -165,14 +169,21 @@
   
   /* Estilos para container geral */
   .custom-datepicker-wrapper {
+    padding: 0;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 360px;  /* Aumentar a largura máxima */
     background-color: #fff;
     border-radius: 0.75rem;
-    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
   }
   
   .react-datepicker__month-container {
     float: none;
     width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   /* Adicionar estas regras ao fim do arquivo */
