@@ -1,0 +1,11 @@
+certifi==2024.8.30
+cffi==1.17.1
+cryptography==43.0.3
+Flask==3.0.3
+flask-cors==5.0.0
+itsdangerous==2.1.1
+MarkupSafe==2.1.5
+packaging==24.2
+pycparser==2.22
+pymongo==4.10.1
+Werkzeug==3.0.6

@@ -1,18 +1,26 @@
 from flask import Flask, request, jsonify
-from datetime import datetime
+from datetime import datetime, timezone
 from flask_cors import CORS
+from pymongo import MongoClient
+import time
 
 from aux import get_available_slots
 
 app = Flask(__name__)
 CORS(app)
 
+mongo_uri = "mongodb://root:example@mongodb:27017/"
+client = MongoClient(mongo_uri)
+
+db = client["estetica"]
+collection = db["appointements"]  # You can name this whatever you want
+
 # Endpoint to get available slots
 @app.route("/availability", methods=["GET"])
 def get_availability():
     service_id_str = request.args.get("service_id")
     try:
-        service_id = int(service_id_str) if service_id_str else None
+        service_id = int(service_id_str) if (service_id_str is not None) else None
         print(f"Parsed service_id: {service_id}")
     except ValueError:
         return jsonify({"error": "Invalid service_id format"}), 400
@@ -24,7 +32,7 @@ def get_availability():
 
     worker_id_str = request.args.get("worker_id")
     try:
-        worker_id = int(worker_id_str) if worker_id_str else None
+        worker_id = int(worker_id_str) if (worker_id_str is not None) else None
         print(f"Parsed worker_id: {worker_id}")
     except ValueError:
         return jsonify({"error": "Invalid worker_id format"}), 400
@@ -35,7 +43,7 @@ def get_availability():
     
     location_id_str = request.args.get("location_id")
     try:
-        location_id = int(location_id_str) if location_id_str else None
+        location_id = int(location_id_str) if (location_id_str is not None) else None
         print(f"Parsed location_id: {location_id}")
     except ValueError:
         return jsonify({"error": "Invalid location_id format"}), 400
@@ -46,13 +54,14 @@ def get_availability():
     
     date_str = request.args.get("date")
     try:
-        date = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
+        #date = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
+        date = datetime.fromisoformat(date_str)
         print(f"Parsed date: {date}")
     except ValueError:
         return jsonify({"error": "Invalid date format"}), 400
     if date is None:
         return jsonify({"error": "Missing date parameter"}), 400
-    if date < datetime.now().date():
+    if date < datetime.now(timezone.utc):
         return jsonify({"error": "Date cannot be in the past"}), 400
     
     
@@ -95,7 +104,7 @@ def create_reservation():
     
     service_id_str = data.get("service_id")
     try:
-        service_id = int(service_id_str) if service_id_str else None
+        service_id = int(service_id_str) if (service_id_str is not None) else None
         print(f"Parsed service_id: {service_id}")
     except ValueError:
         return jsonify({"error": "Invalid service_id format"}), 400
@@ -104,7 +113,7 @@ def create_reservation():
     
     worker_id_str = data.get("worker_id")
     try:
-        worker_id = int(worker_id_str) if worker_id_str else None
+        worker_id = int(worker_id_str) if (worker_id_str is not None) else None
         print(f"Parsed worker_id: {worker_id}")
     except ValueError:
         return jsonify({"error": "Invalid worker_id format"}), 400
@@ -113,7 +122,7 @@ def create_reservation():
     
     location_id_str = data.get("location_id")
     try:
-        location_id = int(location_id_str) if location_id_str else None
+        location_id = int(location_id_str) if (location_id_str is not None) else None
         print(f"Parsed location_id: {location_id}")
     except ValueError:
         return jsonify({"error": "Invalid location_id format"}), 400
@@ -122,19 +131,53 @@ def create_reservation():
     
     date_str = data.get("reservation_time")
     try:
-        date = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
+        #date = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
+        date = datetime.fromisoformat(date_str)
         print(f"Parsed date: {date}")
     except ValueError:
         return jsonify({"error": "Invalid date format"}), 400
     if date is None:
         return jsonify({"error": "Missing date parameter"}), 400
-    if date < datetime.now().date():
+    if date < datetime.now(timezone.utc):
         return jsonify({"error": "Date cannot be in the past"}), 400
     
     #TODO: Validate service_id, worker_id, and location_id against the database
 
+    #TODO Check if user exists
+    collection = db["clients"]
+    result = collection.find_one({"phone": phone})
+    #found_any = False
+    #for doc in result:
+        #print(doc)
+        #found_any = True
+
+    if result is None:
+        client = {
+            "name" : name,
+            "email" : email,
+            "phone" : phone,
+            "birthday" : None,
+            "registration_day" : datetime.fromisoformat(datetime.utcfromtimestamp(time.time()).strftime('%Y-%m-%dT%H:%M:%S')),
+            "total_reservations" : 0
+        }
+        #TODO Register new user
+
+        collection = db["clients"]
+        collection.insert_one(client)
+
+    
+
     #TODO: Implement logic to create a reservation in the database
-    # For now, we will just return the data as a confirmation
+    appointment = {
+        "phone" : phone,
+        "service_id" : 2,
+        "datetime_service_start" : date
+    }
+
+    collection = db["appointements"]
+    collection.insert_one(appointment)
+
+
     print(f"Creating reservation with data: {data}")
     return jsonify({"message": "Reservation created successfully", "data": data}), 201
 
