@@ -5,6 +5,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import pt from 'date-fns/locale/pt';
 import "../styles/datepicker-custom.css";
 import ptCustom from '../utils/datepicker-locale';
+import mariaImg from '../images/maria.png'
+import laraImg  from '../images/lara.png'
 
 // Registrar o idioma português personalizado
 registerLocale('pt-custom', ptCustom);
@@ -115,9 +117,18 @@ function Reservations() {
   }
 
   const professionals = [
-    { id: 1, name: 'Maria Santos', specialty: 'Estética Avançada', image: 'https://images.pexels.com/photos/3762892/pexels-photo-3762892.jpeg' },
-    { id: 2, name: 'Lara Costa', specialty: 'Manicure e Pedicure', image: 'https://images.pexels.com/photos/5009495/pexels-photo-5009495.jpeg' },
-    { id: 3, name: 'Mariana Silva', specialty: 'Depilação', image: 'https://images.pexels.com/photos/3764012/pexels-photo-3764012.jpeg' }
+    {
+      id: 1,
+      name: 'Maria Cardoso',
+      specialty: 'Estética Avançada',
+      image: mariaImg,
+    },
+    {
+      id: 2,
+      name: 'Lara Almeida',
+      specialty: 'Manicure e Pedicure',
+      image: laraImg,
+    },
   ]
 
   const salons = [
@@ -140,10 +151,7 @@ function Reservations() {
         timeSlots.push({ time: `${formattedHour}:15`, available: Math.random() > 0.2 });
         timeSlots.push({ time: `${formattedHour}:30`, available: Math.random() > 0.2 });
         timeSlots.push({ time: `${formattedHour}:45`, available: Math.random() > 0.2 });
-      } else {
-        // Para a última hora (19h), só incluímos o horário inicial
-        timeSlots.push({ time: `${formattedHour}:00`, available: Math.random() > 0.2 });
-      }
+      } 
     }
     
     return timeSlots;
@@ -726,7 +734,7 @@ function Reservations() {
                 <div className="w-full flex flex-col items-center">
                   {availableTimeSlots.length > 0 ? (
                     <>
-                      {morningSlots.length > 0 && (
+                      {/* {morningSlots.length > 0 && (
                         <div className="mb-4 w-full flex justify-center">
                           <div className="flex flex-wrap justify-center gap-2 w-full">
                             {morningSlots.map((slot) => (
@@ -799,10 +807,36 @@ function Reservations() {
                             ))}
                           </div>
                         </div>
+                      )} */}
+
+                      {availableTimeSlots.length > 0 && (
+                        <div className="w-94 flex justify-center">
+                          {/* <div className="flex flex-wrap justify-center gap-8 w-full"> */}
+                          <div className="grid grid-cols-4 gap-2 w-full place-items-center">
+                            {availableTimeSlots.map((slot) => (
+                              <button
+                                key={slot.time}
+                                onClick={() => slot.available && handleTimeSelect(slot.time)}
+                                disabled={!slot.available}
+                                className={`
+                                  px-3 py-2 rounded-md transition-all w-[85px] h-[40px] flex items-center justify-center
+                                  ${!slot.available
+                                    ? "text-white cursor-not-allowed border border-gray-100"
+                                    : selectedTime === slot.time
+                                      ? "bg-[#a5bf99] text-white"
+                                      : "bg-white border border-[#a5bf99]/30 text-[#a5bf99] hover:border-[#a5bf99]"
+                                  }
+                                `}
+                              >
+                                {slot.time}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                       )}
                       
                       {selectedTime && (
-                        <div className="mt-4 bg-[#a5bf99]/20 p-3 rounded-lg max-w-md w-full">
+                        <div className="mt-4 bg-[#a5bf99]/20 p-3 rounded-lg w-full">
                           <div className="flex items-center text-[#5c7160]">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -839,7 +873,7 @@ function Reservations() {
               className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
                 selectedDate && selectedTime
                   ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-100 text-white cursor-not-allowed"
               }`}
             >
               <span>Próximo</span>

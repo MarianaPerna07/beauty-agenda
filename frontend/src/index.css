@@ -112,7 +112,7 @@ body:has(.requires-no-scroll) {
   overflow: hidden;
 }
 button:disabled {
-  background-color: grey;
+  background-color: rgba(163, 163, 163, 0.5);
 }
 .nav {
   font-family: 'Quicksand', sans-serif;
