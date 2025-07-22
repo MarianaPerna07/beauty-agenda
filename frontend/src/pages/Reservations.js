@@ -26,7 +26,12 @@ function Reservations() {
     email: '',
     phone: ''
   })
-  
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
+
   // Dados de exemplo (no futuro poderão vir de uma API)
   const serviceCategories = [
     { id: 'manicure', name: 'Manicure' },
@@ -256,11 +261,56 @@ function Reservations() {
     setSelectedTime(time);
   };
 
+  const validateField = (name, value) => {
+    let errorMessage = '';
+    
+    switch (name) {
+      case 'email':
+        // Regex para validar email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          errorMessage = 'Por favor, insira um email válido';
+        }
+        break;
+        
+      case 'phone':
+        // Regex para telefone português: começa com 9 e tem 9 dígitos
+        const phoneRegex = /^9[0-9]{8}$/;
+        if (!phoneRegex.test(value)) {
+          errorMessage = 'O número deve começar com 9 e ter 9 dígitos';
+        }
+        break;
+        
+      case 'name':
+        // Nome com pelo menos 3 caracteres
+        if (value.length < 3) {
+          errorMessage = 'Por favor, insira um nome válido';
+        }
+        break;
+        
+      default:
+        break;
+    }
+    
+    return errorMessage;
+  };
+
   const handleCustomerInfoChange = (e) => {
     const { name, value } = e.target;
-    setCustomerInfo(prevState => ({
-      ...prevState,
+    
+    // Atualizar o valor do campo
+    setCustomerInfo(prev => ({
+      ...prev,
       [name]: value
+    }));
+    
+    // Validar o campo após digitação
+    const errorMessage = validateField(name, value);
+    
+    // Atualizar estado de erros
+    setErrors(prev => ({
+      ...prev,
+      [name]: errorMessage
     }));
   };
 
@@ -322,209 +372,224 @@ function Reservations() {
 
   // Componente para a Etapa 1: Seleção de Serviço
   const ServiceSelectionStep = () => (
-    <div className="animate-fadeIn">
-      <div className="mb-8">
-        <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione a Categoria</h3>
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
-          {serviceCategories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => handleServiceCategorySelect(category)}
-              className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                selectedCategory?.id === category.id
-                  ? "bg-[#5c7160] text-white shadow-md"
-                  : "bg-white text-[#5c7160] border border-[#5c7160]/30 hover:bg-[#a5bf99]/20"
-              }`}
-            >
-              {category.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {selectedCategory && (
-        <>
-          <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione o Serviço</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {services[selectedCategory.id].map((service) => (
-              <div
-                key={service.id}
-                onClick={() => handleServiceSelect(service)}
-                className={`p-4 rounded-lg cursor-pointer transition-all duration-300 ${
-                  selectedService?.id === service.id
-                    ? "bg-[#5c7160] text-white shadow-lg"
-                    : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
+    <div className="animate-fadeIn flex flex-col items-center">
+      <div className="w-full max-w-3xl mx-auto">
+        <div className="mb-8">
+          <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione a Categoria</h3>
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {serviceCategories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => handleServiceCategorySelect(category)}
+                className={`px-4 py-2 rounded-full transition-all duration-300 ${
+                  selectedCategory?.id === category.id
+                    ? "bg-[#5c7160] text-white shadow-md"
+                    : "bg-white text-[#5c7160] border border-[#5c7160]/30 hover:bg-[#a5bf99]/20"
                 }`}
               >
-                <h4 className="text-lg font-medium mb-2">{service.name}</h4>
-                <div className="flex justify-between text-sm">
-                  <span>{service.duration}</span>
-                  <span className={selectedService?.id === service.id ? "font-bold" : "font-bold text-[#c0a080]"}>
-                    {service.price}
-                  </span>
-                </div>
-              </div>
+                {category.name}
+              </button>
             ))}
           </div>
-        </>
-      )}
+        </div>
 
-      <div className="mt-8 flex justify-end">
-        <button
-          onClick={nextStep}
-          disabled={!selectedService}
-          className={`px-6 py-3 rounded-full flex items-center ${
-            selectedService
-              ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          <span>Próximo</span>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+        {selectedCategory && (
+          <>
+            <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione o Serviço</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
+              {services[selectedCategory.id].map((service) => (
+                <div
+                  key={service.id}
+                  onClick={() => handleServiceSelect(service)}
+                  className={`p-4 rounded-lg cursor-pointer transition-all duration-300 ${
+                    selectedService?.id === service.id
+                      ? "bg-[#5c7160] text-white shadow-lg"
+                      : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
+                  }`}
+                >
+                  <h4 className="text-lg font-medium mb-2">{service.name}</h4>
+                  <div className="flex justify-between text-sm">
+                    <span>{service.duration}</span>
+                    <span className={selectedService?.id === service.id ? "font-bold" : "font-bold text-[#c0a080]"}>
+                      {service.price}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
+          <button
+            onClick={prevStep}
+            className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Anterior</span>
+          </button>
+          <button
+            onClick={nextStep}
+            disabled={!selectedService}
+            className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
+              selectedService
+                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            <span>Próximo</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
 
   // Componente para a Etapa 2: Seleção de Profissional
   const ProfessionalSelectionStep = () => (
-    <div className="animate-fadeIn">
-      <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha a Profissional</h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {professionals.map((professional) => (
-          <div
-            key={professional.id}
-            onClick={() => handleProfessionalSelect(professional)}
-            className={`bg-white rounded-lg overflow-hidden shadow-md cursor-pointer transition-all duration-300 ${
-              selectedProfessional?.id === professional.id ? "ring-2 ring-[#5c7160] transform scale-[1.02]" : "hover:shadow-lg"
+    <div className="animate-fadeIn flex flex-col items-center">
+      <div className="w-full max-w-3xl mx-auto">
+        <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha a Profissional</h3>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl mx-auto">
+          {professionals.map((professional) => (
+            <div
+              key={professional.id}
+              onClick={() => handleProfessionalSelect(professional)}
+              className={`bg-white rounded-lg overflow-hidden shadow-md cursor-pointer transition-all duration-300 ${
+                selectedProfessional?.id === professional.id ? "ring-2 ring-[#5c7160] transform scale-[1.02]" : "hover:shadow-lg"
+              }`}
+            >
+              <div className="h-48 overflow-hidden">
+                <img
+                  src={professional.image}
+                  alt={professional.name}
+                  className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+              <div className="p-4">
+                <h4 className="text-xl font-medium text-[#5c7160]">{professional.name}</h4>
+                <p className="text-[#5c7160]/70">{professional.specialty}</p>
+                
+                {selectedProfessional?.id === professional.id && (
+                  <div className="mt-3 flex items-center text-[#a5bf99]">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Selecionada</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
+          <button
+            onClick={prevStep}
+            className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Anterior</span>
+          </button>
+          <button
+            onClick={nextStep}
+            disabled={!selectedProfessional}
+            className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
+              selectedProfessional
+                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
             }`}
           >
-            <div className="h-48 overflow-hidden">
-              <img
-                src={professional.image}
-                alt={professional.name}
-                className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
-              />
-            </div>
-            <div className="p-4">
-              <h4 className="text-xl font-medium text-[#5c7160]">{professional.name}</h4>
-              <p className="text-[#5c7160]/70">{professional.specialty}</p>
-              
-              {selectedProfessional?.id === professional.id && (
-                <div className="mt-3 flex items-center text-[#a5bf99]">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Selecionada</span>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-8 flex justify-between">
-        <button
-          onClick={prevStep}
-          className="px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          <span>Anterior</span>
-        </button>
-        <button
-          onClick={nextStep}
-          disabled={!selectedProfessional}
-          className={`px-6 py-3 rounded-full flex items-center ${
-            selectedProfessional
-              ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          <span>Próximo</span>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+            <span>Próximo</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
 
   // Componente para a Etapa 3: Seleção de Salão
   const SalonSelectionStep = () => (
-    <div className="animate-fadeIn">
-      <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha o Salão</h3>
-      
-      <div className="max-w-2xl mx-auto">
-        {salons.map((salon) => (
-          <div
-            key={salon.id}
-            className="bg-white rounded-lg shadow-md p-6 border-l-4 border-[#5c7160]"
-          >
-            <h4 className="text-xl font-medium text-[#5c7160] mb-2">{salon.name}</h4>
-            <div className="flex items-start mt-4">
-              <div className="bg-[#5c7160]/10 rounded-full p-3 mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+    <div className="animate-fadeIn flex flex-col items-center">
+      <div className="w-full max-w-3xl mx-auto">
+        <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha o Salão</h3>
+        
+        <div className="max-w-2xl mx-auto">
+          {salons.map((salon) => (
+            <div
+              key={salon.id}
+              className="bg-white rounded-lg shadow-md p-6 border-l-4 border-[#5c7160]"
+            >
+              <h4 className="text-xl font-medium text-[#5c7160] mb-2">{salon.name}</h4>
+              <div className="flex items-start mt-4">
+                <div className="bg-[#5c7160]/10 rounded-full p-3 mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm text-[#5c7160]/70 mb-1">Morada</p>
+                  <p className="text-lg text-[#5c7160]">{salon.address}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-[#5c7160]/70 mb-1">Morada</p>
-                <p className="text-lg text-[#5c7160]">{salon.address}</p>
+              <div className="flex items-start mt-4">
+                <div className="bg-[#5c7160]/10 rounded-full p-3 mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm text-[#5c7160]/70 mb-1">Telefone</p>
+                  <p className="text-lg text-[#5c7160]">{salon.phone}</p>
+                </div>
+              </div>
+              
+              <div className="mt-6 h-48 rounded-lg overflow-hidden">
+                {/* Incorporar mapa com iframe do Google Maps */}
+                <iframe 
+                  title="Localização do Salão"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3029.506977302153!2d-8.714771684599639!3d40.6088909793428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd23981f7f843abd%3A0xbf2d8e74e1a1b2a!2sR.%20J%C3%BAlio%20Dinis%2038%2C%20Gafanha%20da%20Nazar%C3%A9!5e0!3m2!1spt-PT!2spt!4v1595268867362!5m2!1spt-PT!2spt" 
+                  width="100%" 
+                  height="100%" 
+                  style={{ border: 0 }} 
+                  allowFullScreen="" 
+                  loading="lazy"
+                ></iframe>
               </div>
             </div>
-            <div className="flex items-start mt-4">
-              <div className="bg-[#5c7160]/10 rounded-full p-3 mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm text-[#5c7160]/70 mb-1">Telefone</p>
-                <p className="text-lg text-[#5c7160]">{salon.phone}</p>
-              </div>
-            </div>
-            
-            <div className="mt-6 h-48 rounded-lg overflow-hidden">
-              {/* Incorporar mapa com iframe do Google Maps */}
-              <iframe 
-                title="Localização do Salão"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3029.506977302153!2d-8.714771684599639!3d40.6088909793428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd23981f7f843abd%3A0xbf2d8e74e1a1b2a!2sR.%20J%C3%BAlio%20Dinis%2038%2C%20Gafanha%20da%20Nazar%C3%A9!5e0!3m2!1spt-PT!2spt!4v1595268867362!5m2!1spt-PT!2spt" 
-                width="100%" 
-                height="100%" 
-                style={{ border: 0 }} 
-                allowFullScreen="" 
-                loading="lazy"
-              ></iframe>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <div className="mt-8 flex justify-between">
-        <button
-          onClick={prevStep}
-          className="px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          <span>Anterior</span>
-        </button>
-        <button
-          onClick={nextStep}
-          className="px-6 py-3 bg-[#5c7160] text-white rounded-full hover:bg-[#5c7160]/90 flex items-center"
-        >
-          <span>Próximo</span>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
+          <button
+            onClick={prevStep}
+            className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Anterior</span>
+          </button>
+          <button
+            onClick={nextStep}
+            className="w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+          >
+            <span>Próximo</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -581,190 +646,208 @@ function Reservations() {
     };
     
     return (
-      <div className="animate-fadeIn">
-        <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha a Data e Hora</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <h4 className="text-lg font-medium text-[#5c7160] mb-3">Data</h4>
-            
-            <div className="custom-datepicker-wrapper">
-              <DatePicker
-                selected={selectedDateObj}
-                onChange={handleDateChange}
-                minDate={today}
-                locale="pt-custom"
-                dateFormat="dd/MM/yyyy"
-                renderDayContents={renderDayContents}
-                formatWeekDay={(nameOfDay) => nameOfDay.substring(0, 3)}
-                dayClassName={() => "custom-day"}
-                className="w-full px-4 py-3 border border-[#5c7160]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
-                calendarClassName="custom-calendar"
-                showPopperArrow={false}
-                inline
-                showMonthYearPicker={false}
-                renderCustomHeader={({
-                  date,
-                  decreaseMonth,
-                  increaseMonth,
-                  prevMonthButtonDisabled,
-                  nextMonthButtonDisabled
-                }) => (
-                  <div className="custom-header">
-                    <span className="month-year">
-                      {date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
-                    </span>
-                    <div className="navigation">
-                      <button 
-                        onClick={decreaseMonth} 
-                        disabled={prevMonthButtonDisabled}
-                        className="prev-month"
-                      >
-                        &lt;
-                      </button>
-                      <button 
-                        onClick={increaseMonth}
-                        disabled={nextMonthButtonDisabled}
-                        className="next-month"
-                      >
-                        &gt;
-                      </button>
-                    </div>
-                  </div>
-                )}
-              />
-            </div>
-          </div>
+      <div className="animate-fadeIn flex flex-col items-center">
+        <div className="w-full max-w-3xl mx-auto">
+          <h3 className="text-2xl font-light text-[#5c7160] mb-6 text-center">Escolha a Data e Hora</h3>
           
-          {selectedDate && (
-            <div>
-              <h4 className="text-lg font-medium text-[#5c7160] mb-3">Hora</h4>
-              
-              {availableTimeSlots.length > 0 ? (
-                <div>
-                  {morningSlots.length > 0 && (
-                    <div className="mb-4">
-                      <h5 className="text-sm text-[#5c7160]/70 mb-2">Manhã</h5>
-                      <div className="flex flex-wrap gap-2">
-                        {morningSlots.map((slot) => (
-                          <button
-                            key={slot.time}
-                            onClick={() => slot.available && handleTimeSelect(slot.time)}
-                            disabled={!slot.available}
-                            className={`
-                              px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
-                              ${!slot.available 
-                                ? "bg-gray-100 text-gray-600 cursor-not-allowed border border-gray-200"   // cinzentos mais claros + texto mais escuro
-                                : selectedTime === slot.time
-                                  ? "bg-[#5c7160] text-white"
-                                  : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
-                              }
-                            `}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="flex flex-col items-center w-full">
+              {/* Container que centraliza e mantém largura consistente */}
+              <div className="flex flex-col items-center w-full">
+              <h4 className="text-lg font-medium text-[#5c7160] mb-3 text-center">Data</h4>
+                <div className="custom-datepicker-wrapper mb-4 w-full max-w-[360px]">
+                  <DatePicker
+                    selected={selectedDateObj}
+                    onChange={handleDateChange}
+                    minDate={today}
+                    locale="pt-custom"
+                    dateFormat="dd/MM/yyyy"
+                    renderDayContents={renderDayContents}
+                    formatWeekDay={(nameOfDay) => nameOfDay.substring(0, 3)}
+                    dayClassName={() => "custom-day"}
+                    className="w-full px-4 py-3 border border-[#5c7160]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
+                    calendarClassName="custom-calendar"
+                    showPopperArrow={false}
+                    inline
+                    showMonthYearPicker={false}
+                    renderCustomHeader={({
+                      date,
+                      decreaseMonth,
+                      increaseMonth,
+                      prevMonthButtonDisabled,
+                      nextMonthButtonDisabled
+                    }) => (
+                      <div className="custom-header">
+                        <span className="month-year">
+                          {date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+                        </span>
+                        <div className="navigation">
+                          <button 
+                            onClick={decreaseMonth} 
+                            disabled={prevMonthButtonDisabled}
+                            className="prev-month"
                           >
-                            {slot.time}
+                            &lt;
                           </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {afternoonSlots.length > 0 && (
-                    <div className="mb-4">
-                      <h5 className="text-sm text-[#5c7160]/70 mb-2">Tarde</h5>
-                      <div className="flex flex-wrap gap-2">
-                        {afternoonSlots.map((slot) => (
-                          <button
-                            key={slot.time}
-                            onClick={() => slot.available && handleTimeSelect(slot.time)}
-                            disabled={!slot.available}
-                            className={`
-                              px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
-                              ${!slot.available 
-                                ? "bg-gray-100 text-gray-600 cursor-not-allowed border border-gray-200"   // cinzentos mais claros + texto mais escuro
-                                : selectedTime === slot.time
-                                  ? "bg-[#5c7160] text-white"
-                                  : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
-                              }
-                            `}
+                          <button 
+                            onClick={increaseMonth}
+                            disabled={nextMonthButtonDisabled}
+                            className="next-month"
                           >
-                            {slot.time}
+                            &gt;
                           </button>
-                        ))}
+                        </div>
                       </div>
+                    )}
+                  />
+                </div>
+                
+                {/* Seção de ajuda com a mesma largura que o datepicker */}
+                <div className="bg-[#F5F1E9] border border-[#5c7160]/20 rounded-lg p-4 shadow-sm mt-2 w-full max-w-[360px]">
+                  <div className="flex items-center">
+                    <div className="bg-[#5c7160]/10 rounded-full p-2 mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                     </div>
-                  )}
-                  
-                  {eveningSlots.length > 0 && (
                     <div>
-                      <h5 className="text-sm text-[#5c7160]/70 mb-2">Fim de Tarde</h5>
-                      <div className="flex flex-wrap gap-2">
-                        {eveningSlots.map((slot) => (
-                          <button
-                            key={slot.time}
-                            onClick={() => slot.available && handleTimeSelect(slot.time)}
-                            disabled={!slot.available}
-                            className={`
-                              px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
-                              ${!slot.available 
-                                ? "bg-gray-100 text-gray-600 cursor-not-allowed border border-gray-200"   // cinzentos mais claros + texto mais escuro
-                                : selectedTime === slot.time
-                                  ? "bg-[#5c7160] text-white"
-                                  : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
-                              }
-                            `}
-                          >
-                            {slot.time}
-                          </button>
-                        ))}
-                      </div>
+                      <div className="text-[#5c7160] font-medium text-sm">Precisa de Ajuda?</div>
+                      <div className="text-[#5c7160] font-bold">965593794</div>
                     </div>
-                  )}
-                </div>
-              ) : (
-                <div className="p-4 bg-[#F5F1E9]/50 rounded-lg text-center text-[#5c7160]">
-                  <p>Não há horários disponíveis para esta data.</p>
-                  <p className="text-sm mt-2">Por favor, selecione outra data.</p>
-                </div>
-              )}
-
-              {selectedTime && (
-                <div className="mt-4 bg-[#a5bf99]/20 p-3 rounded-lg">
-                  <div className="flex items-center text-[#5c7160]">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Horário selecionado: {selectedTime}</span>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
-          )}
-        </div>
+            
+            {selectedDate && (
+              <div className="flex flex-col items-center w-full">
+                <h4 className="text-lg font-medium text-[#5c7160] mb-3 text-center">Hora</h4>
+                
+                <div className="w-full flex flex-col items-center">
+                  {availableTimeSlots.length > 0 ? (
+                    <>
+                      {morningSlots.length > 0 && (
+                        <div className="mb-4 w-full flex justify-center">
+                          <div className="flex flex-wrap justify-center gap-2 w-full">
+                            {morningSlots.map((slot) => (
+                              <button
+                                key={slot.time}
+                                onClick={() => slot.available && handleTimeSelect(slot.time)}
+                                disabled={!slot.available}
+                                className={`
+                                  px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
+                                  ${!slot.available 
+                                    ? "bg-gray-50 text-gray-400 cursor-not-allowed border border-gray-100"
+                                    : selectedTime === slot.time
+                                      ? "bg-[#5c7160] text-white"
+                                      : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
+                                  }
+                                `}
+                              >
+                                {slot.time}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {afternoonSlots.length > 0 && (
+                        <div className="mb-4 w-full flex justify-center">
+                          <div className="flex flex-wrap justify-center gap-2 w-full">
+                            {afternoonSlots.map((slot) => (
+                              <button
+                                key={slot.time}
+                                onClick={() => slot.available && handleTimeSelect(slot.time)}
+                                disabled={!slot.available}
+                                className={`
+                                  px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
+                                  ${!slot.available 
+                                    ? "bg-gray-50 text-gray-400 cursor-not-allowed border border-gray-100"
+                                    : selectedTime === slot.time
+                                      ? "bg-[#5c7160] text-white"
+                                      : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
+                                  }
+                                `}
+                              >
+                                {slot.time}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {eveningSlots.length > 0 && (
+                        <div className="mb-4 w-full flex justify-center">
+                          <div className="flex flex-wrap justify-center gap-2 w-full">
+                            {eveningSlots.map((slot) => (
+                              <button
+                                key={slot.time}
+                                onClick={() => slot.available && handleTimeSelect(slot.time)}
+                                disabled={!slot.available}
+                                className={`
+                                  px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
+                                  ${!slot.available 
+                                    ? "bg-gray-50 text-gray-400 cursor-not-allowed border border-gray-100"
+                                    : selectedTime === slot.time
+                                      ? "bg-[#5c7160] text-white"
+                                      : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
+                                  }
+                                `}
+                              >
+                                {slot.time}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {selectedTime && (
+                        <div className="mt-4 bg-[#a5bf99]/20 p-3 rounded-lg max-w-md w-full">
+                          <div className="flex items-center text-[#5c7160]">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Horário selecionado: {selectedTime}</span>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="p-4 bg-[#F5F1E9]/50 rounded-lg text-center text-[#5c7160] max-w-md w-full">
+                      <p>Não há horários disponíveis para esta data.</p>
+                      <p className="text-sm mt-2">Por favor, selecione outra data.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
 
-        <div className="mt-8 flex justify-between">
-          <button
-            onClick={prevStep}
-            className="px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>Anterior</span>
-          </button>
-          <button
-            onClick={nextStep}
-            disabled={!selectedDate || !selectedTime}
-            className={`px-6 py-3 rounded-full flex items-center ${
-              selectedDate && selectedTime
-                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            <span>Próximo</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
+            <button
+              onClick={prevStep}
+              className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Anterior</span>
+            </button>
+            <button
+              onClick={nextStep}
+              disabled={!selectedDate || !selectedTime}
+              className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
+                selectedDate && selectedTime
+                  ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              <span>Próximo</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -783,140 +866,152 @@ function Reservations() {
       : '';
     
     return (
-      <div className="animate-fadeIn">
-        <h3 className="text-2xl font-light text-[#5c7160] mb-6">Confirme a sua Reserva</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h4 className="text-lg font-medium text-[#5c7160] mb-4 border-b border-[#5c7160]/20 pb-2">Detalhes da Reserva</h4>
-            
-            <div className="space-y-3">
-              <div className="flex">
-                <div className="w-1/3 text-[#5c7160]/70">Serviço:</div>
-                <div className="w-2/3 font-medium text-[#5c7160]">{selectedService?.name}</div>
-              </div>
-              <div className="flex">
-                <div className="w-1/3 text-[#5c7160]/70">Duração:</div>
-                <div className="w-2/3 text-[#5c7160]">{selectedService?.duration}</div>
-              </div>
-              <div className="flex">
-                <div className="w-1/3 text-[#5c7160]/70">Preço:</div>
-                <div className="w-2/3 font-medium text-[#c0a080]">{selectedService?.price}</div>
-              </div>
-              <div className="flex">
-                <div className="w-1/3 text-[#5c7160]/70">Profissional:</div>
-                <div className="w-2/3 text-[#5c7160]">{selectedProfessional?.name}</div>
-              </div>
-              <div className="flex">
-                <div className="w-1/3 text-[#5c7160]/70">Salão:</div>
-                <div className="w-2/3 text-[#5c7160]">Principio Ativo</div>
-              </div>
-              <div className="flex">
-                <div className="w-1/3 text-[#5c7160]/70">Data:</div>
-                <div className="w-2/3 text-[#5c7160]">{formattedDate}</div>
-              </div>
-              <div className="flex">
-                <div className="w-1/3 text-[#5c7160]/70">Hora:</div>
-                <div className="w-2/3 text-[#5c7160]">{selectedTime}</div>
-              </div>
-            </div>
-          </div>
+      <div className="animate-fadeIn flex flex-col items-center">
+        <div className="w-full max-w-3xl mx-auto">
+          <h3 className="text-2xl font-light text-[#5c7160] mb-6">Confirme a sua Reserva</h3>
           
-          <div>
-            <h4 className="text-lg font-medium text-[#5c7160] mb-4">Seus Dados</h4>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-4xl mx-auto">
+            <div className="bg-white rounded-lg shadow-md p-6 w-full">
+              <h4 className="text-lg font-medium text-[#5c7160] mb-4 border-b border-[#5c7160]/20 pb-2">Detalhes da Reserva</h4>
+              
+              <div className="space-y-3">
+                <div className="flex">
+                  <div className="w-1/3 text-[#5c7160]/70">Serviço:</div>
+                  <div className="w-2/3 font-medium text-[#5c7160]">{selectedService?.name}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-1/3 text-[#5c7160]/70">Duração:</div>
+                  <div className="w-2/3 text-[#5c7160]">{selectedService?.duration}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-1/3 text-[#5c7160]/70">Preço:</div>
+                  <div className="w-2/3 font-medium text-[#c0a080]">{selectedService?.price}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-1/3 text-[#5c7160]/70">Profissional:</div>
+                  <div className="w-2/3 text-[#5c7160]">{selectedProfessional?.name}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-1/3 text-[#5c7160]/70">Salão:</div>
+                  <div className="w-2/3 text-[#5c7160]">Principio Ativo</div>
+                </div>
+                <div className="flex">
+                  <div className="w-1/3 text-[#5c7160]/70">Data:</div>
+                  <div className="w-2/3 text-[#5c7160]">{formattedDate}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-1/3 text-[#5c7160]/70">Hora:</div>
+                  <div className="w-2/3 text-[#5c7160]">{selectedTime}</div>
+                </div>
+              </div>
+            </div>
             
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm text-[#5c7160]/80 mb-1">Nome Completo</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={customerInfo.name}
-                  onChange={handleCustomerInfoChange}
-                  required
-                  autoComplete="off"
-                  autoCorrect="off"
-                  spellCheck="false"
-                  className="w-full px-4 py-2.5 border border-[#5c7160]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
-                  placeholder="Seu nome completo"
-                />
-              </div>
+            <div className="w-full">
+              <h4 className="text-lg font-medium text-[#5c7160] mb-4 text-center lg:text-left">Seus Dados</h4>
               
-              <div>
-                <label htmlFor="email" className="block text-sm text-[#5c7160]/80 mb-1">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={customerInfo.email}
-                  onChange={handleCustomerInfoChange}
-                  required
-                  autoComplete="off"
-                  autoCorrect="off"
-                  spellCheck="false"
-                  className="w-full px-4 py-2.5 border border-[#5c7160]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
-                  placeholder="Seu email"
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="phone" className="block text-sm text-[#5c7160]/80 mb-1">Telefone</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={customerInfo.phone}
-                  onChange={handleCustomerInfoChange}
-                  required
-                  autoComplete="off"
-                  autoCorrect="off"
-                  spellCheck="false"
-                  className="w-full px-4 py-2.5 border border-[#5c7160]/20 rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]"
-                  placeholder="Seu número de telefone"
-                />
-              </div>
-              
-              <div className="pt-2">
-                <label className="flex items-start">
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="name" className="block text-sm text-[#5c7160]/80 mb-1">Nome Completo</label>
                   <input
-                    type="checkbox"
-                    className="mt-1 text-[#5c7160]"
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={customerInfo.name}
+                    onChange={handleCustomerInfoChange}
                     required
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck="false"
+                    className={`w-full px-4 py-2.5 border ${errors.name ? 'border-red-400' : 'border-[#5c7160]/20'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]`}
+                    placeholder="Seu nome completo"
                   />
-                  <span className="ml-2 text-sm text-[#5c7160]/80">
-                    Concordo com a <a href="#" className="text-[#5c7160] underline">política de privacidade</a> e os <a href="#" className="text-[#5c7160] underline">termos de serviço</a>.
-                  </span>
-                </label>
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                </div>
+                
+                <div>
+                  <label htmlFor="email" className="block text-sm text-[#5c7160]/80 mb-1">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={customerInfo.email}
+                    onChange={handleCustomerInfoChange}
+                    required
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck="false"
+                    className={`w-full px-4 py-2.5 border ${errors.email ? 'border-red-400' : 'border-[#5c7160]/20'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]`}
+                    placeholder="Seu email"
+                  />
+                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                </div>
+                
+                <div>
+                  <label htmlFor="phone" className="block text-sm text-[#5c7160]/80 mb-1">Telefone</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={customerInfo.phone}
+                    onChange={handleCustomerInfoChange}
+                    required
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck="false"
+                    className={`w-full px-4 py-2.5 border ${errors.phone ? 'border-red-400' : 'border-[#5c7160]/20'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]`}
+                    placeholder="Seu número de telefone (9 dígitos)"
+                  />
+                  {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                </div>
+                
+                <div className="pt-2">
+                  <label className="flex items-start">
+                    <input
+                      type="checkbox"
+                      className="mt-1 text-[#5c7160]"
+                      required
+                    />
+                    <span className="ml-2 text-sm text-[#5c7160]/80">
+                      Concordo com a <a href="#" className="text-[#5c7160] underline">política de privacidade</a> e os <a href="#" className="text-[#5c7160] underline">termos de serviço</a>.
+                    </span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-8 flex justify-between">
-          <button
-            onClick={prevStep}
-            className="px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>Anterior</span>
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={!customerInfo.name || !customerInfo.email || !customerInfo.phone}
-            className={`px-6 py-3 rounded-full flex items-center ${
-              customerInfo.name && customerInfo.email && customerInfo.phone
-                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            <span>Confirmar Reserva</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </button>
+          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
+            <button
+              onClick={prevStep}
+              className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Anterior</span>
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={
+                !customerInfo.name || 
+                !customerInfo.email || 
+                !customerInfo.phone || 
+                errors.name || 
+                errors.email || 
+                errors.phone
+              }
+              className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
+                customerInfo.name && customerInfo.email && customerInfo.phone && !errors.name && !errors.email && !errors.phone
+                  ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              <span>Confirmar Reserva</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -967,7 +1062,7 @@ function Reservations() {
       {/* Stepper */}
       <div className="pt-8 pb-4 px-6 relative">
         <div className="container mx-auto max-w-6xl">
-          <div className="flex justify-between items-center relative">
+          <div className="flex justify-between items-center relative px-2 sm:px-8">
             {/* Linha de fundo (não completado) */}
             <div className="absolute left-0 right-0 top-5 h-0.5 bg-[#5c7160]/10"></div>
             
