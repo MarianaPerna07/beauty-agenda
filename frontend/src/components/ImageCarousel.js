@@ -103,14 +103,17 @@ const ImageCarousel = (props) => {
         <div className="embla__container">
         {slides.map((slide, idx) => (
             <div 
-              className="embla__slide cursor-pointer" 
+              className="embla__slide cursor-pointer select-none"
               key={idx}
               onClick={() => handleSlideClick(slide.title)}
+              style={{ userSelect: 'none', outline: 'none', border: 'none' }}
+              onMouseDown={(e) => e.preventDefault()}
             >
               <img
                 className="embla__slide__img"
                 src={slide.src}
                 alt={slide.alt}
+                draggable={false}
               />
               {/* overlay or caption container */}
               <div className="mt-2 text-center">
@@ -125,24 +128,24 @@ const ImageCarousel = (props) => {
                 </span>
               </div>
               
-              {/* Botão "Ver mais" opcional */}
+              {/* Botão "Ver mais" opcional
               <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 transition-opacity group-hover:opacity-100">
                 <span className="bg-[#5c7160]/80 text-white px-4 py-2 rounded-full text-sm">
                   Ver detalhes
                 </span>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>
       </div>
 
-      <div className="embla__controls">
+      {/* <div className="embla__controls"> */}
         {/* <div className="embla__buttons">
           <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
           <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} />
         </div> */}
 
-        <div className="embla__dots">
+        {/* <div className="embla__dots">
           {scrollSnaps.map((_, index) => (
             <DotButton
               key={index}
@@ -152,8 +155,8 @@ const ImageCarousel = (props) => {
               )}
             />
           ))}
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
     </div>
   )
 }

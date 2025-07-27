@@ -73,22 +73,25 @@ function App() {
         <p className="italic text-center text-lg md:text-xl text-[#5c7160]/80 max-w-3xl mx-auto">
           Um refúgio onde beleza e bem-estar se encontram para criar momentos de autocuidado memoráveis.
         </p>
-        
-        {/* Decorative divider */}
-        <div className="w-32 h-0.5 mx-auto my-8 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
       </section>
+
+      {/* Decorative divider */}
+      <div className="w-64 h-0.5 mx-auto my-2 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
       
       {/* Services Carousel */}
-      <section className="py-4">
+      <section className="py-12">
         <h3 className="text-3xl md:text-4xl font-light text-center text-[#5c7160] mb-6">
           Destaques
-          <span className="block w-24 h-0.5 bg-[#a5bf99] mx-auto mt-2"></span>
+          {/* <span className="block w-24 h-0.5 bg-[#a5bf99] mx-auto mt-2"></span> */}
         </h3>
         <ImageCarousel slides={services} options={OPTIONS}/>
       </section>
+
+      {/* Decorative divider */}
+      <div className="w-64 h-0.5 mx-auto my-2 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
       
       {/* About Us Section */}
-      <section className="py-16 px-6 relative bg-gradient-to-b from-[#F5F1E9] to-[#f3f3eb]">
+      <section className="py-12">
         {/* Decorative elements */}
         <div className="absolute top-0 left-0 w-full h-12 overflow-hidden">
           <svg viewBox="0 0 1200 30" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full transform rotate-180">
@@ -103,12 +106,12 @@ function App() {
               Quem Somos
               <span className="absolute -bottom-2 left-0 md:w-24 h-0.5 bg-[#a5bf99] hidden md:block"></span>
             </h3>
-            <p className="italic text-[#5c7160]/80">Lisboa | Desde 2023</p>
+            <p className="italic text-[#5c7160]/80">Your Moments</p>
             <p className="text-lg font-light text-[#5c7160]">
-              O seu destino para serviços de beleza e bem-estar de alto nível no coração de Lisboa. Estabelecidos com paixão pela arte da beleza e comprometidos com nossa comunidade, dedicamo-nos a proporcionar uma experiência excepcional que a deixará radiante por dentro e por fora.
+              O seu destino para serviços de beleza e bem-estar de alto nível no coração de Aveiro. Estabelecidos com paixão pela arte da beleza e comprometidos com nossa comunidade, dedicamo-nos a proporcionar uma experiência excepcional que a deixará radiante por dentro e por fora.
             </p>
             <p className="text-lg font-light text-[#5c7160]">
-              Nossa equipe de profissionais experientes e qualificados é o alicerce do nosso sucesso. Temos orgulho de nossos talentos diversos, cada um comprometido em oferecer o mais alto nível de serviço personalizado.
+              Agende o seu momento de beleza conosco e descubra como podemos transformar a sua visão de estética em realidade. Estamos aqui para cuidar de si, com amor e dedicação, porque cada momento merece ser especial.
             </p>
             
             <Link to="/services" className="self-center md:self-start mt-4 relative group inline-flex items-center">

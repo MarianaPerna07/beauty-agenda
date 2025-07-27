@@ -33,12 +33,12 @@ function Services() {
   // Categorias de serviços atualizadas
   const categories = [
     { id: 'manicure', name: 'Manicure' },
+    { id: 'depilacao_mulher', name: 'Depilação a Cera Mulher' },
+    { id: 'depilacao_homem', name: 'Depilação a Cera Homem' },
     { id: 'pedicure', name: 'Pedicure' },
-    { id: 'depilacao_mulher', name: 'Depilação a Cera ♀' },
-    { id: 'depilacao_homem', name: 'Depilação a Cera ♂' },
     { id: 'depilacao_laser', name: 'Depilação a Laser' },
-    { id: 'pestanas', name: 'Extensão de Pestanas' },
     { id: 'sobrancelhas', name: 'Sobrancelhas' },
+    { id: 'pestanas', name: 'Extensão de Pestanas' },
     { id: 'destaques', name: 'Destaques' }
   ]
   
