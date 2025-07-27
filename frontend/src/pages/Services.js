@@ -706,7 +706,7 @@ function Services() {
           src='https://images.pexels.com/photos/3997305/pexels-photo-3997305.jpeg' 
           alt="Serviços de beleza e estética"
         />
-        <div className='absolute inset-0 bg-gradient-to-b from-[#5c7160]/40 to-[#5c7160]/70'></div>
+        <div className='absolute inset-0 bg-gradient-to-b from-[#c0a080]/40 to-[#c0a080]/70'></div>
         <div className="absolute inset-0 flex items-center justify-center">
           <h2 className="text-[#F5F1E9] text-4xl md:text-5xl lg:text-6xl font-light tracking-wide">
             Nossos Serviços
