@@ -111,8 +111,8 @@ function App() {
               Nossa equipe de profissionais experientes e qualificados é o alicerce do nosso sucesso. Temos orgulho de nossos talentos diversos, cada um comprometido em oferecer o mais alto nível de serviço personalizado.
             </p>
             
-            <Link to="/about" className="self-center md:self-start mt-4 relative group inline-flex items-center">
-              <span className="text-[#5c7160] group-hover:text-[#a3ba93] transition-colors">Conheça mais</span>
+            <Link to="/services" className="self-center md:self-start mt-4 relative group inline-flex items-center">
+              <span className="text-[#5c7160] group-hover:text-[#a3ba93] transition-colors">Conheça os nossos serviços</span>
               <span className="ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform">→</span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#a5bf99] group-hover:w-full transition-all duration-300"></span>
             </Link>
@@ -130,97 +130,6 @@ function App() {
             </div>
             <div className="absolute -bottom-4 -right-4 w-32 h-32 border border-[#a5bf99]/30 rounded-lg -z-10"></div>
             <div className="absolute -top-4 -left-4 w-20 h-20 border border-[#c0a080]/30 rounded-lg -z-10"></div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Services Section */}
-      <section className="py-16 px-6 bg-[#5c7160]/5">
-        <div className="container mx-auto">
-          <h3 className="text-3xl md:text-4xl font-light text-center text-[#5c7160] mb-12 relative">
-            Nossos Serviços
-            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-0.5 bg-[#a5bf99]"></span>
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Service Card 1 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src="https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg" 
-                  alt="Manicure e Pedicure" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <h4 className="text-xl font-medium text-[#5c7160] mb-2">Manicure e Pedicure</h4>
-                <p className="text-[#5c7160]/80 mb-4">
-                  Tratamentos completos para unhas saudáveis e elegantes, usando produtos premium e técnicas avançadas.
-                </p>
-                <Link to="/team" className="text-[#a5bf99] hover:text-[#5c7160] transition-colors inline-flex items-center">
-                  Ver detalhes
-                  <span className="ml-1">→</span>
-                </Link>
-              </div>
-            </div>
-            
-            {/* Service Card 2 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src="https://images.pexels.com/photos/3865557/pexels-photo-3865557.jpeg" 
-                  alt="Tratamentos Faciais" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <h4 className="text-xl font-medium text-[#5c7160] mb-2">Tratamentos Faciais</h4>
-                <p className="text-[#5c7160]/80 mb-4">
-                  Revitalize sua pele com nossos tratamentos faciais personalizados para diferentes tipos de pele e necessidades.
-                </p>
-                <Link to="/team" className="text-[#a5bf99] hover:text-[#5c7160] transition-colors inline-flex items-center">
-                  Ver detalhes
-                  <span className="ml-1">→</span>
-                </Link>
-              </div>
-            </div>
-            
-            {/* Service Card 3 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src="https://images.pexels.com/photos/3997993/pexels-photo-3997993.jpeg" 
-                  alt="Massagens Terapêuticas" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <h4 className="text-xl font-medium text-[#5c7160] mb-2">Massagens Terapêuticas</h4>
-                <p className="text-[#5c7160]/80 mb-4">
-                  Desfrute de momentos de relaxamento profundo com nossas massagens terapêuticas executadas por profissionais qualificados.
-                </p>
-                <Link to="/team" className="text-[#a5bf99] hover:text-[#5c7160] transition-colors inline-flex items-center">
-                  Ver detalhes
-                  <span className="ml-1">→</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-          
-          <div className="text-center mt-12">
-            <Link 
-              to="/reservations" 
-              className="relative group px-10 py-3 inline-flex items-center justify-center transition-all duration-300"
-            >
-              {/* Glass effect background */}
-              <span 
-                className="glass-green absolute inset-0 rounded-full transition-all duration-300"
-              ></span>
-              
-              <span className="relative z-10 font-medium text-white tracking-wide text-lg">
-                Agendar Agora
-              </span>
-            </Link>
           </div>
         </div>
       </section>
