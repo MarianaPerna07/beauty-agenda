@@ -11,6 +11,178 @@ import laraImg  from '../images/lara.png'
 // Registrar o idioma português personalizado
 registerLocale('pt-custom', ptCustom);
 
+// Componente para a Etapa 5: Confirmação e Dados do Cliente
+function ConfirmationStep({
+  selectedService,
+  selectedProfessional,
+  selectedDate,
+  selectedTime,
+  customerInfo,
+  errors,
+  handleCustomerInfoChange,
+  prevStep,
+  handleSubmit
+}) {
+  // Formata a data para exibição
+  const formattedDate = selectedDate 
+    ? new Date(selectedDate).toLocaleDateString('pt-PT', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      }) 
+    : '';
+  
+  return (
+    <div className="animate-fadeIn flex flex-col items-center">
+      <div className="w-full max-w-3xl mx-auto">
+        <h3 className="text-2xl font-light text-[#5c7160] mb-6">Confirme a sua Reserva</h3>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-4xl mx-auto">
+          <div className="bg-white rounded-lg shadow-md p-6 w-full">
+            <h4 className="text-lg font-medium text-[#5c7160] mb-4 border-b border-[#5c7160]/20 pb-2">Detalhes da Reserva</h4>
+            
+            <div className="space-y-3">
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Serviço:</div>
+                <div className="w-2/3 font-medium text-[#5c7160]">{selectedService?.name}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Duração:</div>
+                <div className="w-2/3 text-[#5c7160]">{selectedService?.duration}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Preço:</div>
+                <div className="w-2/3 font-medium text-[#c0a080]">{selectedService?.price}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Profissional:</div>
+                <div className="w-2/3 text-[#5c7160]">{selectedProfessional?.name}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Salão:</div>
+                <div className="w-2/3 text-[#5c7160]">Principio Ativo</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Data:</div>
+                <div className="w-2/3 text-[#5c7160]">{formattedDate}</div>
+              </div>
+              <div className="flex">
+                <div className="w-1/3 text-[#5c7160]/70">Hora:</div>
+                <div className="w-2/3 text-[#5c7160]">{selectedTime}</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="rounded-lg p-6 w-full">
+            <h4 className="text-lg font-medium text-[#5c7160] mb-4 border-b border-[#5c7160]/20 pb-2">Os Seus Dados</h4>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm text-[#5c7160]/80 mb-1">Nome Completo</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={customerInfo.name}
+                  onChange={handleCustomerInfoChange}
+                  required
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  className={`w-full bg-[#F5F1E9] px-4 py-2.5 border ${errors.name ? 'border-red-400' : 'border-[#5c7160]/20'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]`}
+                  placeholder="Seu nome completo"
+                />
+                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+              </div>
+              
+              <div>
+                <label htmlFor="email" className="block text-sm text-[#5c7160]/80 mb-1">Email (Opcional)</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={customerInfo.email}
+                  onChange={handleCustomerInfoChange}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  className={`w-full bg-[#F5F1E9] px-4 py-2.5 border ${errors.email ? 'border-red-400' : 'border-[#5c7160]/20'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]`}
+                  placeholder="Seu email"
+                />
+                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+              </div>
+              
+              <div>
+                <label htmlFor="phone" className="block text-sm text-[#5c7160]/80 mb-1">Telefone</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={customerInfo.phone}
+                  onChange={handleCustomerInfoChange}
+                  required
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  className={`w-full bg-[#F5F1E9] px-4 py-2.5 border ${errors.phone ? 'border-red-400' : 'border-[#5c7160]/20'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]`}
+                  placeholder="Seu número de telefone"
+                />
+                {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+              </div>
+              
+              {/* <div className="pt-2">
+                <label className="flex items-start">
+                  <input
+                    type="checkbox"
+                    className="mt-1 text-[#5c7160]"
+                    required
+                  />
+                  <span className="ml-2 text-sm text-[#5c7160]/80">
+                    Concordo com a <a href="#" className="text-[#5c7160] underline">política de privacidade</a> e os <a href="#" className="text-[#5c7160] underline">termos de serviço</a>.
+                  </span>
+                </label>
+              </div> */}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
+          <button
+            onClick={prevStep}
+            className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Anterior</span>
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={
+              !customerInfo.name || 
+              !customerInfo.phone || 
+              errors.name || 
+              errors.email || 
+              errors.phone
+            }
+            className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
+              customerInfo.name && customerInfo.phone && !errors.name && !errors.email && !errors.phone
+                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            <span>Confirmar Reserva</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Reservations() {
   useEffect(() => {
     scrollToTop()
@@ -37,82 +209,82 @@ function Reservations() {
   // Dados de exemplo (no futuro poderão vir de uma API)
   const serviceCategories = [
     { id: 'manicure', name: 'Manicure' },
+    { id: 'depilacao_mulher', name: 'Depilação a Cera Homem' },
+    { id: 'depilacao_homem', name: 'Depilação a Cera Mulher' },
     { id: 'pedicure', name: 'Pedicure' },
-    { id: 'depilacao_mulher', name: 'Depilação a Cera ♀' },
-    { id: 'depilacao_homem', name: 'Depilação a Cera ♂' },
+    { id: 'sobrancelhas', name: 'Sobrancelhas' },
     { id: 'depilacao_laser', name: 'Depilação a Laser' },
     { id: 'pestanas', name: 'Extensão de Pestanas' },
-    { id: 'sobrancelhas', name: 'Sobrancelhas' },
-    { id: 'destaques', name: 'Serviços Especializados' }
+    { id: 'destaques', name: 'Especializados' }
   ]
 
   const services = {
     manicure: [
-      { id: 1, name: 'Manicure Simples', duration: '30 min', price: '7€' },
+      { id: 1, name: 'Manicure Simples', duration: '30 min', price: '7.00€' },
       { id: 2, name: 'Manicure simples com pintura', duration: '45 min', price: '8.50€' },
-      { id: 3, name: 'Verniz Gel', duration: '60 min', price: '15€' },
-      { id: 4, name: '1ª Manutenção de Gel sobre a unha', duration: '90 min', price: '25€' },
-      { id: 5, name: 'Manutenção de Gel', duration: '90 min', price: '20€' },
-      { id: 6, name: 'Manutenção de Acrygel', duration: '90 min', price: '25€' },
-      { id: 7, name: '1ª Aplicação De gel com extensão', duration: '90 min', price: '30€' },
-      { id: 8, name: '1ª aplicação acrygel com extensão', duration: '90 min', price: '35€' },
-      { id: 9, name: 'Unha partida', duration: '15 min', price: '2€' },
-      { id: 10, name: 'Remoção Verniz Gel, acrygel', duration: '45 min', price: '10€' }
+      { id: 3, name: 'Verniz Gel', duration: '60 min', price: '15.00€' },
+      { id: 4, name: '1ª Manutenção de Gel sobre a unha', duration: '90 min', price: '25.00€' },
+      { id: 5, name: 'Manutenção de Gel', duration: '90 min', price: '20.00€' },
+      { id: 6, name: 'Manutenção de Acrygel', duration: '90 min', price: '25.00€' },
+      { id: 7, name: '1ª Aplicação De gel com extensão', duration: '90 min', price: '30.00€' },
+      { id: 8, name: '1ª aplicação acrygel com extensão', duration: '90 min', price: '35.00€' },
+      { id: 9, name: 'Unha partida', duration: '15 min', price: '2.00€' },
+      { id: 10, name: 'Remoção Verniz Gel, acrygel', duration: '45 min', price: '10.00€' }
     ],
     pedicure: [
-      { id: 11, name: 'Pedicure simples', duration: '30 min', price: '10€' },
+      { id: 11, name: 'Pedicure simples', duration: '30 min', price: '10.00€' },
       { id: 12, name: 'Pedicure simples com verniz', duration: '45 min', price: '10.50€' },
-      { id: 13, name: 'Pedicure completa', duration: '60 min', price: '17€' },
+      { id: 13, name: 'Pedicure completa', duration: '60 min', price: '17.00€' },
       { id: 14, name: 'Pedicure completa com verniz', duration: '75 min', price: '17.50€' },
-      { id: 15, name: 'Pintura com verniz gel', duration: '40 min', price: '15€' },
+      { id: 15, name: 'Pintura com verniz gel', duration: '40 min', price: '15.00€' },
       { id: 16, name: 'Pedicure com verniz gel', duration: '90 min', price: '22.50€' }
     ],
     depilacao_mulher: [
-      { id: 17, name: 'Buço', duration: '10 min', price: '3€' },
-      { id: 18, name: 'Sobrancelha', duration: '15 min', price: '5€' },
-      { id: 19, name: 'Mento', duration: '10 min', price: '3€' },
-      { id: 20, name: 'Axilas', duration: '10 min', price: '4€' },
-      { id: 21, name: 'Virilha cavada', duration: '20 min', price: '6€' },
-      { id: 22, name: 'Virilha completa', duration: '20 min', price: '9€' },
-      { id: 23, name: 'Braços completos', duration: '30 min', price: '8€' },
-      { id: 24, name: 'Meia perna', duration: '20 min', price: '7€' },
-      { id: 25, name: 'Perna inteira', duration: '40 min', price: '12€' },
-      { id: 26, name: 'Perna inteira + virilha + axila', duration: '60 min', price: '22€' }
+      { id: 17, name: 'Buço', duration: '10 min', price: '3.00€' },
+      { id: 18, name: 'Sobrancelha', duration: '15 min', price: '5.00€' },
+      { id: 19, name: 'Mento', duration: '10 min', price: '3.00€' },
+      { id: 20, name: 'Axilas', duration: '10 min', price: '4.00€' },
+      { id: 21, name: 'Virilha cavada', duration: '20 min', price: '6.00€' },
+      { id: 22, name: 'Virilha completa', duration: '20 min', price: '9.00€' },
+      { id: 23, name: 'Braços completos', duration: '30 min', price: '8.00€' },
+      { id: 24, name: 'Meia perna', duration: '20 min', price: '7.00€' },
+      { id: 25, name: 'Perna inteira', duration: '40 min', price: '12.00€' },
+      { id: 26, name: 'Perna inteira + virilha + axila', duration: '60 min', price: '22.00€' }
     ],
     depilacao_homem: [
-      { id: 27, name: 'Peito/Abdómen', duration: '20 min', price: '12€' },
-      { id: 28, name: 'Costas', duration: '15 min', price: '10€' },
-      { id: 29, name: 'Glúteos', duration: '15 min', price: '5€' },
-      { id: 30, name: 'Virilha', duration: '20 min', price: '8€' },
-      { id: 31, name: 'Axilas', duration: '10 min', price: '5€' },
-      { id: 32, name: 'Pernas', duration: '30 min', price: '14€' },
-      { id: 33, name: 'Braços completos', duration: '30 min', price: '8€' }
+      { id: 27, name: 'Peito/Abdómen', duration: '20 min', price: '12.00€' },
+      { id: 28, name: 'Costas', duration: '15 min', price: '10.00€' },
+      { id: 29, name: 'Glúteos', duration: '15 min', price: '5.00€' },
+      { id: 30, name: 'Virilha', duration: '20 min', price: '8.00€' },
+      { id: 31, name: 'Axilas', duration: '10 min', price: '5.00€' },
+      { id: 32, name: 'Pernas', duration: '30 min', price: '14.00€' },
+      { id: 33, name: 'Braços completos', duration: '30 min', price: '8.00€' }
     ],
     depilacao_laser: [
-      { id: 34, name: '1 zona', duration: '15 min', price: '15€' },
-      { id: 35, name: '2 zonas', duration: '30 min', price: '20€' },
-      { id: 36, name: '3 zonas', duration: '45 min', price: '30€' },
-      { id: 37, name: '4 zonas', duration: '40 min', price: '40€' },
-      { id: 38, name: '5 zonas', duration: '55 min', price: '50€' },
-      { id: 39, name: 'Corpo inteiro', duration: '90 min', price: '70€' }
+      { id: 34, name: '1 zona', duration: '15 min', price: '15.00€' },
+      { id: 35, name: '2 zonas', duration: '30 min', price: '20.00€' },
+      { id: 36, name: '3 zonas', duration: '45 min', price: '30.00€' },
+      { id: 37, name: '4 zonas', duration: '40 min', price: '40.00€' },
+      { id: 38, name: '5 zonas', duration: '55 min', price: '50.00€' },
+      { id: 39, name: 'Corpo inteiro', duration: '90 min', price: '70.00€' }
     ],
     pestanas: [
-      { id: 40, name: '1ª aplicação de pestanas brasileiras', duration: '90 min', price: '30€' },
-      { id: 41, name: 'Aplicação pestanas Egípcia', duration: '90 min', price: '30€' },
-      { id: 42, name: 'Aplicação De pestanas Híbridas', duration: '90 min', price: '30€' },
-      { id: 43, name: 'Manutenção (3 em 3 semanas)', duration: '90 min', price: '25€' }
+      { id: 40, name: '1ª aplicação de pestanas brasileiras', duration: '90 min', price: '30.00€' },
+      { id: 41, name: 'Aplicação pestanas Egípcia', duration: '90 min', price: '30.00€' },
+      { id: 42, name: 'Aplicação De pestanas Híbridas', duration: '90 min', price: '30.00€' },
+      { id: 43, name: 'Manutenção (3 em 3 semanas)', duration: '90 min', price: '25.00€' }
     ],
     sobrancelhas: [
-      { id: 44, name: 'Brown Lamination', duration: '60 min', price: '25€' },
-      { id: 45, name: 'Henna', duration: '60 min', price: '15€' },
-      { id: 46, name: 'Microblading (inclui 2 manutenções)', duration: '90 min', price: '150€' }
+      { id: 44, name: 'Brown Lamination', duration: '60 min', price: '25.00€' },
+      { id: 45, name: 'Henna', duration: '60 min', price: '15.00€' },
+      { id: 46, name: 'Microblading (inclui 2 manutenções)', duration: '90 min', price: '150.00€' }
     ],
     destaques: [
-      { id: 47, name: 'Micropigmentação', duration: '120 min', price: '180€' },
-      { id: 48, name: 'Eyeliner', duration: '90 min', price: '100€' },
+      { id: 47, name: 'Micropigmentação', duration: '120 min', price: '180.00€' },
+      { id: 48, name: 'Eyeliner', duration: '90 min', price: '100.00€' },
       { id: 49, name: 'Microagulhamento', duration: '60 min', price: 'Sob consulta' },
-      { id: 50, name: 'Micropigmentação Labial', duration: '120 min', price: '240€' },
-      { id: 51, name: 'Microblading', duration: '90 min', price: '150€' }
+      { id: 50, name: 'Micropigmentação Labial', duration: '120 min', price: '240.00€' },
+      { id: 51, name: 'Microblading', duration: '90 min', price: '150.00€' }
     ]
   }
 
@@ -272,6 +444,10 @@ function Reservations() {
   const handleTimeSelect = (time) => {
     // Só permite selecionar horários disponíveis
     setSelectedTime(time);
+    //allow disselecting the same time
+    if (selectedTime === time) {
+      setSelectedTime('');
+    }
   };
 
   const validateField = (name, value) => {
@@ -280,23 +456,25 @@ function Reservations() {
     switch (name) {
       case 'email':
         // Regex para validar email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-          errorMessage = 'Por favor, insira um email válido';
+        if (value) {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(value)) {
+            errorMessage = 'Por favor, insira um email válido';
+          }
         }
         break;
         
       case 'phone':
         // Regex para telefone português: começa com 9 e tem 9 dígitos
-        const phoneRegex = /^9[0-9]{8}$/;
+        const phoneRegex = /^[0-9]{9}$/;
         if (!phoneRegex.test(value)) {
-          errorMessage = 'O número deve começar com 9 e ter 9 dígitos';
+          errorMessage = 'Por favor, insira um número válido';
         }
         break;
         
       case 'name':
         // Nome com pelo menos 3 caracteres
-        if (value.length < 3) {
+        if (value.length < 2) {
           errorMessage = 'Por favor, insira um nome válido';
         }
         break;
@@ -318,6 +496,16 @@ function Reservations() {
     }));
     
     // Validar o campo após digitação
+    if(name === 'email') {
+      // Se for email, validar apenas se o campo não estiver vazio
+      if (value.trim() === '') {
+        setErrors(prev => ({
+          ...prev,
+          [name]: ''
+        }));
+        return;
+      }
+    }
     const errorMessage = validateField(name, value);
     
     // Atualizar estado de erros
@@ -381,6 +569,8 @@ function Reservations() {
       email: '',
       phone: ''
     });
+    //Go back to main page
+    window.location.href = '/';
   };
 
   // Componente para a Etapa 1: Seleção de Serviço
@@ -396,7 +586,7 @@ function Reservations() {
                 onClick={() => handleServiceCategorySelect(category)}
                 className={`px-4 py-2 rounded-full transition-all duration-300 ${
                   selectedCategory?.id === category.id
-                    ? "bg-[#5c7160] text-white shadow-md"
+                    ? "bg-[#a5bf99] text-white shadow-md"
                     : "bg-white text-[#5c7160] border border-[#5c7160]/30 hover:bg-[#a5bf99]/20"
                 }`}
               >
@@ -414,14 +604,14 @@ function Reservations() {
                 <div
                   key={service.id}
                   onClick={() => handleServiceSelect(service)}
-                  className={`p-4 rounded-lg cursor-pointer transition-all duration-300 ${
+                  className={`p-4 rounded-lg cursor-pointer transition-all duration-300 flex flex-col justify-between min-h-[120px] ${
                     selectedService?.id === service.id
-                      ? "bg-[#5c7160] text-white shadow-lg"
+                      ? "bg-[#a5bf99] text-white shadow-lg"
                       : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
                   }`}
                 >
-                  <h4 className="text-lg font-medium mb-2">{service.name}</h4>
-                  <div className="flex justify-between text-sm">
+                  <h4 className="text-lg font-medium mb-2 flex-grow">{service.name}</h4>
+                  <div className="flex justify-between text-base mt-auto">
                     <span>{service.duration}</span>
                     <span className={selectedService?.id === service.id ? "font-bold" : "font-bold text-[#c0a080]"}>
                       {service.price}
@@ -464,17 +654,17 @@ function Reservations() {
 
   // Componente para a Etapa 2: Seleção de Profissional
   const ProfessionalSelectionStep = () => (
-    <div className="animate-fadeIn flex flex-col items-center">
+    <div className="animate-fadeIn flex flex-col items-center justify-center">
       <div className="w-full max-w-3xl mx-auto">
         <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha a Profissional</h3>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-4xl mx-auto">
           {professionals.map((professional) => (
             <div
               key={professional.id}
               onClick={() => handleProfessionalSelect(professional)}
-              className={`bg-white rounded-lg overflow-hidden shadow-md cursor-pointer transition-all duration-300 ${
-                selectedProfessional?.id === professional.id ? "ring-2 ring-[#5c7160] transform scale-[1.02]" : "hover:shadow-lg"
+              className={` rounded-lg overflow-hidden shadow-md cursor-pointer transition-all duration-300 ${
+                selectedProfessional?.id === professional.id ? "bg-[#a5bf99] transform scale-[1.02]" : "hover:shadow-lg bg-white "
               }`}
             >
               <div className="h-48 overflow-hidden">
@@ -485,17 +675,12 @@ function Reservations() {
                 />
               </div>
               <div className="p-4">
-                <h4 className="text-xl font-medium text-[#5c7160]">{professional.name}</h4>
-                <p className="text-[#5c7160]/70">{professional.specialty}</p>
-                
-                {selectedProfessional?.id === professional.id && (
-                  <div className="mt-3 flex items-center text-[#a5bf99]">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>Selecionada</span>
-                  </div>
-                )}
+                <h4 className={` text-xl font-medium ${
+                selectedProfessional?.id === professional.id ? "text-white" : "text-[#5c7160]"
+              }` }>{professional.name}</h4>
+                <p className={` ${
+                selectedProfessional?.id === professional.id ? "text-white" : "text-[#5c7160]"
+              }` }>{professional.specialty}</p>
               </div>
             </div>
           ))}
@@ -611,6 +796,11 @@ function Reservations() {
   const DateTimeSelectionStep = () => {
     // Calcula a data mínima (hoje)
     const today = new Date();
+
+    // If today is after 7 PM, set minimum date to tomorrow
+    if (today.getHours() >= 19) {
+      today.setDate(today.getDate() + 1);
+    }
     
     // Agrupa os horários disponíveis em períodos do dia
     const morningSlots = availableTimeSlots.filter(slot => {
@@ -655,7 +845,7 @@ function Reservations() {
     
     // Renderizar conteúdo dos dias
     const renderDayContents = (day) => {
-      return <span className="font-light">{day}</span>;
+      return <span className="font-medium">{day}</span>;
     };
     
     return (
@@ -739,81 +929,6 @@ function Reservations() {
                 <div className="w-full flex flex-col items-center">
                   {availableTimeSlots.length > 0 ? (
                     <>
-                      {/* {morningSlots.length > 0 && (
-                        <div className="mb-4 w-full flex justify-center">
-                          <div className="flex flex-wrap justify-center gap-2 w-full">
-                            {morningSlots.map((slot) => (
-                              <button
-                                key={slot.time}
-                                onClick={() => slot.available && handleTimeSelect(slot.time)}
-                                disabled={!slot.available}
-                                className={`
-                                  px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
-                                  ${!slot.available 
-                                    ? "bg-gray-50 text-gray-400 cursor-not-allowed border border-gray-100"
-                                    : selectedTime === slot.time
-                                      ? "bg-[#5c7160] text-white"
-                                      : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
-                                  }
-                                `}
-                              >
-                                {slot.time}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {afternoonSlots.length > 0 && (
-                        <div className="mb-4 w-full flex justify-center">
-                          <div className="flex flex-wrap justify-center gap-2 w-full">
-                            {afternoonSlots.map((slot) => (
-                              <button
-                                key={slot.time}
-                                onClick={() => slot.available && handleTimeSelect(slot.time)}
-                                disabled={!slot.available}
-                                className={`
-                                  px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
-                                  ${!slot.available 
-                                    ? "bg-gray-50 text-gray-400 cursor-not-allowed border border-gray-100"
-                                    : selectedTime === slot.time
-                                      ? "bg-[#5c7160] text-white"
-                                      : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
-                                  }
-                                `}
-                              >
-                                {slot.time}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {eveningSlots.length > 0 && (
-                        <div className="mb-4 w-full flex justify-center">
-                          <div className="flex flex-wrap justify-center gap-2 w-full">
-                            {eveningSlots.map((slot) => (
-                              <button
-                                key={slot.time}
-                                onClick={() => slot.available && handleTimeSelect(slot.time)}
-                                disabled={!slot.available}
-                                className={`
-                                  px-3 py-2 rounded-md transition-all w-[65px] h-[40px] flex items-center justify-center
-                                  ${!slot.available 
-                                    ? "bg-gray-50 text-gray-400 cursor-not-allowed border border-gray-100"
-                                    : selectedTime === slot.time
-                                      ? "bg-[#5c7160] text-white"
-                                      : "bg-white border border-[#5c7160]/30 text-[#5c7160] hover:border-[#5c7160]"
-                                  }
-                                `}
-                              >
-                                {slot.time}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )} */}
-
                       {availableTimeSlots.length > 0 && (
                         <div className="w-94 flex justify-center">
                           {/* <div className="flex flex-wrap justify-center gap-8 w-full"> */}
@@ -892,169 +1007,6 @@ function Reservations() {
     );
   };
 
-  // Componente para a Etapa 5: Confirmação e Dados do Cliente
-  const ConfirmationStep = () => {
-    // Formata a data para exibição
-    const formattedDate = selectedDate 
-      ? new Date(selectedDate).toLocaleDateString('pt-PT', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        }) 
-      : '';
-    
-    return (
-      <div className="animate-fadeIn flex flex-col items-center">
-        <div className="w-full max-w-3xl mx-auto">
-          <h3 className="text-2xl font-light text-[#5c7160] mb-6">Confirme a sua Reserva</h3>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-6 w-full">
-              <h4 className="text-lg font-medium text-[#5c7160] mb-4 border-b border-[#5c7160]/20 pb-2">Detalhes da Reserva</h4>
-              
-              <div className="space-y-3">
-                <div className="flex">
-                  <div className="w-1/3 text-[#5c7160]/70">Serviço:</div>
-                  <div className="w-2/3 font-medium text-[#5c7160]">{selectedService?.name}</div>
-                </div>
-                <div className="flex">
-                  <div className="w-1/3 text-[#5c7160]/70">Duração:</div>
-                  <div className="w-2/3 text-[#5c7160]">{selectedService?.duration}</div>
-                </div>
-                <div className="flex">
-                  <div className="w-1/3 text-[#5c7160]/70">Preço:</div>
-                  <div className="w-2/3 font-medium text-[#c0a080]">{selectedService?.price}</div>
-                </div>
-                <div className="flex">
-                  <div className="w-1/3 text-[#5c7160]/70">Profissional:</div>
-                  <div className="w-2/3 text-[#5c7160]">{selectedProfessional?.name}</div>
-                </div>
-                <div className="flex">
-                  <div className="w-1/3 text-[#5c7160]/70">Salão:</div>
-                  <div className="w-2/3 text-[#5c7160]">Principio Ativo</div>
-                </div>
-                <div className="flex">
-                  <div className="w-1/3 text-[#5c7160]/70">Data:</div>
-                  <div className="w-2/3 text-[#5c7160]">{formattedDate}</div>
-                </div>
-                <div className="flex">
-                  <div className="w-1/3 text-[#5c7160]/70">Hora:</div>
-                  <div className="w-2/3 text-[#5c7160]">{selectedTime}</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="w-full">
-              <h4 className="text-lg font-medium text-[#5c7160] mb-4 text-center lg:text-left">Seus Dados</h4>
-              
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-sm text-[#5c7160]/80 mb-1">Nome Completo</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={customerInfo.name}
-                    onChange={handleCustomerInfoChange}
-                    required
-                    autoComplete="off"
-                    autoCorrect="off"
-                    spellCheck="false"
-                    className={`w-full px-4 py-2.5 border ${errors.name ? 'border-red-400' : 'border-[#5c7160]/20'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]`}
-                    placeholder="Seu nome completo"
-                  />
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-                </div>
-                
-                <div>
-                  <label htmlFor="email" className="block text-sm text-[#5c7160]/80 mb-1">Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={customerInfo.email}
-                    onChange={handleCustomerInfoChange}
-                    required
-                    autoComplete="off"
-                    autoCorrect="off"
-                    spellCheck="false"
-                    className={`w-full px-4 py-2.5 border ${errors.email ? 'border-red-400' : 'border-[#5c7160]/20'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]`}
-                    placeholder="Seu email"
-                  />
-                  {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-                </div>
-                
-                <div>
-                  <label htmlFor="phone" className="block text-sm text-[#5c7160]/80 mb-1">Telefone</label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={customerInfo.phone}
-                    onChange={handleCustomerInfoChange}
-                    required
-                    autoComplete="off"
-                    autoCorrect="off"
-                    spellCheck="false"
-                    className={`w-full px-4 py-2.5 border ${errors.phone ? 'border-red-400' : 'border-[#5c7160]/20'} rounded-md focus:outline-none focus:ring-2 focus:ring-[#a5bf99]/50 focus:border-[#a5bf99]`}
-                    placeholder="Seu número de telefone (9 dígitos)"
-                  />
-                  {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-                </div>
-                
-                <div className="pt-2">
-                  <label className="flex items-start">
-                    <input
-                      type="checkbox"
-                      className="mt-1 text-[#5c7160]"
-                      required
-                    />
-                    <span className="ml-2 text-sm text-[#5c7160]/80">
-                      Concordo com a <a href="#" className="text-[#5c7160] underline">política de privacidade</a> e os <a href="#" className="text-[#5c7160] underline">termos de serviço</a>.
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
-            <button
-              onClick={prevStep}
-              className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span>Anterior</span>
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={
-                !customerInfo.name || 
-                !customerInfo.email || 
-                !customerInfo.phone || 
-                errors.name || 
-                errors.email || 
-                errors.phone
-              }
-              className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
-                customerInfo.name && customerInfo.email && customerInfo.phone && !errors.name && !errors.email && !errors.phone
-                  ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              <span>Confirmar Reserva</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   // Renderizar a etapa atual
   const renderStep = () => {
@@ -1068,7 +1020,19 @@ function Reservations() {
       case 4:
         return <DateTimeSelectionStep />;
       case 5:
-        return <ConfirmationStep />;
+        return (
+          <ConfirmationStep
+            selectedService={selectedService}
+            selectedProfessional={selectedProfessional}
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+            customerInfo={customerInfo}
+            errors={errors}
+            handleCustomerInfoChange={handleCustomerInfoChange}
+            prevStep={prevStep}
+            handleSubmit={handleSubmit}
+          />
+        );
       default:
         return <ServiceSelectionStep />;
     }
