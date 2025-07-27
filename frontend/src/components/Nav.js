@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import MobileMenu from './MobileMenu'
 import logo from '../images/new_logo.png'
+import BookingButton from './BookingButton';
 
 function Nav() {
   const [mobileMenuActive, setMobileMenuActive] = useState(false)
@@ -120,42 +121,6 @@ function Nav() {
               ></span>
             </li>
           ))}
-          
-          {/* Liquid Glass Book Now Button */}
-          <li className="ml-6">
-            <Link 
-              to='/reservations' 
-              className="relative group px-8 py-2.5 flex items-center justify-center transition-all duration-300"
-            >
-              {/* Glass effect background */}
-              <span 
-                className="glass-green absolute inset-0 rounded-full backdrop-blur-md bg-white/20 group-hover:bg-white/30 
-                         border border-white/50 group-hover:border-white/60 shadow-lg transition-all duration-300"
-                // style={{
-                //   background: 'linear-gradient(120deg, rgba(165, 191, 153, 0.7), rgba(92, 113, 96, 0.6))',
-                //   boxShadow: '0 4px 15px rgba(165, 191, 153, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.1)'
-                // }}
-              ></span>
-              
-              {/* Enhanced shine effect */}
-              <span 
-                className="absolute inset-0 rounded-full overflow-hidden"
-                style={{ opacity: 0.4 }}
-              >
-                <span 
-                  className="absolute top-0 left-1/2 w-1/2 h-full bg-gradient-to-r from-transparent via-white to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"
-                ></span>
-              </span>
-              
-              {/* Button text */}
-              <span className="relative z-10 font-medium text-white tracking-wide">
-                Agendar
-              </span>
-              
-              {/* Golden accent at bottom */}
-              {/* <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1/3 h-0.5 bg-[#c0a080] group-hover:w-2/3 transition-all duration-300"></span> */}
-            </Link>
-          </li>
         </ul>
 
         {/* Mobile menu button */}

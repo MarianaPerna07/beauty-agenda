@@ -1,13 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import scrollToTop from '../helpers/scrollToTop'
 
 function Services() {
-  useEffect(() => {
-    scrollToTop()
-  }, [])
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
+  const serviceFromUrl = searchParams.get('service');
   
-  const [activeCategory, setActiveCategory] = useState('manicure')
+  // Estado para categoria ativa, inicializa com o valor da URL ou 'manicure' por padrão
+  const [activeCategory, setActiveCategory] = useState(categoryFromUrl || 'manicure')
+  
+  // Efeito para rolar para o elemento do serviço se especificado na URL
+  useEffect(() => {
+    scrollToTop();
+    
+    // Se temos um serviço específico na URL, encontre-o e role até ele
+    if (serviceFromUrl) {
+      setTimeout(() => {
+        const serviceElement = document.getElementById(`service-${serviceFromUrl}`);
+        if (serviceElement) {
+          serviceElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Adicionar uma classe de destaque temporária
+          serviceElement.classList.add('highlight-service');
+          setTimeout(() => {
+            serviceElement.classList.remove('highlight-service');
+          }, 2000);
+        }
+      }, 500);
+    }
+  }, [serviceFromUrl]);
 
   // Categorias de serviços atualizadas
   const categories = [
@@ -744,7 +765,8 @@ function Services() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {serviceData[activeCategory].map((service, index) => (
               <div 
-                key={index} 
+                key={index}
+                id={`service-${service.title}`} // Adicionar ID para localização
                 className="bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
               >
                 <div className="h-64 overflow-hidden relative">
@@ -775,24 +797,6 @@ function Services() {
                       </li>
                     ))}
                   </ul>
-                  
-                  <div className="mt-6">
-                    <Link
-                      to="/reservations"
-                      className="text-[#a5bf99] hover:text-[#5c7160] transition-colors inline-flex items-center font-medium"
-                    >
-                      <span>Agendar</span>
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className="h-4 w-4 ml-1" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Link>
-                  </div>
                 </div>
               </div>
             ))}
@@ -813,19 +817,6 @@ function Services() {
           <h3 className="text-2xl md:text-3xl font-light text-[#5c7160] mb-6">
             Pronta para realçar a sua beleza?
           </h3>
-          <p className="text-lg text-[#5c7160]/80 mb-8">
-            Agende já o seu tratamento e desfrute de uma experiência personalizada de beleza e bem-estar.
-          </p>
-          
-          <Link 
-            to="/reservations" 
-            className="relative group px-10 py-3 inline-flex items-center justify-center transition-all duration-300"
-          >
-            <span className="glass-green absolute inset-0 rounded-full"></span>
-            <span className="relative z-10 font-medium text-white tracking-wide text-lg">
-              Agendar Agora
-            </span>
-          </Link>
         </div>
       </section>
     </div>

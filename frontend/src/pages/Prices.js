@@ -1,19 +1,75 @@
 import React, { useEffect } from 'react'
 import ServicePrices from '../components/ServicePrices'
 import scrollToTop from '../helpers/scrollToTop'
+import BookingButton from '../components/BookingButton';
 
 function Prices() {
   useEffect(() => {
     scrollToTop()
   },[])
+  
   return (
-    <div className='min-h-screen'>
-        <div className='relative'>
-            <img className='brightness-75 grayscale object-cover h-[40vh] object-left-bottom w-full' src='https://lella.qodeinteractive.com/wp-content/uploads/2019/08/title-area-img-3.jpg'></img>
-            <h2 className="absolute h-full top-0 flex items-center left-1/2 -translate-x-1/2 text-center py-4 text-6xl text-red-800">Preçário</h2>
+    <div className='min-h-screen bg-[#F5F1E9]'>
+      {/* Hero Section with proper overlay */}
+      <div className='relative'>
+        <img 
+          className='object-cover h-[50vh] w-full' 
+          src='https://images.pexels.com/photos/3997378/pexels-photo-3997378.jpeg' 
+          alt="Preçário"
+        />
+        <div className='absolute inset-0 bg-gradient-to-b from-[#5c7160]/40 to-[#5c7160]/70'></div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h2 className="text-[#F5F1E9] text-4xl md:text-5xl lg:text-6xl font-light tracking-wide">
+            Preçário
+          </h2>
         </div>
-        <section className="justify-center gap-12 px-4 pb-4">
-        <ServicePrices/>
+        
+        {/* Wave shape at the bottom */}
+        <div className="absolute bottom-0 left-0 w-full h-16">
+          <svg viewBox="0 0 1200 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full">
+            <path d="M0,60 V30 C150,50 350,40 500,35 C650,30 750,25 900,30 C1050,35 1200,45 1200,45 V60 H0 Z" fill="#F5F1E9"/>
+          </svg>
+        </div>
+      </div>
+      
+      {/* Introduction Section */}
+      <section className="py-12 px-6">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h3 className="text-3xl md:text-4xl font-light text-[#5c7160] mb-6">
+            Os Nossos Serviços e Preços
+          </h3>
+          <p className="text-lg text-[#5c7160]/80">
+            Oferecemos uma variedade de tratamentos de beleza de alta qualidade 
+            por preços acessíveis. Consulte a nossa lista completa abaixo.
+          </p>
+          
+          {/* Decorative divider */}
+          <div className="w-32 h-0.5 mx-auto my-8 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
+        </div>
+      </section>
+      
+      {/* Prices Section */}
+      <section className="pb-16 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <ServicePrices/>
+        </div>
+      </section>
+      
+      {/* Call to Action */}
+      <section className="py-16 px-6 bg-gradient-to-br from-[#5c7160]/10 to-[#a5bf99]/10">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h3 className="text-2xl md:text-3xl font-light text-[#5c7160] mb-6">
+            Pronta para marcar a sua consulta?
+          </h3>
+          <p className="text-lg text-[#5c7160]/80 mb-8">
+            Estamos ansiosos para recebê-la e proporcionar uma experiência de beleza personalizada.
+          </p>
+          <div className="flex justify-center">
+            <BookingButton className="px-8 py-3 text-base md:text-lg">
+              <span>Agendar Agora</span>
+            </BookingButton>
+          </div>
+        </div>
       </section>
     </div>
   )

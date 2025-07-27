@@ -52,6 +52,10 @@
     flex: 0 0 var(--slide-size);
     min-width: 0;
     padding-left: var(--slide-spacing);
+    cursor: pointer;
+  }
+  .embla__slide:hover .embla__slide__img {
+    transform: scale(1.05);
   }
   .embla__slide__img {
     border-radius: 1.8rem;
@@ -139,5 +143,17 @@
   }
   .embla__dot--selected:after {
     box-shadow: inset 0 0 0 0.2rem var(--text-body);
+  }
+
+.embla__slide::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+
+  }
+  
+  .embla__slide:hover::after {
+    opacity: 1;
   }
   

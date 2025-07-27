@@ -2,6 +2,7 @@ import React from 'react'
 import logo from '../images/new_logo.png'
 import { Link } from 'react-router-dom'
 import { FaFacebookF, FaInstagram, FaWhatsapp } from 'react-icons/fa'
+import BookingButton from './BookingButton';
 
 function Footer() {
   return (
@@ -106,36 +107,6 @@ function Footer() {
                   <FaWhatsapp className="text-xs" />
                 </a>
               </div>
-              
-              {/* Agendar Button */}
-              <Link 
-                to="/reservations" 
-                className="relative group px-6 py-2 flex items-center justify-center transition-all duration-300"
-              >
-                {/* Glass effect background */}
-                <span 
-                  className="absolute inset-0 rounded-full backdrop-blur-md bg-white/20 group-hover:bg-white/30 
-                           border border-white/50 group-hover:border-white/60 shadow-lg transition-all duration-300"
-                  style={{
-                    background: 'linear-gradient(120deg, rgba(165, 191, 153, 0.7), rgba(92, 113, 96, 0.6))',
-                    boxShadow: '0 4px 15px rgba(165, 191, 153, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.1)'
-                  }}
-                ></span>
-                
-                {/* Shine effect */}
-                <span 
-                  className="absolute inset-0 rounded-full overflow-hidden"
-                  style={{ opacity: 0.4 }}
-                >
-                  <span 
-                    className="absolute top-0 left-1/2 w-1/2 h-full bg-gradient-to-r from-transparent via-white to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"
-                  ></span>
-                </span>
-                
-                <span className="relative z-10 font-medium text-white tracking-wide text-sm">
-                  Agendar
-                </span>
-              </Link>
             </div>
           </div>
         </div>

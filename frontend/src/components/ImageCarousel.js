@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import useEmblaCarousel from 'embla-carousel-react'
 import './carousel-custom.css';
 import {
@@ -17,6 +18,7 @@ const ImageCarousel = (props) => {
   const { slides, options } = props
   const [emblaRef, emblaApi] = useEmblaCarousel(options)
   const tweenFactor = useRef(0)
+  const navigate = useNavigate()
 
   const { selectedIndex, scrollSnaps, onDotButtonClick } =
     useDotButton(emblaApi)
@@ -27,6 +29,20 @@ const ImageCarousel = (props) => {
     onPrevButtonClick,
     onNextButtonClick
   } = usePrevNextButtons(emblaApi)
+
+  // Função atualizada para lidar com categorias diferentes
+  const handleSlideClick = (serviceTitle) => {
+    // Mapeia serviços específicos para suas categorias apropriadas
+    let category = 'destaques';
+    
+    // Verifica o título do serviço para determinar a categoria correta
+    if (serviceTitle === 'Depilação a Laser') {
+      category = 'depilacao_laser'; 
+    }
+    
+    // Navega para a página de serviços com a categoria correta
+    navigate(`/services?category=${category}&service=${encodeURIComponent(serviceTitle)}`);
+  }
 
   const setTweenFactor = useCallback((emblaApi) => {
     tweenFactor.current = TWEEN_FACTOR_BASE * emblaApi.scrollSnapList().length
@@ -86,7 +102,11 @@ const ImageCarousel = (props) => {
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
         {slides.map((slide, idx) => (
-            <div className="embla__slide" key={idx}>
+            <div 
+              className="embla__slide cursor-pointer" 
+              key={idx}
+              onClick={() => handleSlideClick(slide.title)}
+            >
               <img
                 className="embla__slide__img"
                 src={slide.src}
@@ -102,6 +122,13 @@ const ImageCarousel = (props) => {
                 </p>
                 <span className="block font-semibold text-[#c0a080] mt-1 text-xl">
                   {slide.price}
+                </span>
+              </div>
+              
+              {/* Botão "Ver mais" opcional */}
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                <span className="bg-[#5c7160]/80 text-white px-4 py-2 rounded-full text-sm">
+                  Ver detalhes
                 </span>
               </div>
             </div>
