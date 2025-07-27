@@ -3,6 +3,57 @@ import ImageCarousel from "./components/ImageCarousel";
 import { useEffect } from "react";
 import scrollToTop from "./helpers/scrollToTop";
 import { Link } from "react-router-dom";
+import './css/embla.css'
+
+const OPTIONS = { loop: true }
+const SLIDE_COUNT = 6 // Number of slides in the carousel
+const SLIDES = Array.from(Array(SLIDE_COUNT).keys())
+
+// Define your 6 service slides here:
+const services = [
+  {
+    src: 'https://p2.trrsf.com/image/fget/cf/1200/900/middle/images.terra.com/2023/11/27/245499322-mitos-verdades-micropigmentacao.jpg',
+    alt: 'Micropigmentação',
+    title: 'Micropigmentação',
+    caption: 'Traços leves, resultados duradouros',
+    price: '180€'
+  },
+  {
+    src: 'https://altoastral.joaobidu.com.br/wp-content/uploads/2023/03/o-que-e-micropigmentacao-labial.jpg',
+    alt: 'Micropigmentação Labial',
+    title: 'Micropigmentação Labial',
+    caption: 'O detalhe que faz a diferença',
+    price: '240€'
+  },
+  {
+    src: 'https://static.wixstatic.com/media/186ea16b01a346a086fe3e396511f97e.jpg/v1/fill/w_480,h_335,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/186ea16b01a346a086fe3e396511f97e.jpg',
+    alt: 'Microblading',
+    title: 'Microblading',
+    caption: 'Beleza moldada fio a fio',
+    price: '180€'
+  },
+  {
+    src: 'https://img.freepik.com/fotos-premium/esteticista-do-conceito-de-micropigmentacao-fazendo-procedimento-de-delineador-de-maquiagem-permanente-para-jovem_116547-72228.jpg',
+    alt: 'Eyeliner',
+    title: 'Eyeliner',
+    caption: 'Perfeito todos os dias, sem esforço',
+    price: '100€'
+  },
+  {
+    src: 'https://skinboutique.pt/wp-content/uploads/2025/01/67_microneedling.jpg',
+    alt: 'Microagulhamento',
+    title: 'Microagulhamento',
+    caption: 'Revitaliza a tua pele, revela a tua beleza',
+    price: 'Sob consulta'
+  },
+  {
+    src: 'https://www.gioesteticaavancada.com.br/wp-content/uploads/2022/05/post_thumbnail-a44bae8ed55e240b125f5bda1802430d.jpeg',
+    alt: 'Depilação a Laser',
+    title: 'Depilação a Laser',
+    caption: 'Diz adeus aos pelos de vez!',
+    price: 'Sob consulta'
+  }
+];
 
 function App() {
   useEffect(() => {
@@ -29,7 +80,11 @@ function App() {
       
       {/* Services Carousel */}
       <section className="py-4">
-        <ImageCarousel />
+        <h3 className="text-3xl md:text-4xl font-light text-center text-[#5c7160] mb-6">
+          Destaques
+          <span className="block w-24 h-0.5 bg-[#a5bf99] mx-auto mt-2"></span>
+        </h3>
+        <ImageCarousel slides={services} options={OPTIONS}/>
       </section>
       
       {/* About Us Section */}

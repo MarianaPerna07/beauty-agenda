@@ -51,6 +51,7 @@ If you have any questions or points to review, we’re at your disposal!
    cd beauty-agenda/frontend
    npm install react-icons
    npm install react-datepicker --save
+   npm install embla-carousel-react --save
    npm install
    ```
 3. **Start the frontend**  

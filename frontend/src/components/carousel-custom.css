@@ -1,303 +1,303 @@
 /* Base carousel container styling */
 .carousel-container-wrapper {
-  position: relative;
-  padding: 3rem 0;
-  margin: 2rem 0;
-  overflow: hidden;
-}
-
-.carousel-content-wrapper {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 15px;
-}
-
-/* Decorative elements */
-.carousel-decorative-top {
-  position: relative;
-  height: 24px;
-  width: 100%;
-  margin-bottom: 1.5rem;
-}
-
-.carousel-wave {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 12px;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V30 H0 V0Z' fill='%23a5bf99' fill-opacity='0.15'/%3E%3C/svg%3E");
-  background-size: cover;
-}
-
-.carousel-gold-accent {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(to right, 
-    rgba(192, 160, 128, 0), 
-    rgba(233, 211, 163, 0.9), 
-    rgba(192, 160, 128, 0));
-}
-
-.carousel-decorative-bottom {
-  position: relative;
-  height: 10px;
-  width: 100%;
-  margin-top: 1rem;
-}
-
-/* Carousel container */
-.carousel-container {
-  padding: 0;
-}
-
-/* Image container styling */
-.carousel-image-container {
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-}
-
-.carousel-image-wrapper {
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  width: calc(100% - 20px);
-  height: 380px;
-  margin: 0 10px;
-}
-
-.carousel-image-wrapper:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-
-.carousel-image-wrapper:hover .carousel-price {
-  background-color: rgba(165, 191, 153, 0.85);
-  transform: scale(1.05);
-}
-
-.carousel-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 10px;
-  transition: transform 0.5s ease, filter 0.5s ease;
-  filter: brightness(0.85) contrast(1.05);
-}
-
-.carousel-image-wrapper:hover .carousel-image {
-  transform: scale(1.05);
-  filter: brightness(0.9) contrast(1.1);
-}
-
-/* Overlay styling - Versão refinada */
-.carousel-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 24px;
-  background: linear-gradient(to bottom, 
-    rgba(0,0,0,0.5) 0%, 
-    rgba(0,0,0,0.1) 30%, 
-    rgba(0,0,0,0.1) 70%, 
-    rgba(0,0,0,0.5) 100%);
-  border-radius: 10px;
-  z-index: 1;
-}
-
-/* Título refinado */
-.carousel-title {
-  color: white;
-  font-size: 1.7rem;
-  font-weight: 450;
-  text-align: center;
-  margin-top: 8px;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-  letter-spacing: 1px;
-}
-
-/* Opções para a descrição promocional */
-/* Opção 1: Esconder completamente */
-.carousel-caption {
-  display: none;
-}
-
-/* Opção 2: Tornar mais sutil e mover para baixo do título */
-
-/* .carousel-caption {
-  color: rgba(255,255,255,0.9);
-  text-align: center;
-  font-size: 0.95rem;
-  font-weight: 300; 
-  margin: 0 auto;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  max-width: 80%;
-  letter-spacing: 0.5px;
-  font-style: italic;
-} */
-
-/* Preço mais sofisticado */
-.carousel-price {
-  color: white;
-  font-size: 1.4rem;
-  font-weight: 500;
-  align-self: flex-end;
-  margin-top: auto;
-  padding: 6px 16px;
-  background-color: rgba(92, 113, 96, 0.75);
-  border-radius: 20px;
-  backdrop-filter: blur(3px);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  border: 1px solid rgba(255,255,255,0.25);
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
-}
-
-/* Custom styling for react-multi-carousel components */
-.react-multi-carousel-list {
-  padding: 0;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  position: relative;
-}
-
-.react-multi-carousel-track {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: row;
-  position: relative;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  will-change: transform, transition;
-}
-
-.react-multi-carousel-item {
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-}
-
-/* Custom arrow styling */
-.react-multiple-carousel__arrow {
-  background-color: rgba(165, 191, 153, 0.7) !important;
-  border-radius: 50% !important;
-  box-shadow: 0 2px 8px rgba(92, 113, 96, 0.25) !important;
-  transition: all 0.3s ease !important;
-  min-width: 40px !important;
-  min-height: 40px !important;
-}
-
-.react-multiple-carousel__arrow:hover {
-  background-color: rgba(92, 113, 96, 0.8) !important;
-}
-
-.react-multiple-carousel__arrow--left {
-  left: 10px !important;
-}
-
-.react-multiple-carousel__arrow--right {
-  right: 10px !important;
-}
-
-/* Custom dots styling */
-.custom-dot-list-style {
-  display: flex !important;
-  justify-content: center !important;
-  position: absolute;
-  bottom: -30px;
-  left: 0;
-  right: 0;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  text-align: center;
-}
-
-.react-multi-carousel-dot button {
-  border-color: #a5bf99 !important;
-  background: transparent !important;
-  margin: 5px !important;
-  transition: all 0.3s ease !important;
-}
-
-.react-multi-carousel-dot--active button {
-  background: #a5bf99 !important;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .carousel-image-wrapper {
-    height: 350px;
+    position: relative;
+    padding: 3rem 0;
+    margin: 2rem 0;
+    overflow: hidden;
   }
   
-  .carousel-title {
-    font-size: 1.4rem;
-  }
-  
-  .carousel-caption {
-    font-size: 1rem;
-  }
-  
-  .carousel-price {
-    font-size: 1.2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .carousel-image-wrapper {
-    height: 300px;
-  }
-  
-  .carousel-title {
-    font-size: 1.3rem; 
-  }
-  
-  .carousel-caption {
-    font-size: 0.9rem;
-  }
-  
-  .carousel-price {
-    font-size: 1.1rem;
-  }
-  
-  .react-multiple-carousel__arrow {
-    min-width: 30px !important;
-    min-height: 30px !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .carousel-image-wrapper {
-    height: 260px;
-    width: 90%;
+  .carousel-content-wrapper {
+    max-width: 1400px;
     margin: 0 auto;
+    padding: 0 15px;
   }
   
-  .carousel-title {
-    font-size: 1.1rem;
+  /* Decorative elements */
+  .carousel-decorative-top {
+    position: relative;
+    height: 24px;
+    width: 100%;
+    margin-bottom: 1.5rem;
   }
   
-  .carousel-caption {
-    font-size: 0.85rem;
+  .carousel-wave {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V30 H0 V0Z' fill='%23a5bf99' fill-opacity='0.15'/%3E%3C/svg%3E");
+    background-size: cover;
   }
   
-  .carousel-price {
-    font-size: 1rem;
-    padding: 3px 10px;
+  .carousel-gold-accent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, 
+      rgba(192, 160, 128, 0), 
+      rgba(233, 211, 163, 0.9), 
+      rgba(192, 160, 128, 0));
   }
   
+  .carousel-decorative-bottom {
+    position: relative;
+    height: 10px;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  /* Carousel container */
+  .carousel-container {
+    padding: 0;
+  }
+  
+  /* Image container styling */
   .carousel-image-container {
-    padding: 5px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
   }
-}
+  
+  .carousel-image-wrapper {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    width: calc(100% - 20px);
+    height: 380px;
+    margin: 0 10px;
+  }
+  
+  .carousel-image-wrapper:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+  
+  .carousel-image-wrapper:hover .carousel-price {
+    background-color: rgba(165, 191, 153, 0.85);
+    transform: scale(1.05);
+  }
+  
+  .carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.5s ease, filter 0.5s ease;
+    filter: brightness(0.85) contrast(1.05);
+  }
+  
+  .carousel-image-wrapper:hover .carousel-image {
+    transform: scale(1.05);
+    filter: brightness(0.9) contrast(1.1);
+  }
+  
+  /* Overlay styling - Versão refinada */
+  .carousel-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px;
+    background: linear-gradient(to bottom, 
+      rgba(0,0,0,0.5) 0%, 
+      rgba(0,0,0,0.1) 30%, 
+      rgba(0,0,0,0.1) 70%, 
+      rgba(0,0,0,0.5) 100%);
+    border-radius: 10px;
+    z-index: 1;
+  }
+  
+  /* Título refinado */
+  .carousel-title {
+    color: white;
+    font-size: 1.7rem;
+    font-weight: 450;
+    text-align: center;
+    margin-top: 8px;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    letter-spacing: 1px;
+  }
+  
+  /* Opções para a descrição promocional */
+  /* Opção 1: Esconder completamente */
+  .carousel-caption {
+    display: none;
+  }
+  
+  /* Opção 2: Tornar mais sutil e mover para baixo do título */
+  
+  /* .carousel-caption {
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 300; 
+    margin: 0 auto;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    max-width: 80%;
+    letter-spacing: 0.5px;
+    font-style: italic;
+  } */
+  
+  /* Preço mais sofisticado */
+  .carousel-price {
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 500;
+    align-self: flex-end;
+    margin-top: auto;
+    padding: 6px 16px;
+    background-color: rgba(92, 113, 96, 0.75);
+    border-radius: 20px;
+    backdrop-filter: blur(3px);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.25);
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+  }
+  
+  /* Custom styling for react-multi-carousel components */
+  .react-multi-carousel-list {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .react-multi-carousel-track {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform, transition;
+  }
+  
+  .react-multi-carousel-item {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+  
+  /* Custom arrow styling */
+  .react-multiple-carousel__arrow {
+    background-color: rgba(165, 191, 153, 0.7) !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 8px rgba(92, 113, 96, 0.25) !important;
+    transition: all 0.3s ease !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+  
+  .react-multiple-carousel__arrow:hover {
+    background-color: rgba(92, 113, 96, 0.8) !important;
+  }
+  
+  .react-multiple-carousel__arrow--left {
+    left: 10px !important;
+  }
+  
+  .react-multiple-carousel__arrow--right {
+    right: 10px !important;
+  }
+  
+  /* Custom dots styling */
+  .custom-dot-list-style {
+    display: flex !important;
+    justify-content: center !important;
+    position: absolute;
+    bottom: -30px;
+    left: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-align: center;
+  }
+  
+  .react-multi-carousel-dot button {
+    border-color: #a5bf99 !important;
+    background: transparent !important;
+    margin: 5px !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .react-multi-carousel-dot--active button {
+    background: #a5bf99 !important;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 1024px) {
+    .carousel-image-wrapper {
+      height: 350px;
+    }
+    
+    .carousel-title {
+      font-size: 1.4rem;
+    }
+    
+    .carousel-caption {
+      font-size: 1rem;
+    }
+    
+    .carousel-price {
+      font-size: 1.2rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .carousel-image-wrapper {
+      height: 300px;
+    }
+    
+    .carousel-title {
+      font-size: 1.3rem; 
+    }
+    
+    .carousel-caption {
+      font-size: 0.9rem;
+    }
+    
+    .carousel-price {
+      font-size: 1.1rem;
+    }
+    
+    .react-multiple-carousel__arrow {
+      min-width: 30px !important;
+      min-height: 30px !important;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .carousel-image-wrapper {
+      height: 260px;
+      width: 90%;
+      margin: 0 auto;
+    }
+    
+    .carousel-title {
+      font-size: 1.1rem;
+    }
+    
+    .carousel-caption {
+      font-size: 0.85rem;
+    }
+    
+    .carousel-price {
+      font-size: 2rem;
+      padding: 3px 10px;
+    }
+    
+    .carousel-image-container {
+      padding: 5px;
+    }
+  }
