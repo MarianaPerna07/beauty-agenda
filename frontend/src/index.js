@@ -4,12 +4,12 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Services from './pages/Services';
+import Prices from './pages/Prices';
 import Nav from './components/Nav';
 import NotFound from './pages/Notfound';
 import Contact from './pages/Contact';
 import About from './pages/About';
-import Team from './pages/Team';
+import Services from './pages/Services';
 import Reservations from './pages/Reservations';
 import Footer from './components/Footer';
 
@@ -19,10 +19,10 @@ root.render(
   <Nav/>
   <Routes>
     <Route path='/' Component={App}></Route>
-    <Route path='/services' Component={Services}></Route>
+    <Route path='/prices' Component={Prices}></Route>
     <Route path='/contact' Component={Contact}></Route>
     <Route path='/about' Component={About}></Route>
-    <Route path='/team' Component={Team}></Route>
+    <Route path='/services' Component={Services}></Route>
     <Route path='/reservations' Component={Reservations}></Route>
     <Route path='*' Component={NotFound}></Route>
   </Routes>

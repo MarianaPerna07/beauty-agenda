@@ -43,11 +43,11 @@ function Nav() {
 
   // Desktop links configuration
   const leftLinks = [
-    { path: '/team', label: 'Serviços' },
+    { path: '/services', label: 'Serviços' },
     { path: '/about', label: 'Informações' }
   ]
   const rightLinks = [
-    { path: '/contact', label: 'Preços' },
+    { path: '/prices', label: 'Preços' },
     { path: '/reservations', label: 'Agendar' }
   ]
 

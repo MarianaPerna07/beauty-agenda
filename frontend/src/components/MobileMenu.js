@@ -25,8 +25,8 @@ function MobileMenu({ mobileMenuActive, setMobileMenuActive, slide }) {
         <div className='flex flex-col gap-10 items-center justify-center h-full text-2xl nav'>
           {[
             { to: '/about', label: 'Sobre nós' },
-            { to: '/team',  label: 'Serviços' },
-            { to: '/services', label: 'Preços' },
+            { to: '/services',  label: 'Serviços' },
+            { to: '/prices', label: 'Preços' },
           ].map(({ to, label }) => (
             <Link
               key={to}

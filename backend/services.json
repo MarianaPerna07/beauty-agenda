@@ -1,0 +1,15 @@
+[
+  {
+    "service_id": 1,
+    "name": "Manicure Simples",
+    "workers": [
+      { "worker_id": "1", "locations": ["Gafanha", "Aveiro"] },
+      { "worker_id": "2", "locations": ["Gafanha"] }
+    ],
+    "price": 7,
+    "description": ["Limpeza das unhas", "Corte e limagem", "Tratamento de cutículas", "Hidratação"],
+    "duration": 30,
+    "category": "Manicure",
+    "featured": false
+  }
+]
