@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import scrollToTop from '../helpers/scrollToTop'
+import bannerImage from '../images/banner-image.png'
 
 function About() {
   useEffect(() => {
@@ -12,7 +13,7 @@ function About() {
       <div className='relative'>
         <img 
           className='object-cover h-[50vh] w-full' 
-          src='https://images.pexels.com/photos/3738345/pexels-photo-3738345.jpeg' 
+          src={bannerImage}
           alt="Ambiente acolhedor do Beauty Space"
         />
         <div className='absolute inset-0 bg-gradient-to-b from-[#c0a080]/40 to-[#c0a080]/70'></div>

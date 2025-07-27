@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import ServicePrices from '../components/ServicePrices'
 import scrollToTop from '../helpers/scrollToTop'
 import BookingButton from '../components/BookingButton';
+import bannerImage from '../images/banner-image.png'
+
 
 function Prices() {
   useEffect(() => {
@@ -14,7 +16,7 @@ function Prices() {
       <div className='relative'>
         <img 
           className='object-cover h-[50vh] w-full' 
-          src='https://images.pexels.com/photos/3997378/pexels-photo-3997378.jpeg' 
+          src={bannerImage}
           alt="Preçário"
         />
         <div className='absolute inset-0 bg-gradient-to-b from-[#c0a080]/40 to-[#c0a080]/70'></div>

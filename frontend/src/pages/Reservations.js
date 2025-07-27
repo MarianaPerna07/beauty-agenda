@@ -7,6 +7,7 @@ import "../styles/datepicker-custom.css";
 import ptCustom from '../utils/datepicker-locale';
 import mariaImg from '../images/maria.png'
 import laraImg  from '../images/lara.png'
+import bannerImage from '../images/banner-image.png'
 
 // Registrar o idioma português personalizado
 registerLocale('pt-custom', ptCustom);
@@ -1044,7 +1045,7 @@ function Reservations() {
       <div className='relative'>
         <img 
           className='object-cover h-[50vh] w-full' 
-          src='https://images.pexels.com/photos/3985333/pexels-photo-3985333.jpeg' 
+          src={bannerImage}
           alt="Agendamento de serviços"
         />
         <div className='absolute inset-0 bg-gradient-to-b from-[#c0a080]/40 to-[#c0a080]/70'></div>
