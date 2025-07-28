@@ -1,0 +1,1 @@
+sudo docker run --rm   -v $(pwd)/certbot/www:/var/www/certbot   -v $(pwd)/certbot/conf:/etc/letsencrypt   certbot/certbot certonly   --webroot   --webroot-path=/var/www/certbot   --agree-tos   --no-eff-email   --email gonperna@gmail.com   -d pernalix.pt -d www.pernalix.pt

@@ -1,0 +1,1 @@
+sudo docker run --rm   -p 80:80   -v $(pwd)/certbot/www:/usr/share/nginx/html:ro   nginx
