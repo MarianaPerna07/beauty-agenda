@@ -8,11 +8,11 @@ function Footer() {
   return (
     <footer className="relative bg-[#F5F1E9] text-[#5c7160] overflow-hidden">
       {/* Decorative wave shape at the top */}
-      <div className="absolute left-0 top-0 w-full h-12">
+      {/* <div className="absolute left-0 top-0 w-full h-12">
         <svg viewBox="0 0 1200 30" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full">
           <path d="M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V30 H0 V0Z" fill="#a5bf99" fillOpacity="0.15"/>
         </svg>
-      </div>
+      </div> */}
       
       {/* Gold accent line */}
       <div className="absolute left-0 top-12 w-full h-0.5 bg-gradient-to-r from-[#c0a080] via-[#e9d3a3] to-[#c0a080]"></div>
@@ -26,7 +26,7 @@ function Footer() {
               <img src={logo} alt="Beauty Space Logo" className="w-36" />
             </Link>
             <p className="text-sm font-light text-[#5c7160] opacity-80">
-              O seu espaço de estética onde a expertise encontra a elegância. Agende a sua sessão de autocuidado hoje.
+              O seu espaço de estética onde o profissionalismo encontra a elegância. Agende a sua sessão de hoje.
             </p>
           </div>
           
@@ -39,7 +39,7 @@ function Footer() {
                 <span className="absolute -bottom-1 left-0 w-2/3 h-0.5 bg-[#a5bf99]"></span>
               </h4>
               <ul className="space-y-2">
-                <li><Link to="/team" className="text-[#5c7160] hover:text-[#a3ba93] transition-colors text-sm">Serviços</Link></li>
+                <li><Link to="/services" className="text-[#5c7160] hover:text-[#a3ba93] transition-colors text-sm">Serviços</Link></li>
                 <li><Link to="/about" className="text-[#5c7160] hover:text-[#a3ba93] transition-colors text-sm">Informações</Link></li>
                 <li><Link to="/contact" className="text-[#5c7160] hover:text-[#a3ba93] transition-colors text-sm">Contactos</Link></li>
               </ul>
@@ -54,7 +54,7 @@ function Footer() {
               <ul className="space-y-2">
                 <li className="flex items-center text-sm">
                   <span className="mr-2 text-[#a5bf99]">📍</span>
-                  <span>Rua da Beleza 123, Lisboa</span>
+                  <span>Gafanha da Nazaré, Aveiro</span>
                 </li>
                 <li className="flex items-center text-sm">
                   <span className="mr-2 text-[#a5bf99]">📱</span>

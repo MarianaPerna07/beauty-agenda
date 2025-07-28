@@ -35,7 +35,7 @@ function Prices() {
       </div>
       
       {/* Introduction Section */}
-      <section className="py-12 px-6">
+      <section className="py-16 px-6">
         <div className="container mx-auto max-w-4xl text-center">
           <h3 className="text-3xl md:text-4xl font-light text-[#5c7160] mb-6">
             Os Nossos Serviços e Preços
@@ -44,27 +44,28 @@ function Prices() {
             Oferecemos uma variedade de tratamentos de beleza de alta qualidade 
             por preços acessíveis. Consulte a nossa lista completa abaixo.
           </p>
-          
-          {/* Decorative divider */}
-          <div className="w-32 h-0.5 mx-auto my-8 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
         </div>
       </section>
+
+      <div className="w-64 h-0.5 mx-auto my-2 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
       
       {/* Prices Section */}
-      <section className="pb-16 px-6">
+      <section className="py-16 px-6">
         <div className="container mx-auto max-w-5xl">
           <ServicePrices/>
         </div>
       </section>
+
+      <div className="w-64 h-0.5 mx-auto my-2 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
       
       {/* Call to Action */}
-      <section className="py-16 px-6 bg-gradient-to-br from-[#5c7160]/10 to-[#a5bf99]/10">
+      <section className="py-16 px-6 bg-gradient-to-br from-[#F5F1E9]/10 to-[#F5F1E9]/10">
         <div className="container mx-auto max-w-4xl text-center">
           <h3 className="text-2xl md:text-3xl font-light text-[#5c7160] mb-6">
-            Pronta para marcar a sua consulta?
+            Vamos marcar uma sessão?
           </h3>
           <p className="text-lg text-[#5c7160]/80 mb-8">
-            Estamos ansiosos para recebê-la e proporcionar uma experiência de beleza personalizada.
+            Estamos ansiosas para te proporcionar uma experiência de beleza personalizada.
           </p>
           <div className="flex justify-center">
             <BookingButton className="px-8 py-3 text-base md:text-lg">

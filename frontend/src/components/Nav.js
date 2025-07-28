@@ -92,12 +92,11 @@ function Nav() {
         <Link
           onClick={() => setActiveLink('')}
           to="/"
-          className="absolute left-1/2 transform -translate-x-1/2"
+          className="absolute left-1/2 transform -translate-x-1/2 cursor-pointer"
         >
           <img
             src={logo}
             className="px-2 w-48 mx-auto"
-            alt="Your Moments Estética Logo"
           />
         </Link>
 

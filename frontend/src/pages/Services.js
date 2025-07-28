@@ -761,14 +761,14 @@ function Services() {
       </section>
       
       {/* Service Cards */}
-      <section className="py-12 px-6 bg-[#5c7160]/5">
+      <section className="py-12 px-6 bg-[#F5F1E9]/5">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {serviceData[activeCategory].map((service, index) => (
               <div 
                 key={index}
                 id={`service-${service.title}`} // Adicionar ID para localização
-                className="bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                className="bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
               >
                 <div className="h-64 overflow-hidden relative">
                   <img 
@@ -776,21 +776,16 @@ function Services() {
                     alt={service.title} 
                     className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
                   />
-                  <div className="absolute top-0 right-0 bg-[#5c7160] text-white px-4 py-2 rounded-bl-lg">
+                  {/* <div className="absolute top-0 right-0 bg-[#5c7160] text-white px-4 py-2 rounded-bl-lg">
                     {service.price}
                   </div>
                   <div className="absolute bottom-0 left-0 bg-[#5c7160] text-white px-4 py-1 rounded-tr-lg text-sm">
                     {service.duration}
-                  </div>
+                  </div> */}
                 </div>
                 
                 <div className="p-4">
                   <h3 className="text-lg font-medium text-[#5c7160]">{service.title}</h3>
-                  <div className="flex justify-between items-center mt-2">
-                    <div className="text-sm text-[#5c7160]/80">{service.duration}</div>
-                    <div className="font-medium text-[#c0a080] text-xl">{service.price}</div>
-                  </div>
-                  
                   <ul className="mt-4 space-y-2">
                     {service.details.map((detail, i) => (
                       <li key={i} className="flex items-start text-[#5c7160]/80 text-sm">
@@ -799,26 +794,14 @@ function Services() {
                       </li>
                     ))}
                   </ul>
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="text-xl text-[#5c7160]/50">{service.duration}</div>
+                    <div className="font-medium text-[#c0a080] text-xl">{service.price}</div>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-      
-      {/* Call to Action */}
-      <section className="py-16 px-6 relative">
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-full h-12 overflow-hidden">
-          <svg viewBox="0 0 1200 30" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full transform rotate-180">
-            <path d="M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V30 H0 V0Z" fill="#a5bf99" fillOpacity="0.15"/>
-          </svg>
-        </div>
-        
-        <div className="container mx-auto max-w-4xl text-center">
-          <h3 className="text-2xl md:text-3xl font-light text-[#5c7160] mb-6">
-            Pronta para realçar a sua beleza?
-          </h3>
         </div>
       </section>
     </div>

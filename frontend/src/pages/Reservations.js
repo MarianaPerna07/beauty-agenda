@@ -1126,13 +1126,13 @@ function Reservations() {
       </section>
 
       {/* Decorative Element */}
-      <div className="py-12 px-6 relative">
+      {/* <div className="py-12 px-6 relative">
         <div className="absolute top-0 left-0 w-full h-12 overflow-hidden">
           <svg viewBox="0 0 1200 30" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full">
             <path d="M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V30 H0 V0Z" fill="#5c7160" fillOpacity="0.05"/>
           </svg>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
