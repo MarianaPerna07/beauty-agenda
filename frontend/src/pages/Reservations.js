@@ -231,7 +231,7 @@ function Reservations() {
         }
       }
     }
-    scrollToTop();
+    window.scrollTo({ top: 400, behavior: 'smooth' });
   }, [categoryFromUrl, serviceFromUrl]);
 
 
@@ -417,7 +417,7 @@ function Reservations() {
   const nextStep = () => {
     if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
-      scrollToTop(); // Adicionar chamada para scrollToTop
+      window.scrollTo({ top: 400, behavior: 'smooth' });
     }
   };
 
@@ -444,7 +444,7 @@ function Reservations() {
       }
       
       setCurrentStep(currentStep - 1);
-      scrollToTop();
+      window.scrollTo({ top: 400, behavior: 'smooth' });
     }
   };
 
@@ -494,7 +494,8 @@ function Reservations() {
       
       // Atualizar o passo atual
       setCurrentStep(step);
-      scrollToTop();
+      //Scroll to a specific height on the page
+      window.scrollTo({ top: 400, behavior: 'smooth' });
     }
   };
 
@@ -1179,7 +1180,7 @@ function Reservations() {
   };
 
   return (
-    <div className='min-h-screen bg-[#F5F1E9]'>
+    <div className='min-h-screen bg-[#F5F1E9]' id='banner'>
       {/* Hero Section */}
       <div className='relative'>
         <img 
@@ -1195,7 +1196,7 @@ function Reservations() {
         </div>
         
         {/* Wave shape at the bottom */}
-        <div className="absolute bottom-0 left-0 w-full h-16">
+        <div className="absolute bottom-0 left-0 w-full h-16" id="wave-shape">
           <svg viewBox="0 0 1200 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full">
             <path d="M0,60 V30 C150,50 350,40 500,35 C650,30 750,25 900,30 C1050,35 1200,45 1200,45 V60 H0 Z" fill="#F5F1E9"/>
           </svg>
@@ -1203,7 +1204,7 @@ function Reservations() {
       </div>
       
       {/* Stepper */}
-      <div className="pt-8 pb-4 px-6 relative">
+      <div className="pt-8 pb-4 px-6 relative" id="stepper">
         <div className="container mx-auto max-w-6xl">
           <div className="flex justify-between items-center relative px-2 sm:px-8">
             {/* Linha de fundo (não completado) */}
@@ -1211,6 +1212,7 @@ function Reservations() {
             
             {/* Linha de progresso (completado) */}
             <div 
+              id='progress-line'
               className="absolute left-0 top-5 h-0.5 bg-[#a5bf99]"
               style={{ 
                 width: `${((currentStep - 1) / 4) * 100}%`,
