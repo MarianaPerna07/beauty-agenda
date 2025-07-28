@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import scrollToTop from '../helpers/scrollToTop'
+import bannerImage from '../images/banner-image.png'
 
 function Services() {
   const [searchParams] = useSearchParams();
@@ -703,7 +704,7 @@ function Services() {
       <div className='relative'>
         <img 
           className='object-cover h-[50vh] w-full' 
-          src='https://images.pexels.com/photos/3997305/pexels-photo-3997305.jpeg' 
+          src={bannerImage}
           alt="Serviços de beleza e estética"
         />
         <div className='absolute inset-0 bg-gradient-to-b from-[#c0a080]/40 to-[#c0a080]/70'></div>
@@ -783,11 +784,12 @@ function Services() {
                   </div>
                 </div>
                 
-                <div className="p-6">
-                  <h4 className="text-xl font-medium text-[#5c7160] mb-4 relative">
-                    {service.title}
-                    <span className="absolute -bottom-1 left-0 w-12 h-0.5 bg-[#a5bf99]"></span>
-                  </h4>
+                <div className="p-4">
+                  <h3 className="text-lg font-medium text-[#5c7160]">{service.title}</h3>
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="text-sm text-[#5c7160]/80">{service.duration}</div>
+                    <div className="font-medium text-[#c0a080] text-xl">{service.price}</div>
+                  </div>
                   
                   <ul className="mt-4 space-y-2">
                     {service.details.map((detail, i) => (

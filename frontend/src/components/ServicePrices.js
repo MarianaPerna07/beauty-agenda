@@ -18,9 +18,9 @@ function ServicePrices() {
             <div className="flex items-end">
               <h2 className="font-bold min-w-fit">Manicure simples com pintura</h2>
               <div className="h-px w-full mb-1 bg-neutral-400"></div>
-              <p>8.50€</p>
+              <p className="font-medium text-[#c0a080]">8.50€</p>
             </div>
-            <p>30 minutos</p>
+            <p >30 minutos</p>
           </div>
 
           <div className="text-left">

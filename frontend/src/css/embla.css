@@ -54,9 +54,6 @@
     padding-left: var(--slide-spacing);
     cursor: pointer;
   }
-  .embla__slide:hover .embla__slide__img {
-    transform: scale(1.05);
-  }
   .embla__slide__img {
     border-radius: 1.8rem;
     display: block;
