@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import scrollToTop from '../helpers/scrollToTop'
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -185,14 +186,9 @@ function ConfirmationStep({
 }
 
 function Reservations() {
-  useEffect(() => {
-    scrollToTop()
-  }, [])
-
   // Estados para controlar as etapas e seleções
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedService, setSelectedService] = useState(null)
-  const [selectedCategory, setSelectedCategory] = useState(null)
   const [selectedProfessional, setProfessional] = useState(null)
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
@@ -206,6 +202,36 @@ function Reservations() {
     email: '',
     phone: ''
   });
+
+  // Buscar parâmetros da URL
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
+  const serviceFromUrl = searchParams.get('service');
+  
+  // Configurar estados com valores iniciais da URL
+  const [selectedCategory, setSelectedCategory] = useState(
+    categoryFromUrl ? serviceCategories.find(cat => cat.id === categoryFromUrl) : null
+  );
+  
+  // Encontrar o serviço correspondente quando a página carrega
+  useEffect(() => {
+    if (categoryFromUrl && serviceFromUrl && services[categoryFromUrl]) {
+      const foundService = services[categoryFromUrl].find(
+        service => service.name === serviceFromUrl
+      );
+      
+      if (foundService) {
+        setSelectedService(foundService);
+        
+        // Após selecionar o serviço, avançar para a próxima etapa
+        if (currentStep === 1) {
+          nextStep();
+        }
+      }
+    }
+    scrollToTop();
+  }, [categoryFromUrl, serviceFromUrl]);
+
 
   // Dados de exemplo (no futuro poderão vir de uma API)
   const serviceCategories = [

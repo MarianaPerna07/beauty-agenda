@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import scrollToTop from "./helpers/scrollToTop";
 import { Link } from "react-router-dom";
 import './css/embla.css'
+import ImagemAboutUs from "./components/images/elas_imagem_fake.png";
 
 const OPTIONS = { loop: true }
 const SLIDE_COUNT = 6 // Number of slides in the carousel
@@ -91,15 +92,15 @@ function App() {
       <div className="w-64 h-0.5 mx-auto my-2 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
       
       {/* About Us Section */}
-      <section className="py-12">
-        {/* Decorative elements */}
+      <section className="py-12 relative bg-[#f5f1e9]">
+        {/* Decorative SVG Top Element */}
         <div className="absolute top-0 left-0 w-full h-12 overflow-hidden">
           <svg viewBox="0 0 1200 30" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full transform rotate-180">
             <path d="M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V30 H0 V0Z" fill="#a5bf99" fillOpacity="0.15"/>
           </svg>
         </div>
-        
-        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+
+        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-12 px-6">
           {/* Text content */}
           <div className="flex flex-col gap-6 md:w-1/2 text-center md:text-left">
             <h3 className="text-3xl md:text-4xl font-light text-[#5c7160] relative">
@@ -107,25 +108,33 @@ function App() {
               <span className="absolute -bottom-2 left-0 md:w-24 h-0.5 bg-[#a5bf99] hidden md:block"></span>
             </h3>
             <p className="italic text-[#5c7160]/80">Your Moments</p>
-            <p className="text-lg font-light text-[#5c7160]">
-              O seu destino para serviços de beleza e bem-estar de alto nível no coração de Aveiro. Estabelecidos com paixão pela arte da beleza e comprometidos com nossa comunidade, dedicamo-nos a proporcionar uma experiência excepcional que a deixará radiante por dentro e por fora.
-            </p>
-            <p className="text-lg font-light text-[#5c7160]">
-              Agende o seu momento de beleza conosco e descubra como podemos transformar a sua visão de estética em realidade. Estamos aqui para cuidar de si, com amor e dedicação, porque cada momento merece ser especial.
-            </p>
-            
+            <div className="text-lg font-light text-[#5c7160] space-y-4">
+              <p>
+                Somos mãe e filha, unidas não só por laços familiares, mas também pela paixão partilhada pela estética e pelo bem-estar. A <strong>Your Moments</strong> nasceu desse amor comum pela arte de cuidar, pelo detalhe, e sobretudo, pelo brio em fazer bem feito.
+              </p>
+              <p>
+                Com uma dedicação profunda à excelência, investimos constantemente na nossa formação e contamos com certificações especializadas nas áreas em que atuamos. Trabalhamos exclusivamente com produtos de qualidade, devidamente certificados pela União Europeia, garantindo segurança, eficácia e respeito pela saúde de cada cliente.
+              </p>
+              <p>
+                Estamos muito entusiasmadas com o futuro. Acreditamos que a estética vai muito além da aparência — é também sobre confiança, autoestima e momentos de cuidado pessoal. Por isso, estamos também a apostar no crescimento digital da <strong>Your Moments</strong>, para que os nossos serviços cheguem a ainda mais pessoas, com a mesma atenção e carinho que oferecemos em cada atendimento presencial.
+              </p>
+              <p>
+                Mais do que um espaço de beleza, a <strong>Your Moments</strong> é um projeto de vida. É o reflexo da nossa dedicação, da nossa paixão, e da vontade sincera de proporcionar experiências verdadeiramente especiais.
+              </p>
+            </div>
+
             <Link to="/services" className="self-center md:self-start mt-4 relative group inline-flex items-center">
               <span className="text-[#5c7160] group-hover:text-[#a3ba93] transition-colors">Conheça os nossos serviços</span>
               <span className="ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform">→</span>
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#a5bf99] group-hover:w-full transition-all duration-300"></span>
             </Link>
           </div>
-          
+
           {/* Image */}
           <div className="md:w-1/3 relative">
             <div className="rounded-lg overflow-hidden shadow-lg">
               <img 
-                src="https://images.pexels.com/photos/3738348/pexels-photo-3738348.jpeg" 
+                src={ImagemAboutUs}
                 alt="Your Moments Estética" 
                 className="w-full h-auto object-cover" 
               />

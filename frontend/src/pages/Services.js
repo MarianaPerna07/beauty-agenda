@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import scrollToTop from '../helpers/scrollToTop'
 import bannerImage from '../images/banner-image.png'
+import ServiceModal from '../components/ServiceModal'
+import BookingButton from '../components/BookingButton'
 
 function Services() {
   const [searchParams] = useSearchParams();
@@ -10,6 +12,9 @@ function Services() {
   
   // Estado para categoria ativa, inicializa com o valor da URL ou 'manicure' por padrão
   const [activeCategory, setActiveCategory] = useState(categoryFromUrl || 'manicure')
+
+  // Estado para controlar o modal
+  const [selectedService, setSelectedService] = useState(null);
   
   // Efeito para rolar para o elemento do serviço se especificado na URL
   useEffect(() => {
@@ -31,7 +36,17 @@ function Services() {
     }
   }, [serviceFromUrl]);
 
-  // Categorias de serviços atualizadas
+  // Função para abrir o modal
+  const openServiceModal = (service) => {
+    setSelectedService(service);
+  };
+
+  // Função para fechar o modal
+  const closeServiceModal = () => {
+    setSelectedService(null);
+  };
+
+  // Categorias de serviços
   const categories = [
     { id: 'manicure', name: 'Manicure' },
     { id: 'depilacao_mulher', name: 'Depilação a Cera Mulher' },
@@ -767,43 +782,69 @@ function Services() {
             {serviceData[activeCategory].map((service, index) => (
               <div 
                 key={index}
-                id={`service-${service.title}`} // Adicionar ID para localização
-                className="bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
+                id={`service-${service.title}`}
+                className="bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group"
               >
-                <div className="h-64 overflow-hidden relative">
+                <div 
+                  className="h-64 overflow-hidden relative cursor-pointer"
+                  onClick={() => openServiceModal(service)}
+                >
                   <img 
                     src={service.image} 
                     alt={service.title} 
-                    className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+                    className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
                   />
-                  {/* <div className="absolute top-0 right-0 bg-[#5c7160] text-white px-4 py-2 rounded-bl-lg">
-                    {service.price}
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="px-4 py-2 bg-white/80 rounded-full text-[#5c7160] text-sm font-medium">
+                      Ver detalhes
+                    </span>
                   </div>
-                  <div className="absolute bottom-0 left-0 bg-[#5c7160] text-white px-4 py-1 rounded-tr-lg text-sm">
-                    {service.duration}
-                  </div> */}
                 </div>
                 
                 <div className="p-4">
-                  <h3 className="text-lg font-medium text-[#5c7160]">{service.title}</h3>
-                  <ul className="mt-4 space-y-2">
-                    {service.details.map((detail, i) => (
+                  <h3 className="text-lg font-medium text-[#5c7160] mb-2">{service.title}</h3>
+                  
+                  <div className="flex justify-between items-center mb-3">
+                    <div className="text-[#5c7160]/70">{service.duration}</div>
+                    <div className="font-medium text-[#c0a080] text-xl">{service.price}</div>
+                  </div>
+                  
+                  {/* Lista de características (limitada a 3 para o card) */}
+                  <ul className="mt-3 mb-4 space-y-1">
+                    {service.details.slice(0, 3).map((detail, i) => (
                       <li key={i} className="flex items-start text-[#5c7160]/80 text-sm">
                         <span className="text-[#a5bf99] mr-2">•</span>
                         <span>{detail}</span>
                       </li>
                     ))}
                   </ul>
-                  <div className="flex justify-between items-center mt-2">
-                    <div className="text-xl text-[#5c7160]/50">{service.duration}</div>
-                    <div className="font-medium text-[#c0a080] text-xl">{service.price}</div>
-                  </div>
+                  
+                  {/* Botão de agendar */}
+                  {/* <div className="mt-auto pt-3">
+                    <BookingButton 
+                      to={`/reservations?category=${activeCategory}&service=${encodeURIComponent(service.title)}`}
+                      className="text-sm py-2 w-full"
+                      fullWidth
+                    >
+                      <span className="text-sm">Agendar</span>
+                    </BookingButton>
+                  </div> */}
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Modal de serviço */}
+      {selectedService && (
+        <ServiceModal 
+          service={selectedService} 
+          onClose={closeServiceModal} 
+          categoryId={activeCategory}
+        />
+      )}
+
     </div>
   )
 }
