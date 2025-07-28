@@ -15,6 +15,58 @@ import image6 from '../images/manicure/6_gel_extensao.jpg'
 import image7 from '../images/manicure/7_acrygel_extensao.jpg'
 import image8 from '../images/manicure/8_unha_partida.jpg'
 import image9 from '../images/manicure/9_remocao.jpg'
+import image10 from '../images/depilacao_cera/0-depilacao-cera-buco.png'
+
+import image11 from '../images/depilacao_cera/1-depilacao-cera-sobrancelha.jpg'
+import image12 from '../images/depilacao_cera/2-depilacao-cera-mento.jpg'
+import image13 from '../images/depilacao_cera/3-depilacao-cera-axilas.jpg'
+import image14 from '../images/depilacao_cera/4-depilacao-cera-virilha-cavada.jpg'
+import image15 from '../images/depilacao_cera/5-depilacao-cera-virilha-completa.jpg'
+import image16 from '../images/depilacao_cera/6-depilacao-cera-bracos-completos.jpg'
+import image17 from '../images/depilacao_cera/7-depilacao-cera-meia-perna.jpg'
+import image18 from '../images/depilacao_cera/8-depilacao-cera-perna-inteira.jpg'
+import image19 from '../images/depilacao_cera/9-depilacao-cera-perna-inteira-virilha-axila.jpg'
+
+import image20 from '../images/pedicure/0_pedicure_simples.jpg'
+import image21 from '../images/pedicure/1_pedicure_simples_verniz.jpg'
+import image22 from '../images/pedicure/2_pedicure_completa.jpg'
+import image23 from '../images/pedicure/3_pedicure_completa_verniz.jpg'
+import image24 from '../images/pedicure/4_pedicure_verniz_gel.png'
+import image25 from '../images/pedicure/5_pedicure_verniz_gel_completo.jpg'
+
+import image26 from '../images/depilacao_cera_homem/0-peito-abdomen.jpg'
+import image27 from '../images/depilacao_cera_homem/1-costas.jpg'
+import image28 from '../images/depilacao_cera_homem/2-gluteos.png'
+import image29 from '../images/depilacao_cera_homem/3-virilha.jpg'
+import image30 from '../images/depilacao_cera_homem/4-axilas.jpg'
+import image31 from '../images/depilacao_cera_homem/5-pernas.png'
+import image32 from '../images/depilacao_cera_homem/6-bracos-completos.jpg'
+
+import image33 from '../images/depilacao_laser/0-1-zona.jpg'
+import image34 from '../images/depilacao_laser/1-2-zonas.jpg'
+import image35 from '../images/depilacao_laser/2-3-zonas.jpg'
+import image36 from '../images/depilacao_laser/3-4-zonas.jpg'
+import image37 from '../images/depilacao_laser/4-5-zonas.jpg'
+import image38 from '../images/depilacao_laser/5-corpo-inteiro.jpg'
+
+import image39 from '../images/pestanas/0-pestanas-brasileiras.jpg'
+import image40 from '../images/pestanas/1-pestanas-egipcias.jpg'
+import image41 from '../images/pestanas/2-pestanas-hibridas.jpg'
+import image42 from '../images/pestanas/3-pestanas-manutencao.jpg'
+
+import image43 from '../images/sobrancelhas/0-sobrancelhas-laminacao.jpg'
+import image44 from '../images/sobrancelhas/1-sobrancelhas-henna.jpg'
+import image45 from '../images/sobrancelhas/2-sobrancelhas-microblading.jpg'
+
+import image46 from '../images/destaques/0-micropigmentacao.jpg'
+import image47 from '../images/destaques/1-eyeliner.png'
+import image48 from '../images/destaques/2-microagulhamento.jpg'
+import image49 from '../images/destaques/3-micropigmentacao-labial.jpg'
+import image50 from '../images/destaques/4-microblading.jpg'
+
+
+
+
 
 function Services() {
   const [searchParams] = useSearchParams();
@@ -198,7 +250,7 @@ function Services() {
         title: 'Pedicure simples',
         price: '10€',
         duration: '30 min',
-        image: 'https://images.pexels.com/photos/3997504/pexels-photo-3997504.jpeg',
+        image: image20,
         details: [
           'Limpeza das unhas dos pés',
           'Corte e limagem',
@@ -210,7 +262,7 @@ function Services() {
         title: 'Pedicure simples com verniz',
         price: '10.50€',
         duration: '45 min',
-        image: 'https://images.pexels.com/photos/3997512/pexels-photo-3997512.jpeg',
+        image: image21 ,
         details: [
           'Pedicure simples completa',
           'Aplicação de verniz tradicional',
@@ -222,7 +274,7 @@ function Services() {
         title: 'Pedicure completa',
         price: '17€',
         duration: '60 min',
-        image: 'https://images.pexels.com/photos/4046316/pexels-photo-4046316.jpeg',
+        image: image22 ,
         details: [
           'Banho relaxante de pés',
           'Esfoliação completa',
@@ -234,7 +286,7 @@ function Services() {
         title: 'Pedicure completa com verniz',
         price: '17.50€',
         duration: '75 min',
-        image: 'https://images.pexels.com/photos/3997392/pexels-photo-3997392.jpeg',
+        image: image23 ,
         details: [
           'Pedicure completa',
           'Aplicação de verniz tradicional',
@@ -246,7 +298,7 @@ function Services() {
         title: 'Pintura com verniz gel',
         price: '15€',
         duration: '40 min',
-        image: 'https://images.pexels.com/photos/3997389/pexels-photo-3997389.jpeg',
+        image: image24 ,
         details: [
           'Aplicação de verniz gel nas unhas dos pés',
           'Secagem em lâmpada UV',
@@ -258,7 +310,7 @@ function Services() {
         title: 'Pedicure com verniz gel',
         price: '22.50€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3997401/pexels-photo-3997401.jpeg',
+        image: image25 ,
         details: [
           'Pedicure completa',
           'Aplicação de verniz gel',
@@ -272,7 +324,7 @@ function Services() {
         title: 'Buço',
         price: '3€',
         duration: '10 min',
-        image: 'https://images.pexels.com/photos/5069594/pexels-photo-5069594.jpeg',
+        image: image10 ,
         details: [
           'Remoção dos pelos do buço',
           'Técnica suave para pele sensível',
@@ -284,7 +336,7 @@ function Services() {
         title: 'Sobrancelha',
         price: '5€',
         duration: '15 min',
-        image: 'https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg',
+        image: image11 ,
         details: [
           'Design personalizado',
           'Técnica de precisão',
@@ -296,7 +348,7 @@ function Services() {
         title: 'Mento',
         price: '3€',
         duration: '10 min',
-        image: 'https://images.pexels.com/photos/3738354/pexels-photo-3738354.jpeg',
+        image: image12 ,
         details: [
           'Depilação da região do queixo',
           'Cera específica para áreas pequenas',
@@ -308,7 +360,7 @@ function Services() {
         title: 'Axilas',
         price: '4€',
         duration: '10 min',
-        image: 'https://images.pexels.com/photos/3738348/pexels-photo-3738348.jpeg',
+        image: image13 ,
         details: [
           'Depilação completa das axilas',
           'Técnica precisa e rápida',
@@ -320,7 +372,7 @@ function Services() {
         title: 'Virilha cavada',
         price: '6€',
         duration: '20 min',
-        image: 'https://images.pexels.com/photos/5938360/pexels-photo-5938360.jpeg',
+        image: image14 ,
         details: [
           'Depilação parcial da área íntima',
           'Formato adaptado à preferência',
@@ -332,7 +384,7 @@ function Services() {
         title: 'Virilha completa',
         price: '9€',
         duration: '20 min',
-        image: 'https://images.pexels.com/photos/5240683/pexels-photo-5240683.jpeg',
+        image: image15 ,
         details: [
           'Depilação total da área íntima',
           'Técnica cuidadosa para minimizar desconforto',
@@ -344,7 +396,7 @@ function Services() {
         title: 'Braços completos',
         price: '8€',
         duration: '30 min',
-        image: 'https://images.pexels.com/photos/7760849/pexels-photo-7760849.jpeg',
+        image: image16 ,
         details: [
           'Depilação dos braços do pulso até o ombro',
           'Técnica em seções para maior conforto',
@@ -356,7 +408,7 @@ function Services() {
         title: 'Meia perna',
         price: '7€',
         duration: '20 min',
-        image: 'https://images.pexels.com/photos/7282433/pexels-photo-7282433.jpeg',
+        image: image17 ,
         details: [
           'Depilação do tornozelo até o joelho',
           'Ou do joelho até a coxa',
@@ -368,7 +420,7 @@ function Services() {
         title: 'Perna inteira',
         price: '12€',
         duration: '40 min',
-        image: 'https://images.pexels.com/photos/3738352/pexels-photo-3738352.jpeg',
+        image: image18 ,
         details: [
           'Depilação das pernas do tornozelo à coxa',
           'Técnica em seções para maior conforto',
@@ -380,7 +432,7 @@ function Services() {
         title: 'Perna inteira + virilha + axila',
         price: '22€',
         duration: '60 min',
-        image: 'https://images.pexels.com/photos/6663467/pexels-photo-6663467.jpeg',
+        image: image19 ,
         details: [
           'Combo completo de depilação',
           'Preço promocional integrado',
@@ -394,7 +446,7 @@ function Services() {
         title: 'Peito/Abdómen',
         price: '12€',
         duration: '20 min',
-        image: 'https://images.pexels.com/photos/3976320/pexels-photo-3976320.jpeg',
+        image: image26 ,
         details: [
           'Depilação completa do peito e abdômen',
           'Cera específica para pelos masculinos',
@@ -406,7 +458,7 @@ function Services() {
         title: 'Costas',
         price: '10€',
         duration: '15 min',
-        image: 'https://images.pexels.com/photos/4426555/pexels-photo-4426555.jpeg',
+        image: image27 ,
         details: [
           'Depilação completa das costas',
           'Técnica eficiente para área extensa',
@@ -418,7 +470,7 @@ function Services() {
         title: 'Glúteos',
         price: '5€',
         duration: '15 min',
-        image: 'https://images.pexels.com/photos/6551144/pexels-photo-6551144.jpeg',
+        image: image28 ,
         details: [
           'Depilação completa da área dos glúteos',
           'Técnica precisa e rápida',
@@ -430,7 +482,7 @@ function Services() {
         title: 'Virilha',
         price: '8€',
         duration: '20 min',
-        image: 'https://images.pexels.com/photos/6551176/pexels-photo-6551176.jpeg',
+        image: image29 ,
         details: [
           'Depilação da área íntima masculina',
           'Técnica adaptada para maior conforto',
@@ -442,7 +494,7 @@ function Services() {
         title: 'Axilas',
         price: '5€',
         duration: '10 min',
-        image: 'https://images.pexels.com/photos/3763347/pexels-photo-3763347.jpeg',
+        image: image30 ,
         details: [
           'Depilação completa das axilas',
           'Técnica específica para pelos grossos',
@@ -454,7 +506,7 @@ function Services() {
         title: 'Pernas',
         price: '14€',
         duration: '30 min',
-        image: 'https://images.pexels.com/photos/6698141/pexels-photo-6698141.jpeg',
+        image: image31 ,
         details: [
           'Depilação completa das pernas',
           'Técnica específica para pelos masculinos',
@@ -466,7 +518,7 @@ function Services() {
         title: 'Braços completos',
         price: '8€',
         duration: '30 min',
-        image: 'https://images.pexels.com/photos/4498362/pexels-photo-4498362.jpeg',
+        image: image32 ,
         details: [
           'Depilação dos braços do pulso até o ombro',
           'Técnica para pelos mais grossos',
@@ -480,7 +532,7 @@ function Services() {
         title: '1 zona',
         price: '15€',
         duration: '15 min',
-        image: 'https://images.pexels.com/photos/3985320/pexels-photo-3985320.jpeg',
+        image: image33 ,
         details: [
           'Depilação a laser de uma área pequena',
           'Equipamento de última geração',
@@ -492,7 +544,7 @@ function Services() {
         title: '2 zonas',
         price: '20€',
         duration: '30 min',
-        image: 'https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg',
+        image: image34 ,
         details: [
           'Depilação a laser de duas áreas',
           'Preço promocional combinado',
@@ -504,7 +556,7 @@ function Services() {
         title: '3 zonas',
         price: '30€',
         duration: '45 min',
-        image: 'https://images.pexels.com/photos/3738348/pexels-photo-3738348.jpeg',
+        image: image35 ,
         details: [
           'Depilação a laser de três áreas à escolha',
           'Economia significativa no pacote',
@@ -516,7 +568,7 @@ function Services() {
         title: '4 zonas',
         price: '40€',
         duration: '40 min',
-        image: 'https://images.pexels.com/photos/3738352/pexels-photo-3738352.jpeg',
+        image: image36 ,
         details: [
           'Depilação a laser de quatro áreas',
           'Pacote com desconto especial',
@@ -528,7 +580,7 @@ function Services() {
         title: '5 zonas',
         price: '50€',
         duration: '55 min',
-        image: 'https://images.pexels.com/photos/6551096/pexels-photo-6551096.jpeg',
+        image: image37 ,
         details: [
           'Depilação a laser de cinco áreas',
           'Sessão completa e economica',
@@ -540,7 +592,7 @@ function Services() {
         title: 'Corpo inteiro',
         price: '70€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/5240677/pexels-photo-5240677.jpeg',
+        image: image38 ,
         details: [
           'Depilação a laser completa',
           'Melhor relação custo-benefício',
@@ -554,7 +606,7 @@ function Services() {
         title: '1ª aplicação de pestanas brasileiras',
         price: '30€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3373738/pexels-photo-3373738.jpeg',
+        image: image39 ,
         details: [
           'Volume natural',
           'Cílios flexíveis e leves',
@@ -566,7 +618,7 @@ function Services() {
         title: 'Aplicação pestanas Egípcia',
         price: '30€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3059609/pexels-photo-3059609.jpeg',
+        image: image40 ,
         details: [
           'Formato alongado nas pontas externas',
           'Efeito de olhos puxados',
@@ -578,7 +630,7 @@ function Services() {
         title: 'Aplicação De pestanas Híbridas',
         price: '30€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/7356429/pexels-photo-7356429.jpeg',
+        image: image41 ,
         details: [
           'Mistura de técnicas para volume e comprimento',
           'Combina cílios finos e mais espessos',
@@ -590,7 +642,7 @@ function Services() {
         title: 'Manutenção (3 em 3 semanas)',
         price: '25€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3997391/pexels-photo-3997391.jpeg',
+        image: image42 ,
         details: [
           'Remoção de pestanas soltas',
           'Aplicação de novas pestanas',
@@ -604,7 +656,7 @@ function Services() {
         title: 'Brown Lamination',
         price: '25€',
         duration: '60 min',
-        image: 'https://images.pexels.com/photos/5069429/pexels-photo-5069429.jpeg',
+        image: image43 ,
         details: [
           'Lamina e fixa os pelos da sobrancelha',
           'Proporciona um efeito volumoso e estruturado',
@@ -616,7 +668,7 @@ function Services() {
         title: 'Henna',
         price: '15€',
         duration: '60 min',
-        image: 'https://images.pexels.com/photos/3373716/pexels-photo-3373716.jpeg',
+        image: image44 ,
         details: [
           'Coloração temporária para sobrancelhas',
           'Efeito natural com duração de até 15 dias',
@@ -628,7 +680,7 @@ function Services() {
         title: 'Microblading (inclui 2 manutenções)',
         price: '150€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg',
+        image: image45 ,
         details: [
           'Usa-se uma caneta com microlâminas',
           'Aplica-se pigmento na camada superficial da pele',
@@ -644,7 +696,7 @@ function Services() {
         title: 'Micropigmentação',
         price: '180€',
         duration: '120 min',
-        image: 'https://images.pexels.com/photos/3997379/pexels-photo-3997379.jpeg',
+        image: image46 ,
         details: [
           'Aplica-se pigmento na camada superficial da pele',
           'Realça ou corrige partes do rosto ou corpo',
@@ -658,7 +710,7 @@ function Services() {
         title: 'Eyeliner',
         price: '100€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3997993/pexels-photo-3997993.jpeg',
+        image: image47 ,
         details: [
           'Aplica-se pigmento na pele da pálpebra',
           'Realça os olhos de forma natural ou marcada',
@@ -673,7 +725,7 @@ function Services() {
         title: 'Microagulhamento',
         price: 'Sob consulta',
         duration: '60 min',
-        image: 'https://images.pexels.com/photos/3865557/pexels-photo-3865557.jpeg',
+        image: image48 ,
         details: [
           'Usa-se um aparelho com microagulhas',
           'Rejuvenesce a pele',
@@ -691,7 +743,7 @@ function Services() {
         title: 'Micropigmentação Labial',
         price: '240€',
         duration: '120 min',
-        image: 'https://images.pexels.com/photos/6628629/pexels-photo-6628629.jpeg',
+        image: image49 ,
         details: [
           'Aplica-se pigmento na pele dos lábios',
           'Dá cor, forma e definição à boca',
@@ -704,7 +756,7 @@ function Services() {
         title: 'Microblading',
         price: '150€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg',
+        image: image50 ,
         details: [
           'Usa-se uma caneta com microlâminas',
           'Aplica-se pigmento na camada superficial da pele',

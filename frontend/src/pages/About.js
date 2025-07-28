@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react'
 import scrollToTop from '../helpers/scrollToTop'
 import bannerImage from '../images/banner-image.png'
+import maria from '../images/maria.png'
+import lara from '../images/lara.png'
+import elas from '../images/elas_imagem_fake.png'
 
 function About() {
   useEffect(() => {
@@ -30,51 +33,8 @@ function About() {
           </svg>
         </div>
       </div>
-      
-      {/* Nossa História Section - Versão Compacta */}
-      <section className="py-10 md:py-16 px-6">
-        <div className="container mx-auto">
-          <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8">
-            <div className="md:w-1/4">
-              <div className="relative rounded-lg overflow-hidden shadow-lg">
-                <img 
-                  src='https://images.pexels.com/photos/3738345/pexels-photo-3738345.jpeg' 
-                  className="w-full h-auto" 
-                  alt="Ambiente do Beauty Space" 
-                />
-                <div className="absolute inset-0 border border-white/20 rounded-lg"></div>
-              </div>
-              <div className="relative">
-                <div className="absolute -bottom-2 -left-2 w-16 h-16 border border-[#a5bf99]/30 rounded-lg -z-10"></div>
-                <div className="absolute -top-2 -right-2 w-12 h-12 border border-[#c0a080]/30 rounded-lg -z-10"></div>
-              </div>
-            </div>
-            
-            <div className="md:w-3/4 flex flex-col gap-4">
-              <h3 className="text-2xl md:text-3xl font-light text-[#5c7160] relative">
-                Nossa História
-                <span className="absolute -bottom-1 left-0 w-16 h-0.5 bg-[#a5bf99]"></span>
-              </h3>
-              <p className="italic text-[#5c7160]/80">Lisboa | Desde 2023</p>
-              <p className="text-base font-light text-[#5c7160]">
-                No Your Moments Estética, nossa jornada começou com uma paixão profunda pela arte da beleza...
-              </p>
-              
-              {/* Decorative divider */}
-              <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent my-2"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Decorative wave divider - Refinada */}
-      <div className="relative h-16 overflow-hidden">
-        <svg viewBox="0 0 1200 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full">
-          <path d="M0,0 C150,20 350,40 500,30 C650,20 750,15 900,25 C1050,35 1200,15 1200,15 V60 H0 V0Z" fill="#a5bf99" fillOpacity="0.15"/>
-        </svg>
-      </div>
-      
-      {/* Nossa Equipe - Esteticistas Section */}
+  
+      {/* Nossa Equipa - Esteticistas Section */}
       <section className="py-16 md:py-20 px-6 bg-[#5c7160]/5">
         <div className="container mx-auto">
           <h3 className="text-3xl md:text-4xl font-light text-center text-[#5c7160] mb-12 relative">
@@ -87,7 +47,7 @@ function About() {
             <div className="md:w-1/4">
               <div className="relative rounded-lg overflow-hidden shadow-lg">
                 <img 
-                  src='https://images.pexels.com/photos/3997373/pexels-photo-3997373.jpeg' 
+                  src={maria}
                   className="w-full h-auto object-cover aspect-[3/4]" 
                   alt="Maria Lúcia" 
                 />
@@ -136,7 +96,7 @@ function About() {
             <div className="md:w-1/4">
               <div className="relative rounded-lg overflow-hidden shadow-lg">
                 <img 
-                  src='https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg' 
+                  src={lara}
                   className="w-full h-auto object-cover aspect-[3/4]" 
                   alt="Lara Oliveira" 
                 />
