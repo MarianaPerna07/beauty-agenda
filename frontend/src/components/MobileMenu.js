@@ -56,7 +56,7 @@ function MobileMenu({ mobileMenuActive, setMobileMenuActive, slide }) {
               transition
               duration-300
               hover:scale-110
-              text-[#C0A080]
+              text-[#d9bb9e]
               hover:text-[#A5BF99]
             "
           >

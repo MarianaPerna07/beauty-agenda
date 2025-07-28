@@ -33,9 +33,9 @@ function About() {
           </svg>
         </div>
       </div>
-  
-      {/* Nossa Equipa - Esteticistas Section */}
-      <section className="py-16 md:py-20 px-6 bg-[#5c7160]/5">
+      
+      {/* Nossa Equipe - Esteticistas Section */}
+      <section className="py-16 md:py-20 px-6 ">
         <div className="container mx-auto">
           <h3 className="text-3xl md:text-4xl font-light text-center text-[#5c7160] mb-12 relative">
             A Nossa Equipa
@@ -136,7 +136,7 @@ function About() {
                 Lara transforma o cuidado com as unhas em verdadeiras obras de arte. Com um olhar atento aos detalhes e uma mão firme, ela cria designs exclusivos que expressam a personalidade de cada cliente. Entusiasta de arte contemporânea, Lara busca inspiração em exposições e na natureza para suas criações.
               </p>
               
-              <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent my-2"></div>
+              
             </div>
           </div>
         </div>
