@@ -118,7 +118,7 @@ function Footer() {
           
           <div className="pt-6 text-center">
             <p className="text-[#5c7160] text-xs opacity-70 font-light">
-              © {new Date().getFullYear()} Your Moments Estética. Todos os direitos reservados.
+              © {new Date().getFullYear()} Your Moments Estética. Todos os direitos reservados. Powered by Pernalix.
             </p>
           </div>
         </div>
