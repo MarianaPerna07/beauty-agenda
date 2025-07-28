@@ -134,7 +134,7 @@ function About() {
                 Lara transforma o cuidado com as unhas em verdadeiras obras de arte. Com um olhar atento aos detalhes e uma mão firme, ela cria designs exclusivos que expressam a personalidade de cada cliente. Entusiasta de arte contemporânea, Lara busca inspiração em exposições e na natureza para suas criações.
               </p>
               
-              <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent my-2"></div>
+              
             </div>
           </div>
         </div>

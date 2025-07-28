@@ -44,8 +44,8 @@ function Nav() {
 
   // Desktop links configuration
   const leftLinks = [
-    { path: '/services', label: 'Serviços' },
-    { path: '/about', label: 'Informações' }
+    { path: '/about', label: 'Sobre nós' },
+    { path: '/services', label: 'Serviços' }
   ]
   const rightLinks = [
     { path: '/prices', label: 'Preços' },

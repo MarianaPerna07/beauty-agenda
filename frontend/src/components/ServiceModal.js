@@ -37,7 +37,7 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative animate-scaleIn"
+        className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative animate-scaleIn overflow-hidden"
         onClick={handleModalContentClick}
       >
         {/* Decorative top border */}
@@ -46,7 +46,7 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-[#5c7160]/10 hover:bg-[#5c7160]/20 transition-colors z-10"
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#5c7160]/20 transition-colors z-10"
           aria-label="Fechar"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,13 +54,13 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
           </svg>
         </button>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Image section */}
-          <div className="h-64 md:h-96 overflow-hidden relative">
+          <div className="h-64 md:h-auto overflow-hidden relative">
             <img 
               src={service.image} 
               alt={service.title} 
-              className="w-full h-full object-cover"
+              className="absolute w-full h-full object-cover"
             />
             {/* Optional decorative element */}
             <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-black/40 to-transparent"></div>
@@ -79,7 +79,7 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
               </div>
             </div>
             
-            <div className="mt-2 mb-6 grow">
+            <div className="mt-2 mb grow">
               <h3 className="text-lg font-medium text-[#5c7160] mb-3">Detalhes do serviço</h3>
               <ul className="space-y-3">
                 {service.details.map((detail, idx) => (
@@ -89,12 +89,11 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
                   </li>
                 ))}
               </ul>
-            </div>
-            
-            {/* Booking button */}
-            {/* <div className="mt-auto pt-4">
+
+              {/* Booking button */}
+            <div className="pt-4">
               <div 
-                onClick={handleBooking}
+                // onClick={handleBooking}
                 className="w-full"
               >
                 <BookingButton fullWidth>
@@ -106,7 +105,8 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
                   </span>
                 </BookingButton>
               </div>
-            </div> */}
+            </div>
+            </div>
           </div>
         </div>
       </div>
