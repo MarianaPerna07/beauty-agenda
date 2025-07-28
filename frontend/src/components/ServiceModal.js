@@ -68,7 +68,7 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
           
           {/* Content section */}
           <div className="p-6 pt-10 md:pt-6 flex flex-col h-full">
-            <h2 className="text-2xl font-light text-[#5c7160] mb-2">{service.title}</h2>
+            <h2 className="text-2xl font-light text-[#5c7160] mb-2 pr-5">{service.title}</h2>
             
             <div className="flex items-center space-x-4 mb-4">
               <div className="px-3 py-1 bg-[#F5F1E9] rounded-full text-[#c0a080] font-medium">
