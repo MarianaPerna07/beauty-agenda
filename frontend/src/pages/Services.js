@@ -783,11 +783,11 @@ function Services() {
               <div 
                 key={index}
                 id={`service-${service.title}`}
-                className="bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group"
+                className="bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group cursor-pointer"
+                onClick={() => openServiceModal(service)}
               >
                 <div 
                   className="h-64 overflow-hidden relative cursor-pointer"
-                  onClick={() => openServiceModal(service)}
                 >
                   <img 
                     src={service.image} 

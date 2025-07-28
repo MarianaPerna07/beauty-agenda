@@ -41,7 +41,7 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
         onClick={handleModalContentClick}
       >
         {/* Decorative top border */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#a5bf99] to-[#5c7160]"></div>
+        {/* <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#a5bf99] to-[#5c7160]"></div> */}
         
         {/* Close button */}
         <button

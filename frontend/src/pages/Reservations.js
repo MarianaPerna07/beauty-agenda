@@ -351,6 +351,39 @@ function Reservations() {
         timeSlots.push({ time: `${formattedHour}:30`, available: Math.random() > 0.2 });
         timeSlots.push({ time: `${formattedHour}:45`, available: Math.random() > 0.2 });
       } 
+
+    }
+
+    // Disable the hours that are already past
+    const currentHour = new Date().getHours();
+
+    let currentDateTomorrow = new Date();
+    // currentDateTomorrow.setDate(currentDateTomorrow.getDate() + 1);
+    // console.log('Current Date:', currentDateTomorrow);
+
+    //DEBUG
+    // let currentHour = 10;
+    console.log('Current Hour:', currentHour);
+    if (date && new Date(date).getDate() === currentDateTomorrow.getDate()) {
+      timeSlots.forEach(slot => {
+        console.log('Slot Time:', slot.time);
+        if (parseInt(slot.time.split(':')[0]) < currentHour) {
+          slot.available = false; // Disable past hours
+        }
+      });
+    }
+
+    //Disable the minutes that are already past
+    const currentMinutes = new Date().getMinutes();
+    // let currentMinutes = 0;
+    // console.log('Current Minutes:', currentMinutes);
+    if (date && new Date(date).getDate() === currentDateTomorrow.getDate()) {
+      timeSlots.forEach(slot => {
+        const [hour, minute] = slot.time.split(':').map(Number);
+        if (hour === currentHour && minute <= currentMinutes - 15) {
+          slot.available = false; // Disable past minutes
+        }
+      });
     }
     
     return timeSlots;
