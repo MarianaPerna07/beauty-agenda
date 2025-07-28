@@ -1,9 +1,9 @@
 function ServicePrices() {
     return (
       <section className="">
-        <h2 className=" text-center text-3xl md:text-4xl font-light text-[#5c7160] mb-6">
+        {/* <h2 className=" text-center text-3xl md:text-4xl font-light text-[#5c7160] mb-6">
           Serviços
-        </h2>
+        </h2> */}
         
         <ul className="max-w-6xl grid grid-cols- grid-rows-1 gap-2 mx-auto">
           

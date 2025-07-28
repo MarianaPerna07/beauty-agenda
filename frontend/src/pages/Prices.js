@@ -47,10 +47,10 @@ function Prices() {
         </div>
       </section>
 
-      <div className="w-64 h-0.5 mx-auto my-2 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
+      {/* <div className="w-64 h-0.5 mx-auto my-2 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div> */}
       
       {/* Prices Section */}
-      <section className="py-16 px-6">
+      <section className="pb-16 px-6">
         <div className="container mx-auto max-w-5xl">
           <ServicePrices/>
         </div>
