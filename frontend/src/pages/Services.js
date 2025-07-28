@@ -5,6 +5,17 @@ import bannerImage from '../images/banner-image.png'
 import ServiceModal from '../components/ServiceModal'
 import BookingButton from '../components/BookingButton'
 
+import image0 from '../images/manicure/0_manicure_simples.jpg'
+import image1 from '../images/manicure/1_manicure_pintura.jpg'
+import image2 from '../images/manicure/2_verniz_gel.jpg'
+import image3 from '../images/manicure/3_primeira_aplicacao.jpg'
+import image4 from '../images/manicure/4_manutencao_gel.png'
+import image5 from '../images/manicure/5_manutencao_acrygel.jpg'
+import image6 from '../images/manicure/6_gel_extensao.jpg'
+import image7 from '../images/manicure/7_acrygel_extensao.jpg'
+import image8 from '../images/manicure/8_unha_partida.jpg'
+import image9 from '../images/manicure/9_remocao.jpg'
+
 function Services() {
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
@@ -65,7 +76,7 @@ function Services() {
         title: 'Manicure Simples',
         price: '7€',
         duration: '30 min',
-        image: 'https://images.pexels.com/photos/939836/pexels-photo-939836.jpeg',
+        image: image0,
         details: [
           'Limpeza das unhas',
           'Corte e limagem',
@@ -77,7 +88,7 @@ function Services() {
         title: 'Manicure simples com pintura',
         price: '8.50€',
         duration: '45 min',
-        image: 'https://images.pexels.com/photos/3997304/pexels-photo-3997304.jpeg',
+        image: image1,
         details: [
           'Manicure completa',
           'Aplicação de verniz tradicional',
@@ -89,7 +100,7 @@ function Services() {
         title: 'Verniz Gel',
         price: '15€',
         duration: '60 min',
-        image: 'https://images.pexels.com/photos/704815/pexels-photo-704815.jpeg',
+        image: image2,
         details: [
           'Manicure completa',
           'Aplicação de verniz gel',
@@ -101,7 +112,7 @@ function Services() {
         title: '1ª Manutenção de Gel sobre a unha',
         price: '25€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3997391/pexels-photo-3997391.jpeg',
+        image: image3,
         details: [
           'Preparação das unhas',
           'Aplicação de gel sobre a unha natural',
@@ -113,7 +124,7 @@ function Services() {
         title: 'Manutenção de Gel',
         price: '20€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3997386/pexels-photo-3997386.jpeg',
+        image: image4,
         details: [
           'Remoção parcial do gel anterior',
           'Preenchimento da área crescida',
@@ -125,7 +136,7 @@ function Services() {
         title: 'Manutenção de Acrygel',
         price: '25€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/4210347/pexels-photo-4210347.jpeg',
+        image: image5,
         details: [
           'Remoção parcial do acrygel anterior',
           'Preenchimento com material novo',
@@ -137,7 +148,7 @@ function Services() {
         title: '1ª Aplicação De gel com extensão',
         price: '30€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3997310/pexels-photo-3997310.jpeg',
+        image: image6,
         details: [
           'Preparação das unhas',
           'Aplicação de tips ou moldes',
@@ -149,7 +160,7 @@ function Services() {
         title: '1ª aplicação acrygel com extensão',
         price: '35€',
         duration: '90 min',
-        image: 'https://images.pexels.com/photos/3997383/pexels-photo-3997383.jpeg',
+        image: image7,
         details: [
           'Preparação das unhas',
           'Aplicação de tips ou moldes',
@@ -161,7 +172,7 @@ function Services() {
         title: 'Unha partida',
         price: '2€',
         duration: '15 min',
-        image: 'https://images.pexels.com/photos/3997385/pexels-photo-3997385.jpeg',
+        image: image8 ,
         details: [
           'Reparação de unha danificada',
           'Reforço com gel ou acrygel',
@@ -173,7 +184,7 @@ function Services() {
         title: 'Remoção Verniz Gel, acrygel',
         price: '10€',
         duration: '45 min',
-        image: 'https://images.pexels.com/photos/3997374/pexels-photo-3997374.jpeg',
+        image: image9,
         details: [
           'Remoção segura sem danificar a unha natural',
           'Limagem e polimento',
