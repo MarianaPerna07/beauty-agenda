@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import scrollToTop from '../helpers/scrollToTop'
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -631,83 +631,160 @@ function Reservations() {
   };
 
   // Componente para a Etapa 1: Seleção de Serviço
-  const ServiceSelectionStep = () => (
-    <div className="animate-fadeIn flex flex-col items-center">
-      <div className="w-full max-w-3xl mx-auto">
-        <div className="mb-8">
-          <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione a Categoria</h3>
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {serviceCategories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => handleServiceCategorySelect(category)}
-                className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                  selectedCategory?.id === category.id
-                    ? "bg-[#a5bf99] text-white shadow-md"
-                    : "bg-white text-[#5c7160] border border-[#5c7160]/30 hover:bg-[#a5bf99]/20"
-                }`}
+  const ServiceSelectionStep = () => {
+    // Ref para o container de scroll horizontal
+    const scrollContainerRef = useRef(null);
+    
+    // Efeito para centralizar a categoria inicial quando o componente carrega
+    useEffect(() => {
+      if (scrollContainerRef.current && selectedCategory) {
+        // Encontrar o botão da categoria selecionada
+        const selectedButton = Array.from(scrollContainerRef.current.children)
+          .find(button => button.textContent === selectedCategory.name);
+        
+        if (selectedButton) {
+          // Centralizar a categoria selecionada
+          const scrollLeft = selectedButton.offsetLeft - 
+            (scrollContainerRef.current.clientWidth / 2) + 
+            (selectedButton.clientWidth / 2);
+          
+          scrollContainerRef.current.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }, [selectedCategory]);
+    
+    // Adicionar esta função que estava faltando
+    const handleServiceClick = (e, service) => {
+      e.preventDefault(); // Evita o comportamento padrão
+      handleServiceSelect(service);
+    };
+    
+    const handleCategoryClick = (e, category) => {
+      e.preventDefault();
+      handleServiceCategorySelect(category);
+    
+      const container = scrollContainerRef.current;
+      const button = e.currentTarget;
+      if (!container || !button) return;
+    
+      // raw center
+      const rawTarget = button.offsetLeft
+        - (container.clientWidth / 2)
+        + (button.clientWidth / 2);
+    
+      // clamp
+      const maxScrollLeft = container.scrollWidth - container.clientWidth;
+      const targetScrollLeft = Math.min(Math.max(rawTarget, 0), maxScrollLeft);
+    
+      // now animate from wherever you are to targetScrollLeft
+      const startPosition = container.scrollLeft;
+      const distance = targetScrollLeft - startPosition;
+      const duration = 300;
+      const startTime = performance.now();
+    
+      const animateScroll = (timestamp) => {
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeInOutQuad = progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+    
+        container.scrollLeft = startPosition + distance * easeInOutQuad;
+        if (progress < 1) window.requestAnimationFrame(animateScroll);
+      };
+    
+      window.requestAnimationFrame(animateScroll);
+    };
+
+    return (
+      <div className="animate-fadeIn flex flex-col items-center">
+        <div className="w-full max-w-3xl mx-auto">
+          <div className="mb-8">
+            <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione a Categoria</h3>
+            
+            {/* Substituir a div de categorias pelo novo container de scroll horizontal */}
+            <div className="relative overflow-hidden mb-8">
+              <div 
+                ref={scrollContainerRef}
+                className="flex overflow-x-auto space-x-3 py-2 px-1 hide-scrollbar"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
-                {category.name}
-              </button>
-            ))}
+                {serviceCategories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={(e) => handleCategoryClick(e, category)}
+                    className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full transition-all duration-300 ${
+                      selectedCategory?.id === category.id
+                        ? "bg-[#5c7160] text-white shadow-md"
+                        : "bg-white text-[#5c7160] border border-[#5c7160]/30 hover:bg-[#a5bf99]/20"
+                    }`}
+                  >
+                    {category.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {selectedCategory && (
+            <>
+              <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione o Serviço</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
+                {services[selectedCategory.id].map((service) => (
+                  <div
+                    key={service.id}
+                    onClick={(e) => handleServiceClick(e, service)}
+                    className={`p-4 rounded-lg cursor-pointer transition-all duration-300 flex flex-col justify-between min-h-[120px] ${
+                      selectedService?.id === service.id
+                        ? "bg-[#a5bf99] text-white shadow-lg"
+                        : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
+                    }`}
+                  >
+                    <h4 className="text-lg font-medium mb-2 flex-grow">{service.name}</h4>
+                    <div className="flex justify-between text-base mt-auto">
+                      <span>{service.duration}</span>
+                      <span className={selectedService?.id === service.id ? "font-bold" : "font-bold text-[#c0a080]"}>
+                        {service.price}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
+            <button
+              onClick={prevStep}
+              className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Anterior</span>
+            </button>
+            <button
+              onClick={nextStep}
+              disabled={!selectedService}
+              className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
+                selectedService
+                  ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              <span>Próximo</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
-
-        {selectedCategory && (
-          <>
-            <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione o Serviço</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
-              {services[selectedCategory.id].map((service) => (
-                <div
-                  key={service.id}
-                  onClick={() => handleServiceSelect(service)}
-                  className={`p-4 rounded-lg cursor-pointer transition-all duration-300 flex flex-col justify-between min-h-[120px] ${
-                    selectedService?.id === service.id
-                      ? "bg-[#a5bf99] text-white shadow-lg"
-                      : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
-                  }`}
-                >
-                  <h4 className="text-lg font-medium mb-2 flex-grow">{service.name}</h4>
-                  <div className="flex justify-between text-base mt-auto">
-                    <span>{service.duration}</span>
-                    <span className={selectedService?.id === service.id ? "font-bold" : "font-bold text-[#c0a080]"}>
-                      {service.price}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
-          <button
-            onClick={prevStep}
-            className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>Anterior</span>
-          </button>
-          <button
-            onClick={nextStep}
-            disabled={!selectedService}
-            className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
-              selectedService
-                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            <span>Próximo</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Componente para a Etapa 2: Seleção de Profissional
   const ProfessionalSelectionStep = () => (
