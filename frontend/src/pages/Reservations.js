@@ -298,7 +298,7 @@ function Reservations() {
       name: 'Flora Coutinho | Cabeleireiro, Estética e Barbearia', 
       address: 'Av. José Estevão, 290, Gafanha da Nazaré, Portugal', 
       phone: '234 123 456',
-      mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3029.4093107372146!2d-8.751661224069252!3d40.63123994846108!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd2398456e92e8c9%3A0xa02ec9af9448e498!2sAv.%20Jos%C3%A9%20Est%C3%AAv%C3%A3o%20290%2C%203830-556%20Gafanha%20da%20Nazar%C3%A9!5e0!3m2!1spt-PT!2spt!4v1690823715893!5m2!1spt-PT!2spt'
+      mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3029.4093107372146!2d-8.751661224069252!3d40.63123994846108!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd2398456e92e8c9%3A0xa02ec9af9448e498!2sAv.%20Jos%C3%A9%20Est%C3%A9v%C3%A3o%20290%2C%203830-556%20Gafanha%20da%20Nazar%C3%A9!5e0!3m2!1spt-PT!2spt!4v1690823715893!5m2!1spt-PT!2spt'
     }
   ]
 
@@ -626,33 +626,8 @@ function Reservations() {
     console.log("DADOS DA RESERVA:");
     console.log(JSON.stringify(reservationData, null, 2));
     
-    // Aqui seria o código para enviar ao backend:
-    // const response = await fetch('/api/reservations', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(reservationData),
-    // });
-    
-    // Mostrar alerta de sucesso
-    alert('Reserva realizada com sucesso!');
-    
-    // Reset do formulário
-    setCurrentStep(1);
-    setSelectedService(null);
-    setSelectedCategory(null);
-    setProfessional(null);
-    setSelectedDate('');
-    setSelectedTime('');
-    setSelectedSalon(null);
-    setCustomerInfo({
-      name: '',
-      email: '',
-      phone: ''
-    });
-    //Go back to main page
-    window.location.href = '/';
+    // Em vez do alerta básico, mostrar o modal de confirmação
+    setShowConfirmation(true);
   };
 
   // Componente para a Etapa 1: Seleção de Serviço
@@ -1188,6 +1163,29 @@ function Reservations() {
     }
   };
 
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const handleCloseConfirmation = () => {
+    setShowConfirmation(false);
+    // Reset all states to initial values
+    setCurrentStep(1);
+    setSelectedService(null);
+    setProfessional(null);
+    setSelectedDate('');
+    setSelectedTime('');
+    setSelectedSalon(null);
+    setCustomerInfo({
+      name: '',
+      email: '',
+      phone: ''
+    });
+    setErrors({
+      name: '',
+      email: '',
+      phone: ''
+    });
+  };
+
   return (
     <div className='min-h-screen bg-[#F5F1E9]' id='banner'>
       {/* Hero Section */}
@@ -1275,14 +1273,55 @@ function Reservations() {
         </div>
       </section>
 
-      {/* Decorative Element */}
-      {/* <div className="py-12 px-6 relative">
-        <div className="absolute top-0 left-0 w-full h-12 overflow-hidden">
-          <svg viewBox="0 0 1200 30" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-full">
-            <path d="M0,0 C150,40 350,0 500,20 C650,40 750,10 900,20 C1050,30 1200,10 1200,10 V30 H0 V0Z" fill="#5c7160" fillOpacity="0.05"/>
-          </svg>
+      {/* Modal de Confirmação */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
+          <div className="bg-[#F5F1E9] rounded-lg shadow-xl p-6 max-w-md w-full animate-fadeIn">
+            <div className="flex flex-col items-center text-center">
+              {/* Ícone de sucesso */}
+              <div className="bg-[#a5bf99] rounded-full p-3 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              
+              {/* Título e mensagem */}
+              <h3 className="text-2xl font-light text-[#5c7160] mb-2">Reserva Confirmada</h3>
+              <p className="text-[#5c7160]/80 mb-6">
+                A sua reserva foi realizada com sucesso!
+              </p>
+              
+              {/* Informações da reserva */}
+              <div className="bg-white rounded-lg p-4 mb-6 w-full">
+                <div className="flex justify-between mb-2">
+                  <span className="text-[#5c7160]/70">Serviço:</span>
+                  <span className="font-medium text-[#5c7160]">{selectedService?.name}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-[#5c7160]/70">Profissional:</span>
+                  <span className="text-[#5c7160]">{selectedProfessional?.name}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-[#5c7160]/70">Data:</span>
+                  <span className="text-[#5c7160]">{selectedDate ? new Date(selectedDate).toLocaleDateString('pt-PT') : ''}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#5c7160]/70">Hora:</span>
+                  <span className="text-[#5c7160]">{selectedTime}</span>
+                </div>
+              </div>
+              
+              {/* Botão de OK */}
+              <button 
+                onClick={handleCloseConfirmation}
+                className="px-6 py-3 bg-[#5c7160] text-white rounded-full hover:bg-[#5c7160]/90 transition-colors w-full sm:w-auto min-w-[150px]"
+              >
+                Concluído
+              </button>
+            </div>
+          </div>
         </div>
-      </div> */}
+      )}
     </div>
   )
 }
