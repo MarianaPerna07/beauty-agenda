@@ -15,7 +15,7 @@ function Prices() {
       {/* Hero Section with proper overlay */}
       <div className='relative'>
         <img 
-          className='object-cover h-[50vh] w-full' 
+          className='object-cover h-[30vh] w-full' 
           src={bannerImage}
           alt="Preçário"
         />

@@ -15,7 +15,7 @@ function About() {
       {/* Hero Section */}
       <div className='relative'>
         <img 
-          className='object-cover h-[50vh] w-full' 
+          className='object-cover h-[30vh] w-full' 
           src={bannerImage}
           alt="Ambiente acolhedor do Beauty Space"
         />

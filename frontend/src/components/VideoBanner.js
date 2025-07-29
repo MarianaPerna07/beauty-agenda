@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 function VideoBanner() {
   return (
-    <div className="relative h-[60vh] overflow-hidden">
+    <div className="relative h-[45vh] overflow-hidden">
       {/* Image background with refined overlay */}
       <div className="absolute inset-0 w-full h-full">
         {/* Opção 1: Overlay dourado suave */}
@@ -33,7 +33,7 @@ function VideoBanner() {
       {/* Content container com espaçamento reduzido */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-30 px-6 text-center">
         {/* Decorative element menor */}
-        <div className="w-12 h-12 mb-4 opacity-30">
+        <div className="w-10 h-10 mb-2 opacity-30">
           <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="45" stroke="#e9d3a3" strokeWidth="2" />
             <circle cx="50" cy="50" r="35" stroke="#e9d3a3" strokeWidth="1" />
@@ -41,23 +41,23 @@ function VideoBanner() {
         </div>
         
         {/* Heading com espaçamento reduzido */}
-        <h2 className="text-white text-3xl md:text-4xl font-light mb-2 tracking-widest drop-shadow-md">
+        <h2 className="text-white text-2xl md:text-3xl font-light mb-1 tracking-widest drop-shadow-md">
           <span className="block">ARTE E CUIDADO EM</span>
           <span className="block mt-1">CADA TRAÇO</span>
         </h2>
         
         {/* Subtitle com espaçamento reduzido */}
-        <p className="text-white/90 max-w-2xl mx-auto text-base md:text-lg font-light mb-6 tracking-wide drop-shadow-md">
+        <p className="text-white/90 max-w-2xl mx-auto text-sm md:text-base font-light mb-4 tracking-wide drop-shadow-md">
           Onde a beleza e o bem-estar se encontram num só lugar
         </p>
         
         {/* Divider menor */}
-        <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-[#e9d3a3] to-transparent mb-6"></div>
+        <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-[#e9d3a3] to-transparent mb-4"></div>
         
         {/* Botão mais compacto */}
         <Link 
           to="/reservations" 
-          className="relative group px-8 py-3 flex items-center justify-center transition-all duration-300 transform hover:scale-105"
+          className="relative group px-7 py-2.5 flex items-center justify-center transition-all duration-300 transform hover:scale-105"
         >
           {/* Fundo com efeito de vidro */}
           <span 

@@ -139,13 +139,8 @@ const ImageCarousel = (props) => {
         </div>
       </div>
 
-      {/* <div className="embla__controls"> */}
-        {/* <div className="embla__buttons">
-          <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
-          <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} />
-        </div> */}
-
-        {/* <div className="embla__dots">
+      <div className="embla__dots-container">
+        <div className="embla__dots">
           {scrollSnaps.map((_, index) => (
             <DotButton
               key={index}
@@ -155,8 +150,8 @@ const ImageCarousel = (props) => {
               )}
             />
           ))}
-        </div> */}
-      {/* </div> */}
+        </div>
+      </div>
     </div>
   )
 }

@@ -234,7 +234,7 @@
   .react-multi-carousel-dot--active button {
     background: #a5bf99 !important;
   }
-  
+
   /* Responsive adjustments */
   @media (max-width: 1024px) {
     .carousel-image-wrapper {

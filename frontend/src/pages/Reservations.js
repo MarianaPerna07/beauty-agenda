@@ -1191,16 +1191,16 @@ function Reservations() {
       {/* Hero Section */}
       <div className='relative'>
         <img 
-          className='object-cover h-[50vh] w-full' 
+          className='object-cover h-[30vh] w-full' 
           src={bannerImage}
           alt="Agendamento de serviços"
         />
         <div className='absolute inset-0 bg-gradient-to-b from-[#c0a080]/40 to-[#c0a080]/70'></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <h2 className="text-[#F5F1E9] text-4xl md:text-5xl lg:text-6xl font-light tracking-wide">
-            Agende o seu Serviço
-          </h2>
-        </div>
+        <div className='absolute inset-0 flex items-center justify-center px-4'>
+  <h2 className="text-[#F5F1E9] text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-wide">
+    Agende o seu Serviço
+  </h2>
+</div>
         
         {/* Wave shape at the bottom */}
         <div className="absolute bottom-0 left-0 w-full h-16">

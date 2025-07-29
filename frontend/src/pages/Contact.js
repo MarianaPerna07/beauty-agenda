@@ -57,7 +57,7 @@ function Contact() {
     <div className='min-h-screen bg-[#F5F1E9]'>
       <div className='relative'>
         <img 
-          className='object-cover h-[50vh] w-full' 
+          className='object-cover h-[30vh] w-full' 
           src='https://images.pexels.com/photos/3997378/pexels-photo-3997378.jpeg' 
           alt="Entre em contato conosco"
         />
