@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback, memo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import scrollToTop from '../helpers/scrollToTop'
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -12,6 +12,182 @@ import bannerImage from '../images/banner-image.png'
 
 // Registrar o idioma português personalizado
 registerLocale('pt-custom', ptCustom);
+
+// Componente separado para a barra de categorias
+const CategoryBar = memo(({ 
+  serviceCategories, 
+  selectedCategory, 
+  onCategorySelect 
+}) => {
+  const scrollContainerRef = useRef(null);
+  
+  // Efeito para centralizar a categoria inicial
+  useEffect(() => {
+    if (scrollContainerRef.current && selectedCategory) {
+      const buttons = Array.from(scrollContainerRef.current.children);
+      const selectedButton = buttons.find(
+        button => button.getAttribute('data-category-id') === selectedCategory.id
+      );
+      
+      if (selectedButton) {
+        const scrollLeft = selectedButton.offsetLeft - 
+          (scrollContainerRef.current.clientWidth / 2) + 
+          (selectedButton.clientWidth / 2);
+        
+        scrollContainerRef.current.scrollTo({
+          left: scrollLeft,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [selectedCategory?.id]);
+  
+  const handleCategoryClick = useCallback((e, category) => {
+    e.preventDefault();
+    
+    const container = scrollContainerRef.current;
+    const button = e.currentTarget;
+    
+    if (!container || !button) return;
+  
+    // Calcular a posição de rolagem
+    const rawTarget = button.offsetLeft
+      - (container.clientWidth / 2)
+      + (button.clientWidth / 2);
+  
+    // Limitar dentro dos limites do container
+    const maxScrollLeft = container.scrollWidth - container.clientWidth;
+    const targetScrollLeft = Math.min(Math.max(rawTarget, 0), maxScrollLeft);
+  
+    // Animar a rolagem primeiro
+    container.scrollTo({
+      left: targetScrollLeft,
+      behavior: 'smooth'
+    });
+    
+    // Atualizar o estado DEPOIS da animação começar
+    // Isso é crucial para evitar o "piscar"
+    setTimeout(() => {
+      onCategorySelect(category);
+    }, 50);
+  }, [onCategorySelect]);
+
+  return (
+    <div className="relative overflow-hidden mb-8">
+      <div 
+        ref={scrollContainerRef}
+        className="flex overflow-x-auto space-x-3 py-2 px-1 hide-scrollbar"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {serviceCategories.map((category) => (
+          <button
+            key={category.id}
+            data-category-id={category.id}
+            onClick={(e) => handleCategoryClick(e, category)}
+            className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full transition-all duration-300 ${
+              selectedCategory?.id === category.id
+                ? "bg-[#5c7160] text-white shadow-md"
+                : "bg-white text-[#5c7160] border border-[#5c7160]/30 hover:bg-[#a5bf99]/20"
+            }`}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+});
+
+// Componente para a Etapa 1: Seleção de Serviço
+const ServiceSelectionStep = ({ 
+  serviceCategories, 
+  selectedCategory, 
+  setSelectedCategory,
+  services,
+  selectedService, 
+  setSelectedService,
+  nextStep,
+  prevStep
+}) => {
+  const handleServiceCategorySelect = useCallback((category) => {
+    setSelectedCategory(category);
+    setSelectedService(null); // Reset service selection when changing category
+  }, [setSelectedCategory, setSelectedService]);
+  
+  const handleServiceSelect = useCallback((service) => {
+    setSelectedService(service);
+  }, [setSelectedService]);
+
+  return (
+    <div className="animate-fadeIn flex flex-col items-center">
+      <div className="w-full max-w-3xl mx-auto">
+        <div className="mb-8">
+          <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione a Categoria</h3>
+          
+          {/* Componente independente para a barra de categorias */}
+          <CategoryBar 
+            serviceCategories={serviceCategories}
+            selectedCategory={selectedCategory}
+            onCategorySelect={handleServiceCategorySelect}
+          />
+        </div>
+
+        {selectedCategory && (
+          <>
+            <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione o Serviço</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
+              {services[selectedCategory.id].map((service) => (
+                <div
+                  key={service.id}
+                  onClick={() => handleServiceSelect(service)}
+                  className={`p-4 rounded-lg cursor-pointer transition-all duration-300 flex flex-col justify-between min-h-[120px] ${
+                    selectedService?.id === service.id
+                      ? "bg-[#a5bf99] text-white shadow-lg"
+                      : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
+                  }`}
+                >
+                  <h4 className="text-lg font-medium mb-2 flex-grow">{service.name}</h4>
+                  <div className="flex justify-between text-base mt-auto">
+                    <span>{service.duration}</span>
+                    <span className={selectedService?.id === service.id ? "font-bold" : "font-bold text-[#c0a080]"}>
+                      {service.price}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
+          <button
+            onClick={prevStep}
+            className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span>Anterior</span>
+          </button>
+          <button
+            onClick={nextStep}
+            disabled={!selectedService}
+            className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
+              selectedService
+                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            <span>Próximo</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Componente para a Etapa 5: Confirmação e Dados do Cliente
 function ConfirmationStep({
@@ -187,6 +363,8 @@ function ConfirmationStep({
 }
 
 function Reservations() {
+  const contentRef = useRef(null);
+  const stepperRef = useRef(null);
 
   // Dados de exemplo (no futuro poderão vir de uma API)
   const serviceCategories = [
@@ -329,6 +507,20 @@ function Reservations() {
   const [selectedCategory, setSelectedCategory] = useState(
     categoryFromUrl ? serviceCategories.find(cat => cat.id === categoryFromUrl) : serviceCategories[0]
   );
+
+  const scrollToContent = useCallback(() => {
+    if (stepperRef.current) {
+      // Scroll até o stepper com um pequeno offset
+      const headerOffset = 20;
+      const elementPosition = stepperRef.current.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, []);
   
   // Encontrar o serviço correspondente quando a página carrega
   useEffect(() => {
@@ -346,9 +538,18 @@ function Reservations() {
         }
       }
     }
-    window.scrollTo({ top: 400, behavior: 'smooth' });
+    scrollToContent();
   }, [categoryFromUrl, serviceFromUrl]);
 
+  // Adicione este useEffect para gerenciar o scroll quando o passo muda
+  useEffect(() => {
+    // Pequeno delay para garantir que o DOM foi atualizado
+    const timer = setTimeout(() => {
+      scrollToContent();
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [currentStep, scrollToContent]);
 
   // Gerador de horários disponíveis
   const generateAvailableTimeSlots = (date) => {
@@ -418,7 +619,6 @@ function Reservations() {
   const nextStep = () => {
     if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
-      window.scrollTo({ top: 400, behavior: 'smooth' });
     }
   };
 
@@ -445,7 +645,6 @@ function Reservations() {
       }
       
       setCurrentStep(currentStep - 1);
-      window.scrollTo({ top: 400, behavior: 'smooth' });
     }
   };
 
@@ -495,18 +694,7 @@ function Reservations() {
       
       // Atualizar o passo atual
       setCurrentStep(step);
-      //Scroll to a specific height on the page
-      window.scrollTo({ top: 400, behavior: 'smooth' });
     }
-  };
-
-  const handleServiceCategorySelect = (category) => {
-    setSelectedCategory(category);
-    setSelectedService(null); // Reset service selection when changing category
-  };
-
-  const handleServiceSelect = (service) => {
-    setSelectedService(service);
   };
 
   const handleProfessionalSelect = (professional) => {
@@ -630,162 +818,6 @@ function Reservations() {
     setShowConfirmation(true);
   };
 
-  // Componente para a Etapa 1: Seleção de Serviço
-  const ServiceSelectionStep = () => {
-    // Ref para o container de scroll horizontal
-    const scrollContainerRef = useRef(null);
-    
-    // Efeito para centralizar a categoria inicial quando o componente carrega
-    useEffect(() => {
-      if (scrollContainerRef.current && selectedCategory) {
-        // Encontrar o botão da categoria selecionada
-        const selectedButton = Array.from(scrollContainerRef.current.children)
-          .find(button => button.textContent === selectedCategory.name);
-        
-        if (selectedButton) {
-          // Centralizar a categoria selecionada
-          const scrollLeft = selectedButton.offsetLeft - 
-            (scrollContainerRef.current.clientWidth / 2) + 
-            (selectedButton.clientWidth / 2);
-          
-          scrollContainerRef.current.scrollTo({
-            left: scrollLeft,
-            behavior: 'smooth'
-          });
-        }
-      }
-    }, [selectedCategory]);
-    
-    // Adicionar esta função que estava faltando
-    const handleServiceClick = (e, service) => {
-      e.preventDefault(); // Evita o comportamento padrão
-      handleServiceSelect(service);
-    };
-    
-    const handleCategoryClick = (e, category) => {
-      e.preventDefault();
-      handleServiceCategorySelect(category);
-    
-      const container = scrollContainerRef.current;
-      const button = e.currentTarget;
-      if (!container || !button) return;
-    
-      // raw center
-      const rawTarget = button.offsetLeft
-        - (container.clientWidth / 2)
-        + (button.clientWidth / 2);
-    
-      // clamp
-      const maxScrollLeft = container.scrollWidth - container.clientWidth;
-      const targetScrollLeft = Math.min(Math.max(rawTarget, 0), maxScrollLeft);
-    
-      // now animate from wherever you are to targetScrollLeft
-      const startPosition = container.scrollLeft;
-      const distance = targetScrollLeft - startPosition;
-      const duration = 300;
-      const startTime = performance.now();
-    
-      const animateScroll = (timestamp) => {
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeInOutQuad = progress < 0.5
-          ? 2 * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-    
-        container.scrollLeft = startPosition + distance * easeInOutQuad;
-        if (progress < 1) window.requestAnimationFrame(animateScroll);
-      };
-    
-      window.requestAnimationFrame(animateScroll);
-    };
-
-    return (
-      <div className="animate-fadeIn flex flex-col items-center">
-        <div className="w-full max-w-3xl mx-auto">
-          <div className="mb-8">
-            <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione a Categoria</h3>
-            
-            {/* Substituir a div de categorias pelo novo container de scroll horizontal */}
-            <div className="relative overflow-hidden mb-8">
-              <div 
-                ref={scrollContainerRef}
-                className="flex overflow-x-auto space-x-3 py-2 px-1 hide-scrollbar"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {serviceCategories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={(e) => handleCategoryClick(e, category)}
-                    className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full transition-all duration-300 ${
-                      selectedCategory?.id === category.id
-                        ? "bg-[#5c7160] text-white shadow-md"
-                        : "bg-white text-[#5c7160] border border-[#5c7160]/30 hover:bg-[#a5bf99]/20"
-                    }`}
-                  >
-                    {category.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {selectedCategory && (
-            <>
-              <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione o Serviço</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
-                {services[selectedCategory.id].map((service) => (
-                  <div
-                    key={service.id}
-                    onClick={(e) => handleServiceClick(e, service)}
-                    className={`p-4 rounded-lg cursor-pointer transition-all duration-300 flex flex-col justify-between min-h-[120px] ${
-                      selectedService?.id === service.id
-                        ? "bg-[#a5bf99] text-white shadow-lg"
-                        : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
-                    }`}
-                  >
-                    <h4 className="text-lg font-medium mb-2 flex-grow">{service.name}</h4>
-                    <div className="flex justify-between text-base mt-auto">
-                      <span>{service.duration}</span>
-                      <span className={selectedService?.id === service.id ? "font-bold" : "font-bold text-[#c0a080]"}>
-                        {service.price}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
-            <button
-              onClick={prevStep}
-              className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span>Anterior</span>
-            </button>
-            <button
-              onClick={nextStep}
-              disabled={!selectedService}
-              className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
-                selectedService
-                  ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              <span>Próximo</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   // Componente para a Etapa 2: Seleção de Profissional
   const ProfessionalSelectionStep = () => (
     <div className="animate-fadeIn flex flex-col items-center justify-center">
@@ -898,7 +930,7 @@ function Reservations() {
                         <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${
                           selectedSalon?.id === salon.id ? "text-white" : "text-[#5c7160]"
                         }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                       </div>
@@ -950,7 +982,7 @@ function Reservations() {
                       }}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 8 0 1111.314 0z" />
                       </svg>
                       <span>Ver no Google Maps</span>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1213,7 +1245,16 @@ function Reservations() {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <ServiceSelectionStep />;
+        return <ServiceSelectionStep 
+          serviceCategories={serviceCategories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          services={services}
+          selectedService={selectedService}
+          setSelectedService={setSelectedService}
+          nextStep={nextStep}
+          prevStep={prevStep}
+        />;
       case 2:
         return <ProfessionalSelectionStep />;
       case 3:
@@ -1288,7 +1329,7 @@ function Reservations() {
       </div>
       
       {/* Stepper */}
-      <div className="pt-8 pb-4 px-6 relative" id="stepper">
+      <div ref={stepperRef} className="pt-8 pb-4 px-6 relative" id="stepper">
         <div className="container mx-auto max-w-6xl">
           <div className="flex justify-between items-center relative px-2 sm:px-8">
             {/* Linha de fundo (não completado) */}
@@ -1344,7 +1385,7 @@ function Reservations() {
       </div>
 
       {/* Main Content */}
-      <section className="py-8 px-6">
+      <section ref={contentRef} className="py-8 px-6">
         <div className="container mx-auto max-w-6xl">
           {renderStep()}
         </div>

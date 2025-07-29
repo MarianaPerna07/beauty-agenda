@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useEmblaCarousel from 'embla-carousel-react'
+import Autoplay from 'embla-carousel-autoplay'
 import './carousel-custom.css';
 import {
   NextButton,
@@ -16,7 +17,26 @@ const numberWithinRange = (number, min, max) =>
 
 const ImageCarousel = (props) => {
   const { slides, options } = props
-  const [emblaRef, emblaApi] = useEmblaCarousel(options)
+  
+  // Configuração do autoplay
+  const autoplayOptions = {
+    delay: 5000,         // Tempo em ms entre cada slide (5 segundos)
+    rootNode: (emblaRoot) => emblaRoot.parentElement,
+    stopOnInteraction: true, // Parar a reprodução automática em interação
+    stopOnMouseEnter: true,  // Parar quando o mouse passar por cima
+  }
+  
+  // Cria uma referência para o plugin de autoplay
+  const autoplay = useRef(
+    Autoplay(autoplayOptions)
+  )
+  
+  // Adicione o plugin de autoplay aos plugins existentes
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    options, 
+    [autoplay.current]
+  )
+  
   const tweenFactor = useRef(0)
   const navigate = useNavigate()
 
@@ -127,13 +147,6 @@ const ImageCarousel = (props) => {
                   {slide.price}
                 </span>
               </div>
-              
-              {/* Botão "Ver mais" opcional
-              <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                <span className="bg-[#5c7160]/80 text-white px-4 py-2 rounded-full text-sm">
-                  Ver detalhes
-                </span>
-              </div> */}
             </div>
           ))}
         </div>
