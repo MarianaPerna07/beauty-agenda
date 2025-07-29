@@ -187,53 +187,6 @@ function ConfirmationStep({
 }
 
 function Reservations() {
-  // Estados para controlar as etapas e seleções
-  const [currentStep, setCurrentStep] = useState(1)
-  const [selectedService, setSelectedService] = useState(null)
-  const [selectedProfessional, setProfessional] = useState(null)
-  const [selectedDate, setSelectedDate] = useState('')
-  const [selectedTime, setSelectedTime] = useState('')
-  const [selectedSalon, setSelectedSalon] = useState(null)
-  const [customerInfo, setCustomerInfo] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  })
-  const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  });
-
-  // Buscar parâmetros da URL
-  const [searchParams] = useSearchParams();
-  const categoryFromUrl = searchParams.get('category');
-  const serviceFromUrl = searchParams.get('service');
-  
-  // Configurar estados com valores iniciais da URL
-  const [selectedCategory, setSelectedCategory] = useState(
-    categoryFromUrl ? serviceCategories.find(cat => cat.id === categoryFromUrl) : null
-  );
-  
-  // Encontrar o serviço correspondente quando a página carrega
-  useEffect(() => {
-    if (categoryFromUrl && serviceFromUrl && services[categoryFromUrl]) {
-      const foundService = services[categoryFromUrl].find(
-        service => service.name === serviceFromUrl
-      );
-      
-      if (foundService) {
-        setSelectedService(foundService);
-        
-        // Após selecionar o serviço, avançar para a próxima etapa
-        if (currentStep === 1) {
-          nextStep();
-        }
-      }
-    }
-    window.scrollTo({ top: 400, behavior: 'smooth' });
-  }, [categoryFromUrl, serviceFromUrl]);
-
 
   // Dados de exemplo (no futuro poderão vir de uma API)
   const serviceCategories = [
@@ -348,6 +301,54 @@ function Reservations() {
       mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3029.4093107372146!2d-8.751661224069252!3d40.63123994846108!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd2398456e92e8c9%3A0xa02ec9af9448e498!2sAv.%20Jos%C3%A9%20Est%C3%AAv%C3%A3o%20290%2C%203830-556%20Gafanha%20da%20Nazar%C3%A9!5e0!3m2!1spt-PT!2spt!4v1690823715893!5m2!1spt-PT!2spt'
     }
   ]
+
+  // Estados para controlar as etapas e seleções
+  const [currentStep, setCurrentStep] = useState(1)
+  const [selectedService, setSelectedService] = useState(services[0])
+  const [selectedProfessional, setProfessional] = useState(null)
+  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedTime, setSelectedTime] = useState('')
+  const [selectedSalon, setSelectedSalon] = useState(null)
+  const [customerInfo, setCustomerInfo] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  })
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
+
+  // Buscar parâmetros da URL
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
+  const serviceFromUrl = searchParams.get('service');
+  
+  // Configurar estados com valores iniciais da URL
+  const [selectedCategory, setSelectedCategory] = useState(
+    categoryFromUrl ? serviceCategories.find(cat => cat.id === categoryFromUrl) : serviceCategories[0]
+  );
+  
+  // Encontrar o serviço correspondente quando a página carrega
+  useEffect(() => {
+    if (categoryFromUrl && serviceFromUrl && services[categoryFromUrl]) {
+      const foundService = services[categoryFromUrl].find(
+        service => service.name === serviceFromUrl
+      );
+      
+      if (foundService) {
+        setSelectedService(foundService);
+        
+        // Após selecionar o serviço, avançar para a próxima etapa
+        if (currentStep === 1) {
+          nextStep();
+        }
+      }
+    }
+    window.scrollTo({ top: 400, behavior: 'smooth' });
+  }, [categoryFromUrl, serviceFromUrl]);
+
 
   // Gerador de horários disponíveis
   const generateAvailableTimeSlots = (date) => {
