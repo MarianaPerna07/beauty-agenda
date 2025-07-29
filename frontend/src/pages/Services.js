@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import scrollToTop from '../helpers/scrollToTop'
 import bannerImage from '../images/banner-image.png'
@@ -78,6 +78,10 @@ function Services() {
 
   // Estado para controlar o modal
   const [selectedService, setSelectedService] = useState(null);
+
+  // Refs for scrolling
+  const scrollContainerRef = useRef(null);
+  const servicesSectionRef = useRef(null);
   
   // Efeito para rolar para o elemento do serviço se especificado na URL
   useEffect(() => {
@@ -98,6 +102,33 @@ function Services() {
       }, 500);
     }
   }, [serviceFromUrl]);
+
+  const handleCategoryClick = (categoryId, event) => {
+    setActiveCategory(categoryId);
+
+    // Center the button in the scroll container
+    const container = scrollContainerRef.current;
+    const button = event.currentTarget;
+    if (container && button) {
+      const scrollLeft = button.offsetLeft - (container.clientWidth / 2) + (button.clientWidth / 2);
+      console.log('Scroll Left:', scrollLeft);
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: 'smooth'
+      });
+    }
+
+    // Scroll down to the services section with an offset
+    if (servicesSectionRef.current) {
+      // Use a small timeout to allow the horizontal scroll to start
+      setTimeout(() => {
+        const yOffset = -80; // 20px higher than the section start
+        const y = servicesSectionRef.current.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }, 100);
+    }
+  };
 
   // Função para abrir o modal
   const openServiceModal = (service) => {
@@ -779,7 +810,7 @@ function Services() {
   return (
     <div className='min-h-screen bg-[#F5F1E9]'>
       {/* Hero Section */}
-      <div className='relative'>
+      <div className='relative  border-b-2 border-[#F5F1E9]'>
         <img 
           className='object-cover h-[30vh] w-full' 
           src={bannerImage}
@@ -800,32 +831,16 @@ function Services() {
         </div>
       </div>
       
-      {/* Introduction */}
-      <section className="py-12 px-6">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h3 className="text-3xl md:text-4xl font-light text-[#5c7160] mb-6">
-            Conheça Os Nossos Serviços
-          </h3>
-          <p className="text-lg text-[#5c7160]/80">
-            Oferecemos uma gama completa de serviços de beleza e estética para realçar a sua beleza natural. 
-            Cada tratamento é personalizado para atender às suas necessidades específicas, utilizando produtos 
-            de alta qualidade e técnicas avançadas.
-          </p>
-          
-          {/* Decorative divider */}
-          <div className="w-32 h-0.5 mx-auto my-8 bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
-        </div>
-      </section>
-      
       {/* Category Navigation */}
-      <section className="pb-8 px-6">
-        <div className="container mx-auto">
-          <div className="flex flex-wrap justify-center gap-4">
+      <section className="pt-2">
+        <div className="container mx-auto hide-scrollbar">
+          {/* Horizontal scroll container */}
+          <div ref={scrollContainerRef} className="hide-scrollbar flex overflow-x-auto space-x-4 px-6 py-2">
             {categories.map((category) => (
               <button
                 key={category.id}
-                onClick={() => setActiveCategory(category.id)}
-                className={`px-6 py-3 rounded-full transition-all duration-300 ${
+                onClick={(e) => handleCategoryClick(category.id, e)}
+                className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full transition-all duration-300 ${
                   activeCategory === category.id
                     ? "bg-[#5c7160] text-white shadow-md"
                     : "bg-white text-[#5c7160] hover:bg-[#a5bf99]/20"
@@ -839,7 +854,7 @@ function Services() {
       </section>
       
       {/* Service Cards */}
-      <section className="py-12 px-6 bg-[#F5F1E9]/5">
+      <section ref={servicesSectionRef} className="py-12 px-6 bg-[#F5F1E9]/5">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {serviceData[activeCategory].map((service, index) => (

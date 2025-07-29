@@ -98,6 +98,25 @@
       inset 0 0 20px rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(192, 160, 128, 0.5);
   }
+
+  /* Custom scrollbar for horizontal navigation */
+  .hide-scrollbar::-webkit-scrollbar {
+    height: 8px; /* Skinny scrollbar */
+  }
+
+  .hide-scrollbar::-webkit-scrollbar-track {
+    background: transparent; /* Transparent track */
+    margin-block: 4px; /* Pushes the scrollbar down */
+  }
+
+  .hide-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(92, 113, 96, 0.35); /* Less opaque thumb */
+    border-radius: 10px;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(92, 113, 96, 0.55); /* More opaque on hover */
+  }
 }
 
 a, button {
