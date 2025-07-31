@@ -189,13 +189,12 @@ const ServiceSelectionStep = ({
   );
 };
 
-// Componente para a Etapa 5: Confirmação e Dados do Cliente
+// Componente para a Etapa 4: Confirmação e Dados do Cliente
 function ConfirmationStep({
   selectedService,
   selectedProfessional,
   selectedDate,
   selectedTime,
-  selectedSalon, // Adicione esta linha
   customerInfo,
   errors,
   handleCustomerInfoChange,
@@ -237,10 +236,6 @@ function ConfirmationStep({
               <div className="flex">
                 <div className="w-1/3 text-[#5c7160]/70">Profissional:</div>
                 <div className="w-2/3 text-[#5c7160]">{selectedProfessional?.name}</div>
-              </div>
-              <div className="flex">
-                <div className="w-1/3 text-[#5c7160]/70">Salão:</div>
-                <div className="w-2/3 text-[#5c7160]">{selectedSalon?.name}</div>
               </div>
               <div className="flex">
                 <div className="w-1/3 text-[#5c7160]/70">Data:</div>
@@ -486,7 +481,6 @@ function Reservations() {
   const [selectedProfessional, setProfessional] = useState(null)
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
-  const [selectedSalon, setSelectedSalon] = useState(null)
   const [customerInfo, setCustomerInfo] = useState({
     name: '',
     email: '',
@@ -511,7 +505,7 @@ function Reservations() {
   const scrollToContent = useCallback(() => {
     if (stepperRef.current) {
       // Scroll até o stepper com um pequeno offset
-      const headerOffset = 20;
+      const headerOffset = 80;
       const elementPosition = stepperRef.current.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
       
@@ -617,7 +611,7 @@ function Reservations() {
 
   // Funções para navegação entre etapas
   const nextStep = () => {
-    if (currentStep < 5) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -625,20 +619,18 @@ function Reservations() {
   const prevStep = () => {
     if (currentStep > 1) {
       // Limpar dados do passo atual antes de voltar
-      if (currentStep === 5) {
+      if (currentStep === 4) {
         // Se estiver saindo da etapa de Confirmação, limpar dados do cliente
         setCustomerInfo({
           name: '',
           email: '',
           phone: ''
         });
-      } else if (currentStep === 4) {
+      } else if (currentStep === 3) {
         // Se estiver saindo da etapa de Data/Hora, limpar seleções
         setSelectedDate('');
         setSelectedTime('');
-        setAvailableTimeSlots([]);
-      } else if (currentStep === 3) {
-        // Se estiver saindo da etapa de Salão, não é necessário limpar nada
+        setAvailableTimeSlots([]); 
       } else if (currentStep === 2) {
         // Se estiver saindo da etapa de Profissional, limpar seleção
         setProfessional(null);
@@ -699,10 +691,6 @@ function Reservations() {
 
   const handleProfessionalSelect = (professional) => {
     setProfessional(professional);
-  };
-
-  const handleSalonSelect = (salon) => {
-    setSelectedSalon(salon);
   };
 
   const handleDateSelect = (date) => {
@@ -802,7 +790,6 @@ function Reservations() {
     // Criar objeto simplificado com os dados da reserva
     const reservationData = {
       service_id: selectedService.id,
-      location_id: selectedSalon.id,
       worker_id: selectedProfessional.id,
       reservation_time: reservationTimeISO,
       client_name: customerInfo.name, 
@@ -881,149 +868,6 @@ function Reservations() {
     </div>
   );
 
-  // Componente para a Etapa 3: Seleção de Salão
-  const SalonSelectionStep = () => {
-    // Ao entrar neste passo, selecione automaticamente o primeiro salão se nenhum estiver selecionado
-    useEffect(() => {
-      if (!selectedSalon && salons.length > 0) {
-        setSelectedSalon(salons[0]);
-      }
-    }, []);
-
-    // Função para criar URL do Google Maps a partir do endereço
-    const getGoogleMapsUrl = (address) => {
-      const encodedAddress = encodeURIComponent(address);
-      return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-    };
-
-    return (
-      <div className="animate-fadeIn flex flex-col items-center">
-        <div className="w-full max-w-3xl mx-auto">
-          <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha o Salão</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto">
-            {salons.map((salon) => (
-              <div
-                key={salon.id}
-                onClick={() => handleSalonSelect(salon)}
-                className={`rounded-lg shadow-md cursor-pointer transition-all duration-300 flex flex-col ${
-                  selectedSalon?.id === salon.id 
-                    ? "bg-[#a5bf99]" 
-                    : "hover:shadow-lg bg-white"
-                }`}
-              >
-                <div className="p-5 flex flex-col flex-grow">
-                  {/* Título com altura fixa */}
-                  <div className="h-14 flex items-center">
-                    <h4 className={`text-xl font-medium ${
-                      selectedSalon?.id === salon.id ? "text-white" : "text-[#5c7160]"
-                    }`}>{salon.name}</h4>
-                  </div>
-                  
-                  {/* Conteúdo */}
-                  <div className="flex-grow">
-                    {/* Endereço */}
-                    <div className="flex items-start mt-4">
-                      <div className={`rounded-full p-3 mr-4 ${
-                        selectedSalon?.id === salon.id ? "bg-white/20" : "bg-[#5c7160]/10"
-                      }`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${
-                          selectedSalon?.id === salon.id ? "text-white" : "text-[#5c7160]"
-                        }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className={`text-sm mb-1 ${
-                          selectedSalon?.id === salon.id ? "text-white/70" : "text-[#5c7160]/70"
-                        }`}>Morada</p>
-                        <p className={`text-lg ${
-                          selectedSalon?.id === salon.id ? "text-white" : "text-[#5c7160]"
-                        }`}>{salon.address}</p>
-                      </div>
-                    </div>
-                    
-                    {/* Telefone */}
-                    <div className="flex items-start mt-4">
-                      <div className={`rounded-full p-3 mr-4 ${
-                        selectedSalon?.id === salon.id ? "bg-white/20" : "bg-[#5c7160]/10"
-                      }`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${
-                          selectedSalon?.id === salon.id ? "text-white" : "text-[#5c7160]"
-                        }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className={`text-sm mb-1 ${
-                          selectedSalon?.id === salon.id ? "text-white/70" : "text-[#5c7160]/70"
-                        }`}>Telefone</p>
-                        <p className={`text-lg ${
-                          selectedSalon?.id === salon.id ? "text-white" : "text-[#5c7160]"
-                        }`}>{salon.phone}</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Botão Google Maps - Posicionado no final do card */}
-                  <div className="mt-6">
-                    <a 
-                      href={getGoogleMapsUrl(salon.address)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`flex items-center justify-center py-3 px-4 rounded-full w-full transition-all duration-300
-                        ${selectedSalon?.id === salon.id 
-                          ? "bg-white/20 hover:bg-white/30 text-white" 
-                          : "bg-[#5c7160]/10 hover:bg-[#5c7160]/20 text-[#5c7160]"
-                        }`}
-                      onClick={(e) => {
-                        e.stopPropagation(); // Evita que clicar no botão selecione o salão
-                      }}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 8 0 1111.314 0z" />
-                      </svg>
-                      <span>Ver no Google Maps</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
-            <button
-              onClick={prevStep}
-              className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span>Anterior</span>
-            </button>
-            <button
-              onClick={nextStep}
-              disabled={!selectedSalon}
-              className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
-                selectedSalon
-                  ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              <span>Próximo</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   // Componente para a Etapa 4: Seleção de Data e Hora
   const DateTimeSelectionStep = () => {
@@ -1065,7 +909,6 @@ function Reservations() {
       console.log("VERIFICAR DISPONIBILIDADE:");
       console.log(JSON.stringify({
         date: formattedDate,
-        location_id: selectedSalon?.id || salons[0].id,
         service_id: selectedService?.id || "todos",   
         worker_id: selectedProfessional?.id || "todos"
       }, null, 2));
@@ -1192,7 +1035,8 @@ function Reservations() {
                         <div className="mt-4 bg-[#a5bf99]/20 p-3 rounded-lg w-full">
                           <div className="flex items-center text-[#5c7160]">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 9 0 11-18 0 9 9 0 0118 0z" />
+                              <circle cx="12" cy="12" r="10" strokeWidth={2} />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6l4 2" />
                             </svg>
                             <span>Horário selecionado: {selectedTime}</span>
                           </div>
@@ -1258,17 +1102,14 @@ function Reservations() {
       case 2:
         return <ProfessionalSelectionStep />;
       case 3:
-        return <SalonSelectionStep />;
-      case 4:
         return <DateTimeSelectionStep />;
-      case 5:
+      case 4:
         return (
           <ConfirmationStep
             selectedService={selectedService}
             selectedProfessional={selectedProfessional}
             selectedDate={selectedDate}
             selectedTime={selectedTime}
-            selectedSalon={selectedSalon} // Adicione esta linha
             customerInfo={customerInfo}
             errors={errors}
             handleCustomerInfoChange={handleCustomerInfoChange}
@@ -1291,7 +1132,6 @@ function Reservations() {
     setProfessional(null);
     setSelectedDate('');
     setSelectedTime('');
-    setSelectedSalon(null);
     setCustomerInfo({
       name: '',
       email: '',
@@ -1346,7 +1186,7 @@ function Reservations() {
             ></div>
             
             {/* Pontos do stepper */}
-            {[1, 2, 3, 4, 5].map((step) => (
+            {[1, 2, 3, 4].map((step) => (
               <div key={step} className="flex flex-col items-center z-10">
                 <div 
                   onClick={() => goToStep(step)}
@@ -1374,9 +1214,8 @@ function Reservations() {
                 }`}>
                   {step === 1 && "Serviço"}
                   {step === 2 && "Profissional"}
-                  {step === 3 && "Salão"}
-                  {step === 4 && "Data/Hora"}
-                  {step === 5 && "Confirmação"}
+                  {step === 3 && "Data/Hora"}
+                  {step === 4 && "Confirmação"}
                 </span>
               </div>
             ))}
