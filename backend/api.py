@@ -18,168 +18,137 @@ collection = db["appointements"]  # You can name this whatever you want
 # Endpoint to get available slots
 @app.route("/availability", methods=["GET"])
 def get_availability():
-    service_id_str = request.args.get("service_id")
     try:
-        service_id = int(service_id_str) if (service_id_str is not None) else None
-        print(f"Parsed service_id: {service_id}")
-    except ValueError:
-        return jsonify({"error": "Invalid service_id format"}), 400
-    if service_id is None:
-        return jsonify({"error": "Missing service_id parameter"}), 400
-    
-    #TODO: Validate service_id against a list of available services (query from database) and get service duration
-    service_duration = 30  # Placeholder for service duration, should be fetched from database based on service_id
+        service_id_str = request.args.get("service_id")
+        worker_id_str = request.args.get("worker_id")
+        date_str = request.args.get("date")
+        
+        # Validate required parameters
+        if not all([service_id_str, worker_id_str, date_str]):
+            return jsonify({"error": "Invalid request parameters"}), 400
+        
+        # Convert and validate integers
+        try:
+            if service_id_str is None or worker_id_str is None:
+                return jsonify({"error": "Invalid request parameters"}), 400
+            service_id = int(service_id_str)
+            worker_id = int(worker_id_str)
+        except (ValueError, TypeError):
+            return jsonify({"error": "Invalid request parameters"}), 400
+            
+        # Convert and validate date
+        try:
+            date = datetime.fromisoformat(str(date_str))
+        except (ValueError, TypeError):
+            return jsonify({"error": "Invalid request parameters"}), 400
+        
+        # Basic validation
+        if service_id <= 0 or worker_id <= 0:
+            return jsonify({"error": "Invalid request parameters"}), 400
+            
+        if date < datetime.now(timezone.utc):
+            return jsonify({"error": "Invalid request parameters"}), 400
+        
+        print(f"Checking availability for service {service_id}, worker {worker_id}")
+        
+        #TODO: Validate service_id against a list of available services (query from database) and get service duration
+        service_duration = 30  # Placeholder for service duration, should be fetched from database based on service_id
+        
+        #TODO: Validate worker_id against a list of available workers (query from database)
+        
+        slots_availability = get_available_slots(service_duration, worker_id, date)
 
-    worker_id_str = request.args.get("worker_id")
-    try:
-        worker_id = int(worker_id_str) if (worker_id_str is not None) else None
-        print(f"Parsed worker_id: {worker_id}")
-    except ValueError:
-        return jsonify({"error": "Invalid worker_id format"}), 400
-    if worker_id is None:
-        return jsonify({"error": "Missing worker_id parameter"}), 400
-    
-    #TODO: Validate worker_id against a list of available workers (query from database)
-    
-    location_id_str = request.args.get("location_id")
-    try:
-        location_id = int(location_id_str) if (location_id_str is not None) else None
-        print(f"Parsed location_id: {location_id}")
-    except ValueError:
-        return jsonify({"error": "Invalid location_id format"}), 400
-    if location_id is None:
-        return jsonify({"error": "Missing location_id parameter"}), 400
-    
-    #TODO: Validate location_id against a list of available locations (query from database)
-    
-    date_str = request.args.get("date")
-    try:
-        #date = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
-        date = datetime.fromisoformat(date_str)
-        print(f"Parsed date: {date}")
-    except ValueError:
-        return jsonify({"error": "Invalid date format"}), 400
-    if date is None:
-        return jsonify({"error": "Missing date parameter"}), 400
-    if date < datetime.now(timezone.utc):
-        return jsonify({"error": "Date cannot be in the past"}), 400
-    
-    
-    slots_availability = get_available_slots(service_duration, worker_id, location_id, date)
-
-    print(f"Available slots: {slots_availability}")
-    return jsonify({"available_slots": slots_availability})
+        print(f"Available slots: {slots_availability}")
+        return jsonify({"available_slots": slots_availability})
+        
+    except Exception as e:
+        print(f"Error checking availability: {str(e)}")  # Log for debugging
+        return jsonify({"error": "Unable to process request"}), 500
 
 # Endpoint to create a reservation
 @app.route("/reservation", methods=["POST"])
 def create_reservation():
-    data = request.get_json()
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "Invalid request format"}), 400
+        
+        # Define required fields (email is optional)
+        required_fields = ["name", "phone", "service_id", "worker_id", "reservation_time"]
+        
+        # Check all required fields are present
+        for field in required_fields:
+            if field not in data or data[field] is None:
+                return jsonify({"error": "Invalid request data"}), 400
+        
+        # Parse and validate each field
+        name = str(data.get("name")).strip()
+        if not name or len(name) < 2:
+            return jsonify({"error": "Invalid request data"}), 400
+            
+        # Email is optional - validate only if provided
+        email = None
+        if "email" in data and data.get("email") is not None:
+            email = str(data.get("email")).strip()
+            if email and ("@" not in email or len(email) < 5):
+                return jsonify({"error": "Invalid request data"}), 400
+            
+        phone = str(data.get("phone")).strip()
+        if not phone or len(phone) < 9:
+            return jsonify({"error": "Invalid request data"}), 400
+            
+        service_id = int(data.get("service_id"))
+        if service_id <= 0:
+            return jsonify({"error": "Invalid request data"}), 400
+            
+        worker_id = int(data.get("worker_id"))
+        if worker_id <= 0:
+            return jsonify({"error": "Invalid request data"}), 400
+            
+        date = datetime.fromisoformat(data.get("reservation_time"))
+        if date < datetime.now(timezone.utc):
+            return jsonify({"error": "Invalid request data"}), 400
+        
+        print(f"Creating reservation for: {name[:3]}*** at {date}")
+        
+        #TODO: Validate service_id, worker_id, and location_id against the database
 
-    name_str = data.get("name")
-    try:
-        name = str(name_str) if name_str else None
-        print(f"Parsed name: {name}")
-    except ValueError:
-        return jsonify({"error": "Invalid name format"}), 400
-    if name is None:
-        return jsonify({"error": "Missing name parameter"}), 400
-    
-    email_str = data.get("email")
-    try:
-        email = str(email_str) if email_str else None
-        print(f"Parsed email: {email}")
-    except ValueError:
-        return jsonify({"error": "Invalid email format"}), 400
-    if email is None:
-        return jsonify({"error": "Missing email parameter"}), 400
-    
-    phone_str = data.get("phone")
-    try:
-        phone = str(phone_str) if phone_str else None
-        print(f"Parsed phone: {phone}")
-    except ValueError:
-        return jsonify({"error": "Invalid phone format"}), 400
-    if phone is None:
-        return jsonify({"error": "Missing phone parameter"}), 400   
-    
-    service_id_str = data.get("service_id")
-    try:
-        service_id = int(service_id_str) if (service_id_str is not None) else None
-        print(f"Parsed service_id: {service_id}")
-    except ValueError:
-        return jsonify({"error": "Invalid service_id format"}), 400
-    if service_id is None:
-        return jsonify({"error": "Missing service_id parameter"}), 400
-    
-    worker_id_str = data.get("worker_id")
-    try:
-        worker_id = int(worker_id_str) if (worker_id_str is not None) else None
-        print(f"Parsed worker_id: {worker_id}")
-    except ValueError:
-        return jsonify({"error": "Invalid worker_id format"}), 400
-    if worker_id is None:
-        return jsonify({"error": "Missing worker_id parameter"}), 400
-    
-    location_id_str = data.get("location_id")
-    try:
-        location_id = int(location_id_str) if (location_id_str is not None) else None
-        print(f"Parsed location_id: {location_id}")
-    except ValueError:
-        return jsonify({"error": "Invalid location_id format"}), 400
-    if location_id is None:
-        return jsonify({"error": "Missing location_id parameter"}), 400
-    
-    date_str = data.get("reservation_time")
-    try:
-        #date = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else None
-        date = datetime.fromisoformat(date_str)
-        print(f"Parsed date: {date}")
-    except ValueError:
-        return jsonify({"error": "Invalid date format"}), 400
-    if date is None:
-        return jsonify({"error": "Missing date parameter"}), 400
-    if date < datetime.now(timezone.utc):
-        return jsonify({"error": "Date cannot be in the past"}), 400
-    
-    #TODO: Validate service_id, worker_id, and location_id against the database
-
-    #TODO Check if user exists
-    collection = db["clients"]
-    result = collection.find_one({"phone": phone})
-    #found_any = False
-    #for doc in result:
-        #print(doc)
-        #found_any = True
-
-    if result is None:
-        client = {
-            "name" : name,
-            "email" : email,
-            "phone" : phone,
-            "birthday" : None,
-            "registration_day" : datetime.fromisoformat(datetime.utcfromtimestamp(time.time()).strftime('%Y-%m-%dT%H:%M:%S')),
-            "total_reservations" : 0
-        }
-        #TODO Register new user
-
+        #TODO Check if user exists
         collection = db["clients"]
-        collection.insert_one(client)
+        result = collection.find_one({"phone": phone})
 
-    
+        if result is None:
+            client = {
+                "name" : name,
+                "email" : email,
+                "phone" : phone,
+                "birthday" : None,
+                "registration_day" : datetime.fromisoformat(datetime.utcfromtimestamp(time.time()).strftime('%Y-%m-%dT%H:%M:%S')),
+                "total_reservations" : 0
+            }
 
-    #TODO: Implement logic to create a reservation in the database
-    appointment = {
-        "phone" : phone,
-        "service_id" : 2,
-        "datetime_service_start" : date
-    }
+            collection = db["clients"]
+            collection.insert_one(client)
 
-    collection = db["appointements"]
-    collection.insert_one(appointment)
+        #TODO: Implement logic to create a reservation in the database
+        appointment = {
+            "phone" : phone,
+            "service_id" : service_id,
+            "datetime_service_start" : date
+        }
 
-
-    print(f"Creating reservation with data: {data}")
-    return jsonify({"message": "Reservation created successfully", "data": data}), 201
+        collection = db["appointements"]
+        result = collection.insert_one(appointment)
+        
+        if result.inserted_id:
+            return jsonify({"message": "Reservation created successfully"}), 201
+        else:
+            return jsonify({"error": "Unable to process request"}), 500
+            
+    except Exception as e:
+        print(f"Error processing reservation: {str(e)}")  # Log for debugging
+        return jsonify({"error": "Unable to process request"}), 500
 
 
 # Endpoint to get available services
