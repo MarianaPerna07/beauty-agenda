@@ -1,0 +1,12 @@
+[
+    {
+        "worker_id": 1,
+        "name": "Maria Cardoso",
+        "description": "Estética Avançada"
+    },
+    {
+        "worker_id": 2,
+        "name": "Lara Almeida",
+        "description": "Manicure e Pedicure"
+    }
+]
