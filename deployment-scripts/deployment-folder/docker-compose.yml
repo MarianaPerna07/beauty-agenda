@@ -1,6 +1,13 @@
 version: '3'
 
 services:
+  beautyagenda:
+    image: gonperna/beautyagenda:v1
+    container_name: beautyagenda
+    ports: 
+      - "3000:3000"
+    restart: unless-stopped
+
   nginx:
     image: nginx:latest
     container_name: nginx
