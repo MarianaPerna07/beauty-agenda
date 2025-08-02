@@ -114,10 +114,11 @@ def create_reservation():
         
         #TODO: Validate service_id, worker_id, and location_id against the database
 
-        #TODO Check if user exists
+        #Check if user exists
         collection = db["clients"]
         result = collection.find_one({"phone": phone})
 
+        # If user does not exist, create a new client record
         if result is None:
             client = {
                 "name" : name,
@@ -131,10 +132,12 @@ def create_reservation():
             collection = db["clients"]
             collection.insert_one(client)
 
-        #TODO: Implement logic to create a reservation in the database
+        #logic to create a reservation in the database
         appointment = {
             "phone" : phone,
             "service_id" : service_id,
+            "worker_id" : worker_id,
+            "splots_number" : slots_number,
             "datetime_service_start" : date
         }
 
@@ -149,6 +152,64 @@ def create_reservation():
     except Exception as e:
         print(f"Error processing reservation: {str(e)}")  # Log for debugging
         return jsonify({"error": "Unable to process request"}), 500
+
+
+# Endpoint to get a all reservations from a worker
+@app.route("/reservations", methods=["GET"])
+def get_reservations():
+    try:
+        worker_id_str = request.args.get("worker_id")
+
+        # Validate required parameters
+        if not all([worker_id_str]):
+            return jsonify({"error": "Invalid request parameters"}), 400
+
+
+        # Convert and validate integers
+        try:
+            if worker_id_str is None:
+                return jsonify({"error": "Invalid request parameters"}), 400
+            worker_id = int(worker_id_str)
+        except (ValueError, TypeError):
+            return jsonify({"error": "Invalid request parameters"}), 400
+
+        
+        #Query DB for the reservations documents
+        #return jsonify({"reservations": reservations})
+
+
+@app.route("/reservation/<reservation-id>", methods=["DELETE"])
+def delete_reservations():
+    try:
+        reservation_id = request.args.get("reservation-id")
+        
+        if not reservation_id:
+            return jsonify({"error": "Invalid request parameters"}), 400
+        
+        # Convert and validate reservation_id
+        try:
+            reservation_id = int(reservation_id)
+        except (ValueError, TypeError):
+            return jsonify({"error": "Invalid request parameters"}), 400
+        
+        # Query the database to delete the reservation
+        collection = db["appointements"]
+        #TODO change key
+        #result = collection.delete_one({"_id": reservation_id})
+        
+        if result.deleted_count > 0:
+            return jsonify({"message": "Reservation deleted successfully"}), 200
+        else:
+            return jsonify({"error": "Reservation not found"}), 404
+            
+    except Exception as e:
+        print(f"Error deleting reservation: {str(e)}")
+
+
+
+        
+
+
 
 
 # Endpoint to get available services
