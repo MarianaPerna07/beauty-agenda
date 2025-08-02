@@ -6,6 +6,7 @@ import time
 
 from aux import get_available_slots
 
+
 app = Flask(__name__)
 CORS(app)
 
@@ -14,6 +15,8 @@ client = MongoClient(mongo_uri)
 
 db = client["estetica"]
 collection = db["appointements"]  # You can name this whatever you want
+
+SLOT_DURATION = 15  # Duration of each slot in minutes
 
 # Endpoint to get available slots
 @app.route("/availability", methods=["GET"])
@@ -132,12 +135,22 @@ def create_reservation():
             collection = db["clients"]
             collection.insert_one(client)
 
+
+        #get service duration from the database
+        collection = db["services"]
+        service = collection.find_one({"_id": service_id}) 
+        if service is None:
+            return jsonify({"error": "Invalid service ID"}), 400
+        
+        service_duration = service["duration"]
+        slots_number = service_duration // SLOT_DURATION
+
         #logic to create a reservation in the database
         appointment = {
             "phone" : phone,
             "service_id" : service_id,
             "worker_id" : worker_id,
-            "splots_number" : slots_number,
+            "slots_number" : slots_number,
             "datetime_service_start" : date
         }
 
@@ -172,30 +185,43 @@ def get_reservations():
             worker_id = int(worker_id_str)
         except (ValueError, TypeError):
             return jsonify({"error": "Invalid request parameters"}), 400
-
         
         #Query DB for the reservations documents
+        collection = db["appointements"]
+        reservations = list(collection.find({"worker_id": worker_id}, {"_id": 0})) 
+        return jsonify({"reservations": reservations}), 200
+    
+    except Exception as e:
+        print(f"Error deleting reservation: {str(e)}")
+
+        
+        
         #return jsonify({"reservations": reservations})
 
 
-@app.route("/reservation/<reservation-id>", methods=["DELETE"])
+# [ADMIN]
+# Endpoint to delete a reservation
+@app.route("/reservation", methods=["DELETE"])
 def delete_reservations():
     try:
-        reservation_id = request.args.get("reservation-id")
+        #reservation_id = request.args.get("reservation-id")
+        worker_id_str = request.args.get("worker_id")
+        date_str = request.args.get("date")
         
-        if not reservation_id:
+        if (worker_id_str is not None )and (date_str is not None):
             return jsonify({"error": "Invalid request parameters"}), 400
         
         # Convert and validate reservation_id
         try:
-            reservation_id = int(reservation_id)
+            worker_id = int(worker_id_str)
         except (ValueError, TypeError):
             return jsonify({"error": "Invalid request parameters"}), 400
         
         # Query the database to delete the reservation
         collection = db["appointements"]
-        #TODO change key
-        #result = collection.delete_one({"_id": reservation_id})
+        
+        #Delete the reservation based on worker_id and date
+        result = collection.delete_one({"worker_id": worker_id, "datetime_service_start": datetime.fromisoformat(date_str)})
         
         if result.deleted_count > 0:
             return jsonify({"message": "Reservation deleted successfully"}), 200
@@ -204,6 +230,44 @@ def delete_reservations():
             
     except Exception as e:
         print(f"Error deleting reservation: {str(e)}")
+
+
+
+#######Clients endpoints#######
+# [ADMIN]
+# Endpoint to get all clients 
+@app.route("/clients", methods=["GET"])
+def get_clients():
+    try:
+        collection = db["clients"]
+        clients = list(collection.find({}, {"_id": 0}))  # Exclude MongoDB's default _id field
+        return jsonify({"clients": clients}), 200
+    except Exception as e:
+        print(f"Error fetching clients: {str(e)}")
+        return jsonify({"error": "Unable to fetch clients"}), 500
+
+
+# [ADMIN]
+# Endpoint to change a specific client by ID
+@app.route("/client/<client_id>", methods=["POST"])
+def update_client(client_id):
+    try:
+        data = request.get_json()
+        
+        if not data or not isinstance(data, dict):
+            return jsonify({"error": "Invalid request format"}), 400
+        
+        collection = db["clients"]
+        result = collection.update_one({"_id": client_id}, {"$set": data})
+        
+        if result.modified_count > 0:
+            return jsonify({"message": "Client updated successfully"}), 200
+        else:
+            return jsonify({"error": "Client not found or no changes made"}), 404
+            
+    except Exception as e:
+        print(f"Error updating client: {str(e)}")
+        return jsonify({"error": "Unable to update client"}), 500
 
 
 
