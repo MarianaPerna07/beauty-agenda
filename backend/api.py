@@ -249,8 +249,8 @@ def get_clients():
 
 # [ADMIN]
 # Endpoint to change a specific client by ID
-@app.route("/client/<client_id>", methods=["POST"])
-def update_client(client_id):
+@app.route("/client/<client_phone>", methods=["POST"])
+def update_client(client_phone):
     try:
         data = request.get_json()
         
@@ -258,7 +258,7 @@ def update_client(client_id):
             return jsonify({"error": "Invalid request format"}), 400
         
         collection = db["clients"]
-        result = collection.update_one({"_id": client_id}, {"$set": data})
+        result = collection.update_one({"phone": client_phone}, {"$set": data})
         
         if result.modified_count > 0:
             return jsonify({"message": "Client updated successfully"}), 200
