@@ -22,9 +22,9 @@ SLOT_DURATION = 15  # Duration of each slot in minutes
 @app.route("/availability", methods=["GET"])
 def get_availability():
     try:
-        service_id_str = request.args.get("service_id")
-        worker_id_str = request.args.get("worker_id")
-        date_str = request.args.get("date")
+        service_id_str = str(request.args.get("service_id"))
+        worker_id_str = str(request.args.get("worker_id"))
+        date_str = str(request.args.get("date"))
         
         # Validate required parameters
         if not all([service_id_str, worker_id_str, date_str]):
@@ -37,32 +37,38 @@ def get_availability():
             service_id = int(service_id_str)
             worker_id = int(worker_id_str)
         except (ValueError, TypeError):
+            print(f"Invalid service_id: {service_id_str} or worker_id: {worker_id_str}")
             return jsonify({"error": "Invalid request parameters"}), 400
             
         # Convert and validate date
         try:
-            date = datetime.fromisoformat(str(date_str))
+            date = datetime.fromisoformat(date_str)
+            if date.tzinfo is None:
+                date = date.replace(tzinfo=timezone.utc)
         except (ValueError, TypeError):
+            print(f"Invalid date format: {date_str}")
             return jsonify({"error": "Invalid request parameters"}), 400
         
         # Basic validation
-        if service_id <= 0 or worker_id <= 0:
+        if service_id < 0 or worker_id < 0:
+            print(f"Invalid service_id: {service_id} or worker_id: {worker_id}")
             return jsonify({"error": "Invalid request parameters"}), 400
             
         if date < datetime.now(timezone.utc):
+            print(f"Invalid date: {date} is in the past.")
             return jsonify({"error": "Invalid request parameters"}), 400
         
         print(f"Checking availability for service {service_id}, worker {worker_id}")
         
         #TODO: Validate service_id against a list of available services (query from database) and get service duration
-        service_duration = 30  # Placeholder for service duration, should be fetched from database based on service_id
+        service_duration = 5  # Placeholder for service duration, should be fetched from database based on service_id
         
         #TODO: Validate worker_id against a list of available workers (query from database)
         
         slots_availability = get_available_slots(service_duration, worker_id, date)
 
         print(f"Available slots: {slots_availability}")
-        return jsonify({"available_slots": slots_availability})
+        return jsonify({"available_slots": slots_availability}), 200
         
     except Exception as e:
         print(f"Error checking availability: {str(e)}")  # Log for debugging
@@ -193,10 +199,7 @@ def get_reservations():
     
     except Exception as e:
         print(f"Error deleting reservation: {str(e)}")
-
-        
-        
-        #return jsonify({"reservations": reservations})
+        return jsonify({"error": "Unable to fetch reservations"}), 500
 
 
 # [ADMIN]
@@ -205,8 +208,8 @@ def get_reservations():
 def delete_reservations():
     try:
         #reservation_id = request.args.get("reservation-id")
-        worker_id_str = request.args.get("worker_id")
-        date_str = request.args.get("date")
+        worker_id_str = str(request.args.get("worker_id"))
+        date_str = str(request.args.get("date"))
         
         if (worker_id_str is not None )and (date_str is not None):
             return jsonify({"error": "Invalid request parameters"}), 400
@@ -230,6 +233,7 @@ def delete_reservations():
             
     except Exception as e:
         print(f"Error deleting reservation: {str(e)}")
+        return jsonify({"error": "Unable to delete reservation"}), 500
 
 
 
@@ -248,7 +252,7 @@ def get_clients():
 
 
 # [ADMIN]
-# Endpoint to change a specific client by ID
+# Endpoint to change a specific client by phone number
 @app.route("/client/<client_phone>", methods=["POST"])
 def update_client(client_phone):
     try:
@@ -270,15 +274,10 @@ def update_client(client_phone):
         return jsonify({"error": "Unable to update client"}), 500
 
 
-
-        
-
-
-
-
 # Endpoint to get available services
 @app.route("/services", methods=["GET"])
 def get_services():
+    #TODO: Fetch services from the database
     return jsonify({
         "services": [
             {"id": 1, "name": "Haircut"},
