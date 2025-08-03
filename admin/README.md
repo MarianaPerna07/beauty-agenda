@@ -21,6 +21,7 @@ for routing management.
 2- In the project directory run:
 
 ##### `yarn install`
+##### export NODE_OPTIONS=--openssl-legacy-provider
 ##### `yarn start`
 
 Now the app is running in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
