@@ -134,12 +134,9 @@ function LoginPage() {
                             <div className="pt-2">
                                 <button
                                     type="submit"
-                                    className="btn-login w-full py-2 bg-[#5c7160] text-white rounded-lg hover:bg-[#5c7160]/90 transition-all flex items-center justify-center shadow-sm hover:shadow group"
+                                    className="btn-login w-full py-2 bg-[#5c7160] text-white rounded-lg hover:bg-[#5c7160]/90 transition-all flex items-center justify-center shadow-sm hover:shadow"
                                 >
                                     <span className="font-medium text-sm">Entrar</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                    </svg>
                                 </button>
                             </div>
                             
