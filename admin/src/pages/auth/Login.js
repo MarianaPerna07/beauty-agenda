@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import "./Login.css";
+import LOGO from "../../assets/images/Slogan-YourMoments.png"; 
 
 const GOOGLE_CLIENT_ID = "157557598338-t2pqe9snt3v728v541h9oh6rcp5ifqjp.apps.googleusercontent.com";
 
@@ -189,19 +190,16 @@ return (
     </div>
 
     <div className="relative z-10 mb-2">
-        <div className="w-16 h-16 flex items-center justify-center">
+    <div className="w-22 mx-auto flex items-center justify-center">
         <img
-            src="/logo-gold.png"
-            alt="Your Moments"
-            className="w-full"
-            onError={(e) => {
-            e.target.onerror = null;
-            e.target.src =
-                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='100%25' height='100%25' fill='%23f5f1e9'/%3E%3Ctext x='50%25' y='50%25' font-family='Quicksand, sans-serif' font-weight='300' font-size='24' fill='%23c0a080' text-anchor='middle' dominant-baseline='middle'%3EYM%3C/text%3E%3C/svg%3E";
-            }}
+        src={LOGO}
+        alt="Your Moments"
+        className="max-w-full max-h-full object-contain"
+        onError={(e) => { e.target.onerror = null; }}
         />
-        </div>
     </div>
+    </div>
+
 
     <div className="relative z-10 w-full max-w-xs">
         <div className="bg-white rounded-2xl shadow-md overflow-hidden">
@@ -209,9 +207,6 @@ return (
 
         <div className="px-5 py-5">
             <div className="text-center mb-4">
-            <h2 className="text-xl font-light text-[#5c7160]">
-                Your Moments
-            </h2>
             <p className="text-[#5c7160]/70 mt-0.5 text-sm">
                 Área Administrativa
             </p>
