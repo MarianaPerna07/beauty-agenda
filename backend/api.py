@@ -201,6 +201,17 @@ def get_reservations():
         print(f"Error deleting reservation: {str(e)}")
         return jsonify({"error": "Unable to fetch reservations"}), 500
 
+# Endpoint to get available services
+@app.route("/services", methods=["GET"])
+def get_services():
+    #TODO: Fetch services from the database
+    return jsonify({
+        "services": [
+            {"id": 1, "name": "Haircut"},
+            {"id": 2, "name": "Manicure"},
+            {"id": 3, "name": "Pedicure"}
+        ]
+    }, 200)
 
 # [ADMIN]
 # Endpoint to delete a reservation
@@ -273,18 +284,6 @@ def update_client(client_phone):
         print(f"Error updating client: {str(e)}")
         return jsonify({"error": "Unable to update client"}), 500
 
-
-# Endpoint to get available services
-@app.route("/services", methods=["GET"])
-def get_services():
-    #TODO: Fetch services from the database
-    return jsonify({
-        "services": [
-            {"id": 1, "name": "Haircut"},
-            {"id": 2, "name": "Manicure"},
-            {"id": 3, "name": "Pedicure"}
-        ]
-    }, 200)
 
 
 if __name__ == "__main__":

@@ -6,39 +6,39 @@ import SettingsPage from "./pages/Settings";
 
 function PrivateRoute({ children, ...rest }) {
   return (
-      <Route
-          {...rest}
-          render={({ location }) =>
-              localStorage.getItem('token') ? (
+      // <Route
+      //     {...rest}
+      //     render={({ location }) =>
+      //         localStorage.getItem('token') ? (
                   <PrivateLayout>{children}</PrivateLayout>
-              ) : (
-                  <Redirect
-                      to={{
-                        pathname: '/',
-                        state: { from: location },
-                      }}
-                  />
-              )
-          }
-      />
+      //         ) : (
+      //             <Redirect
+      //                 to={{
+      //                   pathname: '/',
+      //                   state: { from: location },
+      //                 }}
+      //             />
+      //         )
+      //     }
+      // />
   );
 }
 
 function App() {
   return (
-      <BrowserRouter>
-          <Switch>
-              <Route exact path="/">
-                  <LoginPage />
-              </Route>
-              <PrivateRoute path="/dashboard">
-                  <DashboardPage />
-              </PrivateRoute>
-              <PrivateRoute path="/settings">
-                  <SettingsPage />
-              </PrivateRoute>
-          </Switch>
-      </BrowserRouter>
+        <BrowserRouter>
+            <Switch>
+                <Route exact path="/">
+                    <LoginPage />
+                </Route>
+                <PrivateRoute path="/dashboard">
+                    <DashboardPage />
+                </PrivateRoute>
+                <PrivateRoute path="/settings">
+                    <SettingsPage />
+                </PrivateRoute>
+            </Switch>
+        </BrowserRouter>
   );
 }
 
