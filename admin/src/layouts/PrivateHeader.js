@@ -9,6 +9,17 @@ import { IconButton } from "@material-ui/core";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles(theme => ({
+  headerRoot: {
+    backgroundColor: '#F5F1E9 !important', // Match the page background
+    boxShadow: 'none !important', // Remove any shadow
+    borderBottom: 'none !important', // Remove any border
+    minHeight: '0 !important',
+    height: 'auto !important',
+    '& .MuiToolbar-root': {
+      minHeight: '48px !important', // Compact height
+      padding: '0 16px !important',
+    }
+  },
   header: {
     fontWeight: 500,
     fontFamily: "'Quicksand', sans-serif",
@@ -86,6 +97,13 @@ const useStyles = makeStyles(theme => ({
 const PrivateHeader = () => {
   const classes = useStyles();
   let history = useHistory();
+
+  React.useEffect(() => {
+    const headerElement = document.querySelector('.MuiPaper-root.MuiAppBar-root');
+    if (headerElement) {
+      headerElement.classList.add(classes.headerRoot);
+    }
+  }, [classes.headerRoot]);
 
   const handleLogout = event => {
     localStorage.removeItem('token');
