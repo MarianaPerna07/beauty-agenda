@@ -1,6 +1,22 @@
 version: '3'
 
 services:
+  mongodb:
+    image: mongo:6.0 
+    container_name: mongo_container
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  backend:
+    image: gonperna/beautyagenda:backendv1
+    container_name: backend
+    ports:
+      - "5001:5001"
+
   beautyagenda:
     image: gonperna/beautyagenda:v1
     container_name: beautyagenda
