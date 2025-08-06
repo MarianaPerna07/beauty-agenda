@@ -39,10 +39,15 @@ const PrivateLayout = ({children}) => {
             <Root scheme={fixedScheme}>
                 {({ state: { sidebar } }) => (
                     <>
-                        <Header>
-                            <Toolbar>
+                        <Header style={{ 
+                          backgroundColor: '#F5F1E9', 
+                          boxShadow: 'none', 
+                          borderBottom: 'none',
+                          minHeight: '48px'
+                        }}>
+                            <Toolbar style={{ minHeight: '48px', padding: '0 16px' }}>
                                 <SidebarTrigger sidebarId="primarySidebar" />
-                                <PrivateHeader/>
+                                {/* <PrivateHeader/> */}
                             </Toolbar>
                         </Header>
 

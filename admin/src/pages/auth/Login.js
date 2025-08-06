@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
-import "./Login.css";
 
 export default function LoginPage() {
     const [error, setError] = useState("");

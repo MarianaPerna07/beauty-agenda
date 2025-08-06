@@ -1,0 +1,229 @@
+.react-datepicker {
+    font-family: inherit;
+    border: none !important;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    box-shadow: 0px 2px 10px rgba(237, 238, 237, 0.05);
+    width: 100% !important;
+    max-width: 360px !important;
+    margin: 0 auto;
+    padding: 0.5rem 0;
+  }
+  
+  /* Cabeçalho personalizado */
+  .custom-header {
+    padding: 1rem;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .custom-header .month-year {
+    font-size: 1.2rem;
+    color: #5c7160;
+    text-transform: lowercase;
+    font-weight: normal;
+  }
+  
+  .custom-header .month-year::first-letter {
+    text-transform: uppercase;
+  }
+  
+  .custom-header .navigation {
+    display: flex;
+    align-items: center;
+  }
+  
+  .custom-header button {
+    background: transparent;
+    border: none;
+    color: #5c7160;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+  }
+  
+  .custom-header button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  /* Cabeçalho com dias da semana */
+  .react-datepicker__header {
+    background-color: transparent;
+    border-bottom: none;
+    padding-top: 0;
+  }
+  
+  .react-datepicker__day-names {
+    display: flex;
+    justify-content: center;
+    white-space: nowrap;
+    margin: 0;
+  }
+  
+  .react-datepicker__day-name {
+    color: #5c7160;
+    opacity: 0.6;
+    font-weight: normal;
+    text-transform: lowercase;
+    font-size: 0.95rem !important;
+    width: 2.6rem !important;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Mês */
+  .react-datepicker__month {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Semana */
+  .react-datepicker__week {
+    display: flex;
+    justify-content: center;
+    white-space: nowrap;
+    margin: 0;
+    width: 100%;
+  }
+  
+  /* Dia */
+  .react-datepicker__day {
+    width: 2.6rem !important;  /* Maior largura */
+    height: 2.6rem !important; /* Maior altura */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    color: #5c7160;
+    border-radius: 50%;
+    font-size: 1rem !important; /* Texto maior */
+    font-weight: 300;
+  }
+  
+  .react-datepicker__day:hover:not(.react-datepicker__day--selected) {
+    background-color: #F5F1E9;
+    border-radius: 50%;
+  }
+
+  /* Remover quadrado azul do focus */
+  .react-datepicker__day:focus {
+    outline: none !important;
+  }
+
+  .react-datepicker__day:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Melhorar a aparência no hover */
+  .react-datepicker__day:hover:not(.react-datepicker__day--selected):not(.react-datepicker__day--disabled) {
+    background-color: rgba(165, 191, 153, 0.1) !important;
+    color: #5c7160 !important;
+    border-radius: 50%;
+  }
+  
+  /* Corrigir highlight do navegador */
+  .react-datepicker * {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  
+  /* Dia selecionado */
+  .react-datepicker__day--selected {
+    background-color: #a5bf99;
+    color: #fff;
+    font-weight: normal;
+  }
+  
+  .react-datepicker__day--selected:hover {
+    background-color: #a5bf99;
+  }
+  
+  /* Dia de hoje */
+  .react-datepicker__day--today {
+    font-weight: 500;
+    color: #c0a080;
+  }
+  
+  /* Dias fora do mês atual */
+  .react-datepicker__day--outside-month {
+    color: #5c7160;
+    opacity: 0.3;
+  }
+  
+  /* Dia desabilitado */
+  .react-datepicker__day--disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .react-datepicker__day--disabled:hover {
+    background-color: transparent;
+  }
+  
+  /* Estilos para container geral */
+  .custom-datepicker-wrapper {
+    padding: 0;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 360px;  /* Aumentar a largura máxima */
+    background-color: #fff;
+    border-radius: 0.75rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .react-datepicker__month-container {
+    float: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Adicionar estas regras ao fim do arquivo */
+
+  /* Remover completamente o outline/ring azul do Tailwind */
+  .react-datepicker__day,
+  .react-datepicker__day--selected,
+  .react-datepicker__day--keyboard-selected,
+  .react-datepicker button {
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    --tw-ring-offset-width: 0 !important;
+    --tw-ring-offset-color: transparent !important;
+    --tw-ring-offset-shadow: none !important;
+    --tw-ring-shadow: none !important;
+    --tw-shadow: none !important;
+    border-color: transparent !important;
+    border-radius: 50% !important;
+  }
+
+  .react-datepicker__day--keyboard-selected {
+    background-color: rgba(165, 191, 153, 0.2) !important;
+    color: #5c7160 !important;
+  }
+
+  /* Garantir que o dia selecionado mantenha a cor verde */
+  .react-datepicker__day--selected,
+  .react-datepicker__day--selected:hover,
+  .react-datepicker__day--selected:focus {
+    background-color: #a5bf99 !important;
+    color: white !important;
+  }
+
+  /* Reforçar para Firefox */
+  .react-datepicker *::-moz-focus-inner {
+    border: 0;
+  }
+
+  /* Reforçar para Safari */
+  .react-datepicker * {
+    -webkit-appearance: none;
+  }
