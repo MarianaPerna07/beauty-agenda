@@ -60,12 +60,50 @@ def get_availability():
         
         print(f"Checking availability for service {service_id}, worker {worker_id}")
         
-        #TODO: Validate service_id against a list of available services (query from database) and get service duration
-        service_duration = 5  # Placeholder for service duration, should be fetched from database based on service_id
+        #Validate service_id against a list of available services (query from database) and get service duration
+        collection = db["services"]
+        service = collection.find_one({"service_id": service_id}) 
+        if service is None:
+            return jsonify({"error": "Invalid service ID"}), 400
         
-        #TODO: Validate worker_id against a list of available workers (query from database)
+        #print("Service found:", service)
+        service_duration = service["duration"]
+        slots_number = service_duration // SLOT_DURATION
+
+        #print(slots_number)
+
+        #Validate worker_id against a list of available workers (query from database)
+        #print(worker_id)
+        collection = db["workers"]
+        worker = collection.find_one({"worker_id": worker_id}) 
+        if worker is None:
+            return jsonify({"error": "Invalid worker ID"}), 400
         
-        slots_availability = get_available_slots(service_duration, worker_id, date)
+        #print(date.replace(hour=9, minute=0, second=0, microsecond=0))
+        #print(date.replace(hour=18, minute=45, second=0, microsecond=0))
+        # Use UTC-aware datetime objects
+        start_time = datetime(2025, 8, 6, 9, 0, 0, tzinfo=timezone.utc)
+        end_time = datetime(2025, 8, 6, 19, 0, 0, tzinfo=timezone.utc)
+        print(f"Start time: {start_time}, End time: {end_time}")
+
+        # Query to match datetime_service_start in interval
+        query = {
+            "worker_id": worker_id,
+            "datetime_service_start": {
+                "$gte": start_time,
+                "$lte": end_time
+            }
+        }
+
+        # Run the query
+        #results = collection.find(query)
+
+        #Query database appointments collection for the slots with the worker_id and date
+        collection = db["appointements"]
+        #appointments = list(collection.find({"worker_id": worker_id, "datetime_service_start": {"$gte": date.replace(hour=9, minute=0, second=0, microsecond=0), "$lt": date.replace(hour=18, minute=45, second=0, microsecond=0)}}, {"_id": 0}))
+        appointments = list(collection.find(query))
+
+        slots_availability = get_available_slots(slots_number, worker_id, date, appointments)
 
         print(f"Available slots: {slots_availability}")
         return jsonify({"available_slots": slots_availability}), 200
@@ -126,9 +164,11 @@ def create_reservation():
         #Check if user exists
         collection = db["clients"]
         result = collection.find_one({"phone": phone})
+        #print("passou request")
 
         # If user does not exist, create a new client record
         if result is None:
+            print(f"Creating new client record for phone: {phone}")
             client = {
                 "name" : name,
                 "email" : email,
@@ -144,10 +184,11 @@ def create_reservation():
 
         #get service duration from the database
         collection = db["services"]
-        service = collection.find_one({"_id": service_id}) 
+        service = collection.find_one({"service_id": service_id}) 
         if service is None:
             return jsonify({"error": "Invalid service ID"}), 400
         
+        #print("Service found:", service)
         service_duration = service["duration"]
         slots_number = service_duration // SLOT_DURATION
 
@@ -204,14 +245,26 @@ def get_reservations():
 # Endpoint to get available services
 @app.route("/services", methods=["GET"])
 def get_services():
-    #TODO: Fetch services from the database
-    return jsonify({
-        "services": [
-            {"id": 1, "name": "Haircut"},
-            {"id": 2, "name": "Manicure"},
-            {"id": 3, "name": "Pedicure"}
-        ]
-    }, 200)
+    try:
+        collection = db["services"]
+        services = list(collection.find({}, {"_id": 0}))
+        return jsonify({"services": services}), 200
+    except Exception as e:
+        print(f"Error getting services: {str(e)}")
+        return jsonify({"error": "Unable to get services"}), 500
+    
+
+# Endpoint to get workers
+@app.route("/workers", methods=["GET"])
+def get_workers():
+    try:
+        collection = db["workers"]
+        workers = list(collection.find({}, {"_id": 0}))
+        return jsonify({"workers": workers}), 200
+    except Exception as e:
+        print(f"Error getting workers: {str(e)}")
+        return jsonify({"error": "Unable to get workers"}), 500
+    
 
 # [ADMIN]
 # Endpoint to delete a reservation
@@ -221,15 +274,16 @@ def delete_reservations():
         #reservation_id = request.args.get("reservation-id")
         worker_id_str = str(request.args.get("worker_id"))
         date_str = str(request.args.get("date"))
+        print(f"worker_id: {worker_id_str}, date: {date_str}")
         
-        if (worker_id_str is not None )and (date_str is not None):
+        if (worker_id_str is None ) or (date_str is None):
             return jsonify({"error": "Invalid request parameters"}), 400
         
         # Convert and validate reservation_id
         try:
             worker_id = int(worker_id_str)
         except (ValueError, TypeError):
-            return jsonify({"error": "Invalid request parameters"}), 400
+            return jsonify({"error": "Invalid worker id parameters"}), 400
         
         # Query the database to delete the reservation
         collection = db["appointements"]
@@ -268,12 +322,16 @@ def get_clients():
 def update_client(client_phone):
     try:
         data = request.get_json()
+        print("data:", data)
+        print("client_phone:", client_phone)
+        print(type(client_phone))
         
         if not data or not isinstance(data, dict):
             return jsonify({"error": "Invalid request format"}), 400
         
         collection = db["clients"]
         result = collection.update_one({"phone": client_phone}, {"$set": data})
+        print("result:", result)
         
         if result.modified_count > 0:
             return jsonify({"message": "Client updated successfully"}), 200
