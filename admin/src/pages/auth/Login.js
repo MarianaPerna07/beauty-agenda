@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
+import LOGO from "../../assets/images/Slogan-YourMoments.png"; 
 
 export default function LoginPage() {
     const [error, setError] = useState("");
@@ -88,90 +89,63 @@ export default function LoginPage() {
     }, [handleCredentialResponse]);
 
     return (
-    <div className="login-page min-h-screen flex flex-col items-center justify-center bg-[#F5F1E9]">
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-        <div className="absolute top-10 left-10 w-24 h-24 rounded-full bg-[#a5bf99]/8"></div>
-        <div className="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-[#c0a080]/8"></div>
-        <div className="absolute top-1/4 right-10 w-16 h-16 rounded-full bg-[#5c7160]/5"></div>
-        <div className="absolute bottom-10 left-20 w-20 h-20 rounded-full bg-[#5c7160]/5"></div>
-        </div>
-
-        <div className="relative z-10 mb-2">
-        <div className="w-16 h-16 flex items-center justify-center">
-            <img
-            src="/logo-gold.png"
-            alt="Your Moments"
-            className="w-full"
-            onError={(e) => {
-                e.target.onerror = null;
-                e.target.src =
-                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='100%25' height='100%25' fill='%23f5f1e9'/%3E%3Ctext x='50%25' y='50%25' font-family='Quicksand, sans-serif' font-weight='300' font-size='24' fill='%23c0a080' text-anchor='middle' dominant-baseline='middle'%3EYM%3C/text%3E%3C/svg%3E";
-            }}
-            />
-        </div>
-        </div>
-
-        <div className="relative z-10 w-full max-w-xs">
-        <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-            <div className="h-1 bg-gradient-to-r from-[#c0a080]/60 via-[#e9d3a3] to-[#c0a080]/60"></div>
-            <div className="px-5 py-5">
-            <div className="text-center mb-4">
-                <h2 className="text-xl font-light text-[#5c7160]">Your Moments</h2>
-                <p className="text-[#5c7160]/70 mt-0.5 text-sm">
-                Área Administrativa
-                </p>
+        <div className="min-h-screen flex items-center justify-center bg-[#F5F1E9] p-4">
+          {/* cartão */}
+          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden min-h-[520px]">
+            {/* círculos de fundo */}
+            <div className="absolute inset-0 z-0">
+              <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-[#a5bf99]/10" />
+              <div className="absolute bottom-16 right-16 w-40 h-40 rounded-full bg-[#c0a080]/10" />
+              <div className="absolute top-1/3 right-12 w-20 h-20 rounded-full bg-[#5c7160]/5" />
+              <div className="absolute bottom-12 left-20 w-24 h-24 rounded-full bg-[#5c7160]/5" />
             </div>
-
-            {error && (
-                <div className="mb-4 p-2 bg-red-50 text-red-700 rounded-lg text-xs flex items-center">
-                <svg
+    
+            {/* conteúdo */}
+            <div className="relative z-10 p-8 flex flex-col items-center">
+              <img
+                src={LOGO}
+                alt="Your Moments"
+                className="w-82 h-28 object-contain mb-6"
+              />
+              <p className="text-[#5c7160]/70 text-2xl mb-8">Área Administrativa</p>
+    
+              {error && (
+                <div className="flex items-center gap-2 px-4 py-3 mb-6 w-full bg-red-50 text-red-700 text-sm rounded-lg">
+                  <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 mr-2 flex-shrink-0"
+                    className="w-5 h-5 flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                >
+                  >
                     <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
-                </svg>
-                <span>{error}</span>
+                  </svg>
+                  <span className="flex-1">{error}</span>
                 </div>
-            )}
-
-            <div className="space-y-3">
-                <div className="text-center mb-2">
-                <div id="gsi-button" className="mx-auto"></div>
-                </div>
-                {loading && (
-                <div className="text-center text-sm text-[#5c7160]">
-                    Signing in…
-                </div>
-                )}
-
-                {!loading && (
-                <div className="text-xs text-center text-[#5c7160]/70">
-                    Use o botão do Google acima para autenticar. Apenas o email
-                    permitido terá acesso.
-                </div>
-                )}
+              )}
+    
+              {/* botão Google centralizado e com largura máxima */}
+              <div className="w-full flex justify-center mb-6">
+                <div id="gsi-button" className="max-w-full" />
+              </div>
+    
+                <p className="text-s text-[#5c7160]/70 text-center mb-6">
+                  Use o botão acima para autenticar.
+                </p>
+    
+              {/* footer */}
+              <div className="w-full border-t border-[#5c7160]/10 pt-4 text-center">
+                <p className="text-[0.6rem] text-[#5c7160]/60">
+                  © {new Date().getFullYear()} Your Moments Estética
+                </p>
+              </div>
             </div>
-            </div>
-
-            <div className="bg-[#5c7160]/5 py-2 px-5 text-center">
-            <p className="text-xs text-[#5c7160]/60">
-                © {new Date().getFullYear()} Your Moments Estética
-            </p>
-            </div>
+          </div>
         </div>
-        </div>
-
-        <div className="absolute bottom-4 w-full flex justify-center z-0 opacity-30">
-        <div className="w-24 h-px bg-gradient-to-r from-transparent via-[#c0a080] to-transparent"></div>
-        </div>
-    </div>
-    );
-}
+      );
+    }

@@ -27,13 +27,13 @@ function AppRoutes() {
                 {token ? <AdminPage /> : <Redirect to="/login" />}
             </Route>
 
-            <Route path="/dashboard">
+            <PrivateLayout path="/dashboard">
                 <DashboardPage />
-            </Route>
+            </PrivateLayout>
 
-            <Route path="/settings">
+            <PrivateLayout path="/settings">
                 <SettingsPage />
-            </Route>
+            </PrivateLayout>
         </Switch>
     );
 }
