@@ -28,11 +28,11 @@ function AppRoutes() {
             </Route>
 
             <PrivateLayout path="/dashboard">
-                <DashboardPage />
+                {token ? <DashboardPage /> : <Redirect to="/login" />}
             </PrivateLayout>
 
             <PrivateLayout path="/settings">
-                <SettingsPage />
+                {token ? <SettingsPage /> : <Redirect to="/login" />}
             </PrivateLayout>
         </Switch>
     );

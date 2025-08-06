@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import { makeStyles } from "@material-ui/core/styles";
 import logo from "../assets/images/Logo-YourMoments.png";
+import { useAuth } from "../AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -63,6 +64,11 @@ const useStyles = makeStyles((theme) => ({
 const PrivateNavHeader = ({ collapsed }) => {
   const classes = useStyles({ collapsed });
   const initials = "YM"; // Your Moments initials
+  const { token, email } = useAuth();
+
+  if (!token) {
+    return null; // Don't render if not authenticated
+  }
 
   return (
     <>
@@ -82,7 +88,7 @@ const PrivateNavHeader = ({ collapsed }) => {
                 Admin
               </Typography>
               <Typography noWrap gutterBottom className={classes.emailText}>
-                yourmomentos@admin.pt
+                {email}
               </Typography>
             </>
           )}

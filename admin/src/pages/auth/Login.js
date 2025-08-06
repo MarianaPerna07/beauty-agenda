@@ -47,7 +47,7 @@ export default function LoginPage() {
                 setExpiresAt(Date.now() + data.expires_in * 1000);
                 setEmail(data.email);
                 setError("Redirecting to admin page...");
-                history.replace("/admin");
+                history.replace("/dashboard");
             } catch {
                 setError("Error during login.");
             } finally {
