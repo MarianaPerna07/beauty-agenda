@@ -22,7 +22,6 @@ registerLocale('pt-custom', ptCustom);
 const slugify = (str) =>
   str.toLowerCase().replace(/\s+/g, "_").replace(/ç/g, "c");
 
-
 // -----------------
 // CategoryBar
 // -----------------
@@ -415,11 +414,16 @@ function Reservations() {
   // estados de navegação
   const [currentStep, setCurrentStep] = useState(1);
 
-  // **SERVIÇOS e CATEGORIAS** vindos do backend
+  // **SERVIÇOS e CATEGORIAS**
   const [servicesList, setServicesList] = useState([]);
   const [serviceCategories, setServiceCategories] = useState([]);
   const [loadingServices, setLoadingServices] = useState(true);
   const [errorServices, setErrorServices] = useState(null);
+
+  // **PROFISSIONAIS**
+  const [workersList, setWorkersList] = useState([]);
+  const [loadingWorkers, setLoadingWorkers] = useState(true);
+  const [errorWorkers, setErrorWorkers] = useState(null);
 
   // seleções
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -448,6 +452,12 @@ function Reservations() {
       });
     }
   }, []);
+
+  const workerImages = {
+    1: mariaImg,
+    2: laraImg
+  };
+  
 
   // Fetch dos serviços ao montar
   useEffect(() => {
@@ -503,6 +513,24 @@ function Reservations() {
       }
     }
   }, [serviceFromUrl, selectedCategory, servicesList, currentStep]);
+
+  useEffect(() => {
+    async function fetchWorkers() {
+      try {
+        setLoadingWorkers(true);
+        const res = await fetch("http://127.0.0.1:5001/workers");
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        const { workers } = await res.json();
+        setWorkersList(workers);
+      } catch (e) {
+        console.error(e);
+        setErrorWorkers("Não foi possível carregar as profissionais.");
+      } finally {
+        setLoadingWorkers(false);
+      }
+    }
+    fetchWorkers();
+  }, []);  
   
   // Adicione este useEffect para gerenciar o scroll quando o passo muda
   useEffect(() => {
@@ -776,71 +804,103 @@ function Reservations() {
 
   // Componente para a Etapa 2: Seleção de Profissional
   const ProfessionalSelectionStep = ({
+    professionals,
+    loading,
+    error,
     selectedProfessional,
     handleProfessionalSelect,
     prevStep,
     nextStep
-  }) => (
-    <div className="animate-fadeIn flex flex-col items-center justify-center">
-      <div className="w-full max-w-3xl mx-auto">
-        <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha a Profissional</h3>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-4xl mx-auto">
-          {professionals.map((professional) => (
-            <div
-              key={professional.id}
-              onClick={() => handleProfessionalSelect(professional)}
-              className={` rounded-lg overflow-hidden shadow-md cursor-pointer transition-all duration-300 ${
-                selectedProfessional?.id === professional.id ? "bg-[#a5bf99] transform scale-[1.02]" : "hover:shadow-lg bg-white "
+  }) => {
+    if (loading) return <p className="text-center">Carregando profissionais…</p>;
+    if (error) return <p className="text-center text-red-500">{error}</p>;
+  
+    return (
+      <div className="animate-fadeIn flex flex-col items-center justify-center">
+        <div className="w-full max-w-3xl mx-auto">
+          <h3 className="text-2xl font-light text-[#5c7160] mb-6">
+            Escolha a Profissional
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-4xl mx-auto">
+            {professionals.map((prof) => (
+              <div
+                key={prof.id}
+                onClick={() => handleProfessionalSelect(prof)}
+                className={`rounded-lg overflow-hidden shadow-md cursor-pointer transition-all duration-300 ${
+                  selectedProfessional?.id === prof.id
+                    ? "bg-[#a5bf99] transform scale-[1.02]"
+                    : "hover:shadow-lg bg-white"
+                }`}
+              >
+                <div className="h-48 overflow-hidden">
+                  <img
+                    src={prof.image}
+                    alt={prof.name}
+                    className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+                <div className="p-4">
+                  <h4
+                    className={`text-xl font-medium ${
+                      selectedProfessional?.id === prof.id
+                        ? "text-white"
+                        : "text-[#5c7160]"
+                    }`}
+                  >
+                    {prof.name}
+                  </h4>
+                  <p
+                    className={
+                      selectedProfessional?.id === prof.id
+                        ? "text-white"
+                        : "text-[#5c7160]"
+                    }
+                  >
+                    {prof.specialty}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
+            <button
+              onClick={prevStep}
+              className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span>Anterior</span>
+            </button>
+            <button
+              onClick={nextStep}
+              disabled={!selectedProfessional}
+              className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
+                selectedProfessional
+                  ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
+                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
             >
-              <div className="h-48 overflow-hidden">
-                <img
-                  src={professional.image}
-                  alt={professional.name}
-                  className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-105"
-                />
-              </div>
-              <div className="p-4">
-                <h4 className={` text-xl font-medium ${
-                selectedProfessional?.id === professional.id ? "text-white" : "text-[#5c7160]"
-              }` }>{professional.name}</h4>
-                <p className={` ${
-                selectedProfessional?.id === professional.id ? "text-white" : "text-[#5c7160]"
-              }` }>{professional.specialty}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
-          <button
-            onClick={prevStep}
-            className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>Anterior</span>
-          </button>
-          <button
-            onClick={nextStep}
-            disabled={!selectedProfessional}
-            className={`w-full sm:w-auto px-6 py-3 rounded-full flex items-center justify-center ${
-              selectedProfessional
-                ? "bg-[#5c7160] text-white hover:bg-[#5c7160]/90"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            <span>Próximo</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+              <span>Próximo</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };  
+
+  const availablePros = workersList
+  .filter(w => selectedService?.workers?.includes(w.worker_id))
+  .map(w => ({
+    id: w.worker_id,
+    name: w.name,
+    specialty: w.description,
+    image: workerImages[w.worker_id] || ''
+  }));
+
 
 
   // Componente para a Etapa 4: Seleção de Data e Hora
@@ -1084,12 +1144,16 @@ function Reservations() {
       case 2:
         return (
           <ProfessionalSelectionStep
+            professionals={availablePros}
             selectedProfessional={selectedProfessional}
             handleProfessionalSelect={handleProfessionalSelect}
             prevStep={prevStep}
             nextStep={nextStep}
+            loading={loadingWorkers}
+            error={errorWorkers}
           />
         );
+
       case 3:
         return <DateTimeSelectionStep />;
       case 4:
