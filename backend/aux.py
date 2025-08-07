@@ -62,40 +62,11 @@ def get_slot_from_datetime(date: datetime) -> int:
     slot_index = (date.hour - 9) * 4 + (date.minute // 15)
     return slot_index
 
-def get_available_slots(service_duration: int, worker_id: int, date: datetime, appointments: dict) -> dict:
+def get_available_slots(service_duration: int, worker_id: int, date: datetime, appointments: list) -> dict:
     # This function should implement the logic to fetch available slots
     # based on the service_duration, worker_id, and date_str
     # service duration is in number of 15 minute slots
     print(f"Fetching available slots for worker {worker_id} on {date} with service duration {service_duration} slots.")
-
-    # Query the database to find existing reservations for the worker on the given date
-    # The result will be a list of appointments:
-    #appointments = []  # Placeholder for actual database query results
-
-    # Insert dummy data into appointments for demonstration purposes, assuming the query returns these
-    #appointments.append({
-    #    "phone": 123456789,
-    #    "service_id": 1,
-    #    "worker_id": worker_id,
-    #    "slots_number": 2,
-    #    "datetime_service_start": date.replace(hour=10, minute=15, second=0, microsecond=0)
-    #})
-    #appointments.append({
-    #    "phone": 111111111,
-    #    "service_id": 2,
-    #    "worker_id": worker_id,
-    #    "slots_number": 3,
-    #    "datetime_service_start": date.replace(hour=11, minute=45, second=0, microsecond=0)
-    #})
-    #appointments.append({
-    #    "phone": 222222222,
-    #    "service_id": 3,
-    #    "worker_id": worker_id,
-    #    "slots_number": 8,
-    #    "datetime_service_start": date.replace(hour=14, minute=45, second=0, microsecond=0)
-    #})
-
-    print(appointments)
 
     # Calculate available slots based on the appointments
     # slot_availability will be a dictionary with the slots as indexes from 0 39, with the value being 0: available, 1: reserved, 2: unavailable
@@ -120,7 +91,4 @@ def get_available_slots(service_duration: int, worker_id: int, date: datetime, a
             else:
                 slot_availability[i] = 2  # If the service duration exceeds available slots, mark as unavailable
 
-    # Print the slot availability for debugging
-    print("Slot availability after processing appointments:")
-    print_slot_availability(slot_availability)
     return slot_availability

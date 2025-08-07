@@ -1,26 +1,135 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from datetime import datetime, timezone
 from flask_cors import CORS
 from pymongo import MongoClient
-import time
+from google.oauth2 import id_token
+from google.auth.transport import requests as grequests
+import time, jwt, os, hashlib, uuid
+from functools import wraps
 
 from aux import get_available_slots
 
-
+# === Application Setup ===
 app = Flask(__name__)
-CORS(app)
+CORS(
+    app,
+    origins=["*"],
+    supports_credentials=False,
+    allow_headers="*",
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+)
 
+# === MongoDB Connection ===
 mongo_uri = "mongodb://root:example@127.0.0.1:27017/"
 client = MongoClient(mongo_uri)
-
 db = client["estetica"]
-collection = db["appointements"]  # You can name this whatever you want
+collection = db["appointements"] 
 
+# === Constants ===
 SLOT_DURATION = 15  # Duration of each slot in minutes
+
+# === Authentication Setup ===
+GOOGLE_CLIENT_ID = os.environ.get(
+    "GOOGLE_CLIENT_ID",
+    "<your-google-client-id>.apps.googleusercontent.com",
+)
+JWT_SECRET = os.environ.get("JWT_SECRET", "change_this_to_a_strong_random_value")
+ALLOWED_EMAILS = {os.environ.get("ALLOWED_EMAIL", "<mail>@gmail.com")}
+
+# === Token Lifetime ===
+ACCESS_TTL = 24 * 60 * 60  # seconds
+
+# === Authentication Helpers ===
+def _compute_fingerprint():
+    """Create a fingerprint based on client IP + User-Agent."""
+    ua = request.headers.get("User-Agent", "")
+    ip = request.remote_addr or ""
+    digest = hashlib.sha256(f"{ip}|{ua}".encode()).hexdigest()
+    return digest
+
+def create_jwt(email: str):
+    """Mint a JWT bound to the client fingerprint."""
+    now = int(time.time())
+    jti = str(uuid.uuid4())
+    fp = _compute_fingerprint()
+    payload = {
+        "sub": email,
+        "iat": now,
+        "exp": now + ACCESS_TTL,
+        "jti": jti,
+        "fp": fp,
+    }
+    token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+    return token
+
+def verify_jwt(token: str):
+    """Validate JWT signature, expiry, allowlist, and fingerprint match."""
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    except jwt.ExpiredSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
+
+    if payload.get("sub") not in ALLOWED_EMAILS:
+        return None
+    # Recompute fingerprint and compare
+    expected_fp = payload.get("fp")
+    if expected_fp != _compute_fingerprint():
+        return None
+
+    return payload
+
+def require_jwt(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        auth = request.headers.get("Authorization", "")
+        if not auth.startswith("Bearer "):
+            return jsonify({"error": "missing token"}), 401
+        token = auth.split(None, 1)[1]
+        payload = verify_jwt(token)
+        if not payload:
+            return jsonify({"error": "invalid or expired token"}), 401
+        g.user_email = payload["sub"]
+        return f(*args, **kwargs)
+    return wrapper
+
+# === Authentication Endpoint ===
+@app.route("/auth/google", methods=["POST"])
+def auth_google():
+    """Authenticate user with Google ID token."""
+    data = request.get_json(silent=True) or {}
+    idt = data.get("id_token")
+    if not idt:
+        return jsonify({"error": "missing data"}), 400
+
+    # Verify Google ID token
+    try:
+        info = id_token.verify_oauth2_token(
+            idt, grequests.Request(), GOOGLE_CLIENT_ID
+        )
+    except Exception as e:
+        return jsonify({"error": "invalid google token", "details": str(e)}), 401
+
+    email = info.get("email")
+    if not info.get("email_verified") or email not in ALLOWED_EMAILS:
+        return jsonify({"error": "forbidden"}), 403
+
+    # Mint our JWT
+    access_token = create_jwt(email)
+    return jsonify({
+        "access_token": access_token,
+        "token_type": "Bearer",
+        "expires_in": ACCESS_TTL,
+        "email": email,
+    })
+
+# === Clientside Endpoints ===
 
 # Endpoint to get available slots
 @app.route("/availability", methods=["GET"])
 def get_availability():
+    """Check availability for a service and worker on a specific date."""
     try:
         service_id_str = str(request.args.get("service_id"))
         worker_id_str = str(request.args.get("worker_id"))
@@ -64,16 +173,11 @@ def get_availability():
         collection = db["services"]
         service = collection.find_one({"service_id": service_id}) 
         if service is None:
-            return jsonify({"error": "Invalid service ID"}), 400
+            return jsonify({"error": "Invalid request parameters"}), 400
         
-        #print("Service found:", service)
         service_duration = service["duration"]
         slots_number = service_duration // SLOT_DURATION
 
-        #print(slots_number)
-
-        #Validate worker_id against a list of available workers (query from database)
-        #print(worker_id)
         collection = db["workers"]
         worker = collection.find_one({"worker_id": worker_id}) 
         if worker is None:
@@ -95,9 +199,6 @@ def get_availability():
             }
         }
 
-        # Run the query
-        #results = collection.find(query)
-
         #Query database appointments collection for the slots with the worker_id and date
         collection = db["appointements"]
         #appointments = list(collection.find({"worker_id": worker_id, "datetime_service_start": {"$gte": date.replace(hour=9, minute=0, second=0, microsecond=0), "$lt": date.replace(hour=18, minute=45, second=0, microsecond=0)}}, {"_id": 0}))
@@ -115,6 +216,7 @@ def get_availability():
 # Endpoint to create a reservation
 @app.route("/reservation", methods=["POST"])
 def create_reservation():
+    """Create a reservation for a service with a worker."""
     try:
         data = request.get_json()
         
@@ -186,7 +288,7 @@ def create_reservation():
         collection = db["services"]
         service = collection.find_one({"service_id": service_id}) 
         if service is None:
-            return jsonify({"error": "Invalid service ID"}), 400
+            return jsonify({"error": "Invalid request data"}), 400
         
         #print("Service found:", service)
         service_duration = service["duration"]
@@ -217,6 +319,7 @@ def create_reservation():
 # Endpoint to get a all reservations from a worker
 @app.route("/reservations", methods=["GET"])
 def get_reservations():
+    """Get all reservations for a specific worker."""
     try:
         worker_id_str = request.args.get("worker_id")
 
@@ -245,6 +348,7 @@ def get_reservations():
 # Endpoint to get available services
 @app.route("/services", methods=["GET"])
 def get_services():
+    """Get all available services."""
     try:
         collection = db["services"]
         services = list(collection.find({}, {"_id": 0}))
@@ -257,6 +361,7 @@ def get_services():
 # Endpoint to get workers
 @app.route("/workers", methods=["GET"])
 def get_workers():
+    """Get all workers."""
     try:
         collection = db["workers"]
         workers = list(collection.find({}, {"_id": 0}))
@@ -266,9 +371,11 @@ def get_workers():
         return jsonify({"error": "Unable to get workers"}), 500
     
 
+# === Admin Endpoints ===
 # [ADMIN]
 # Endpoint to delete a reservation
 @app.route("/reservation", methods=["DELETE"])
+@require_jwt
 def delete_reservations():
     try:
         #reservation_id = request.args.get("reservation-id")
@@ -301,11 +408,10 @@ def delete_reservations():
         return jsonify({"error": "Unable to delete reservation"}), 500
 
 
-
-#######Clients endpoints#######
 # [ADMIN]
 # Endpoint to get all clients 
 @app.route("/clients", methods=["GET"])
+@require_jwt
 def get_clients():
     try:
         collection = db["clients"]
@@ -319,6 +425,7 @@ def get_clients():
 # [ADMIN]
 # Endpoint to change a specific client by phone number
 @app.route("/client/<client_phone>", methods=["POST"])
+@require_jwt
 def update_client(client_phone):
     try:
         data = request.get_json()
@@ -341,7 +448,6 @@ def update_client(client_phone):
     except Exception as e:
         print(f"Error updating client: {str(e)}")
         return jsonify({"error": "Unable to update client"}), 500
-
 
 
 if __name__ == "__main__":
