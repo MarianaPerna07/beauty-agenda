@@ -10,3 +10,5 @@ pycparser==2.22
 pymongo==4.10.1
 Werkzeug==3.0.6
 google-auth==2.40.3
+jwt==1.4.0
+requests==2.32.4
