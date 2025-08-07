@@ -85,7 +85,7 @@ def require_jwt(f):
     def wrapper(*args, **kwargs):
         auth = request.headers.get("Authorization", "")
         if not auth.startswith("Bearer "):
-            return jsonify({"error": "missing bearer token"}), 401
+            return jsonify({"error": "missing token"}), 401
         token = auth.split(None, 1)[1]
         payload = verify_jwt(token)
         if not payload:
@@ -101,7 +101,7 @@ def auth_google():
     data = request.get_json(silent=True) or {}
     idt = data.get("id_token")
     if not idt:
-        return jsonify({"error": "missing id_token"}), 400
+        return jsonify({"error": "missing data"}), 400
 
     # Verify Google ID token
     try:
@@ -451,4 +451,4 @@ def update_client(client_phone):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True, port=5000)
+    app.run(host="0.0.0.0", debug=True, port=5001)
