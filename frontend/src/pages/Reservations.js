@@ -1,46 +1,51 @@
-import React, { useEffect, useState, useRef, useCallback, memo } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import scrollToTop from '../helpers/scrollToTop'
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  memo
+} from "react";
+import { useSearchParams } from "react-router-dom";
+import scrollToTop from "../helpers/scrollToTop";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import pt from 'date-fns/locale/pt';
+import ptCustom from "../utils/datepicker-locale";
 import "../styles/datepicker-custom.css";
-import ptCustom from '../utils/datepicker-locale';
-import mariaImg from '../images/maria.png'
-import laraImg  from '../images/lara.png'
-import bannerImage from '../images/banner-image.png'
+import mariaImg from "../images/maria.png";
+import laraImg from "../images/lara.png";
+import bannerImage from "../images/banner-image.png";
 
 // Registrar o idioma português personalizado
 registerLocale('pt-custom', ptCustom);
 
-// Componente separado para a barra de categorias
-const CategoryBar = memo(({ 
-  serviceCategories, 
-  selectedCategory, 
-  onCategorySelect 
-}) => {
-  const scrollContainerRef = useRef(null);
-  
-  // Efeito para centralizar a categoria inicial
-  useEffect(() => {
-    if (scrollContainerRef.current && selectedCategory) {
-      const buttons = Array.from(scrollContainerRef.current.children);
-      const selectedButton = buttons.find(
-        button => button.getAttribute('data-category-id') === selectedCategory.id
+// Helper para gerar slug de categoria
+const slugify = (str) =>
+  str.toLowerCase().replace(/\s+/g, "_").replace(/ç/g, "c");
+
+
+// -----------------
+// CategoryBar
+// -----------------
+const CategoryBar = memo(
+  ({ serviceCategories, selectedCategory, onCategorySelect }) => {
+    const scrollContainerRef = useRef(null);
+
+    // centraliza botão ativo
+    useEffect(() => {
+      if (!scrollContainerRef.current || !selectedCategory) return;
+      const btn = Array.from(scrollContainerRef.current.children).find(
+        (b) => b.dataset.categoryId === selectedCategory.id
       );
-      
-      if (selectedButton) {
-        const scrollLeft = selectedButton.offsetLeft - 
-          (scrollContainerRef.current.clientWidth / 2) + 
-          (selectedButton.clientWidth / 2);
-        
-        scrollContainerRef.current.scrollTo({
-          left: scrollLeft,
-          behavior: 'smooth'
-        });
-      }
-    }
-  }, [selectedCategory?.id]);
+      if (!btn) return;
+      const raw =
+        btn.offsetLeft -
+        scrollContainerRef.current.clientWidth / 2 +
+        btn.clientWidth / 2;
+      scrollContainerRef.current.scrollTo({
+        left: raw,
+        behavior: "smooth",
+      });
+    }, [selectedCategory]);
   
   const handleCategoryClick = useCallback((e, category) => {
     e.preventDefault();
@@ -74,87 +79,102 @@ const CategoryBar = memo(({
 
   return (
     <div className="relative overflow-hidden mb-8">
-      <div 
+      <div
         ref={scrollContainerRef}
         className="flex overflow-x-auto space-x-3 py-2 px-1 hide-scrollbar"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {serviceCategories.map((category) => (
+        {serviceCategories.map((cat) => (
           <button
-            key={category.id}
-            data-category-id={category.id}
-            onClick={(e) => handleCategoryClick(e, category)}
+            key={cat.id}
+            data-category-id={cat.id}
+            onClick={(e) => handleCategoryClick(e, cat)}
             className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full transition-all duration-300 ${
-              selectedCategory?.id === category.id
+              selectedCategory?.id === cat.id
                 ? "bg-[#5c7160] text-white shadow-md"
                 : "bg-white text-[#5c7160] border border-[#5c7160]/30 hover:bg-[#a5bf99]/20"
             }`}
           >
-            {category.name}
+            {cat.name}
           </button>
         ))}
       </div>
     </div>
   );
-});
+}
+);
 
-// Componente para a Etapa 1: Seleção de Serviço
-const ServiceSelectionStep = ({ 
-  serviceCategories, 
-  selectedCategory, 
+// -----------------
+// Step 1: Serviço
+// -----------------
+const ServiceSelectionStep = ({
+  serviceCategories,
+  selectedCategory,
   setSelectedCategory,
-  services,
-  selectedService, 
+  servicesList,
+  selectedService,
   setSelectedService,
   nextStep,
-  prevStep
+  prevStep,
 }) => {
-  const handleServiceCategorySelect = useCallback((category) => {
-    setSelectedCategory(category);
-    setSelectedService(null); // Reset service selection when changing category
-  }, [setSelectedCategory, setSelectedService]);
-  
-  const handleServiceSelect = useCallback((service) => {
-    setSelectedService(service);
-  }, [setSelectedService]);
+  const handleServiceSelect = useCallback(
+    (svc) => setSelectedService(svc),
+    [setSelectedService]
+  );
 
   return (
     <div className="animate-fadeIn flex flex-col items-center">
       <div className="w-full max-w-3xl mx-auto">
         <div className="mb-8">
-          <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione a Categoria</h3>
-          
-          {/* Componente independente para a barra de categorias */}
-          <CategoryBar 
+          <h3 className="text-2xl font-light text-[#5c7160] mb-4">
+            Selecione a Categoria
+          </h3>
+          <CategoryBar
             serviceCategories={serviceCategories}
             selectedCategory={selectedCategory}
-            onCategorySelect={handleServiceCategorySelect}
+            onCategorySelect={(cat) => {
+              setSelectedCategory(cat);
+              setSelectedService(null);
+            }}
           />
         </div>
 
         {selectedCategory && (
           <>
-            <h3 className="text-2xl font-light text-[#5c7160] mb-4">Selecione o Serviço</h3>
+            <h3 className="text-2xl font-light text-[#5c7160] mb-4">
+              Selecione o Serviço
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl mx-auto">
-              {services[selectedCategory.id].map((service) => (
-                <div
-                  key={service.id}
-                  onClick={() => handleServiceSelect(service)}
-                  className={`p-4 rounded-lg cursor-pointer transition-all duration-300 flex flex-col justify-between min-h-[120px] ${
-                    selectedService?.id === service.id
-                      ? "bg-[#a5bf99] text-white shadow-lg"
-                      : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
-                  }`}
-                >
-                  <h4 className="text-lg font-medium mb-2 flex-grow">{service.name}</h4>
-                  <div className="flex justify-between text-base mt-auto">
-                    <span>{service.duration}</span>
-                    <span className={selectedService?.id === service.id ? "font-bold" : "font-bold text-[#c0a080]"}>
-                      {service.price}
-                    </span>
+              {servicesList
+                .filter((s) => slugify(s.category) === selectedCategory.id)
+                .map((svc) => (
+                  <div
+                    key={svc.service_id}
+                    onClick={() => handleServiceSelect(svc)}
+                    className={`p-4 rounded-lg cursor-pointer transition-all duration-300 flex flex-col justify-between min-h-[120px] ${
+                      selectedService?.service_id === svc.service_id
+                        ? "bg-[#a5bf99] text-white shadow-lg"
+                        : "bg-white text-[#5c7160] border border-[#5c7160]/20 hover:border-[#5c7160] hover:shadow"
+                    }`}
+                  >
+                    <h4 className="text-lg font-medium mb-2 flex-grow">
+                      {svc.name}
+                    </h4>
+                    <div className="flex justify-between text-base mt-auto">
+                      <span>{`${svc.duration} min`}</span>
+                      <span
+                        className={
+                          selectedService?.service_id === svc.service_id
+                            ? "font-bold"
+                            : "font-bold text-[#c0a080]"
+                        }
+                      >
+                        {typeof svc.price === "number"
+                          ? `${svc.price.toFixed(2).replace(".", ",")}€`
+                          : svc.price}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </>
         )}
@@ -164,10 +184,7 @@ const ServiceSelectionStep = ({
             onClick={prevStep}
             className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>Anterior</span>
+            ← Anterior
           </button>
           <button
             onClick={nextStep}
@@ -178,10 +195,7 @@ const ServiceSelectionStep = ({
                 : "bg-gray-100 text-gray-400 cursor-not-allowed"
             }`}
           >
-            <span>Próximo</span>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            Próximo →
           </button>
         </div>
       </div>
@@ -357,91 +371,10 @@ function ConfirmationStep({
   );
 }
 
+// -----------------
+// Componente principal
+// -----------------
 function Reservations() {
-  const contentRef = useRef(null);
-  const stepperRef = useRef(null);
-
-  // Dados de exemplo (no futuro poderão vir de uma API)
-  const serviceCategories = [
-    { id: 'manicure', name: 'Manicure' },
-    { id: 'pedicure', name: 'Pedicure' },
-    { id: 'depilacao_mulher', name: 'Depilação a Cera Mulher' },
-    { id: 'depilacao_homem', name: 'Depilação a Cera Homem' },
-    { id: 'sobrancelhas', name: 'Sobrancelhas' },
-    { id: 'depilacao_laser', name: 'Depilação a Laser' },
-    { id: 'pestanas', name: 'Extensão de Pestanas' },
-    { id: 'destaques', name: 'Especializados' }
-  ]
-
-  const services = {
-    manicure: [
-      { id: 1, name: 'Manicure Simples', duration: '30 min', price: '7.00€' },
-      { id: 2, name: 'Manicure simples com pintura', duration: '45 min', price: '8.50€' },
-      { id: 3, name: 'Verniz Gel', duration: '60 min', price: '15.00€' },
-      { id: 4, name: '1ª Manutenção de Gel sobre a unha', duration: '90 min', price: '25.00€' },
-      { id: 5, name: 'Manutenção de Gel', duration: '90 min', price: '20.00€' },
-      { id: 6, name: 'Manutenção de Acrygel', duration: '90 min', price: '25.00€' },
-      { id: 7, name: '1ª Aplicação De gel com extensão', duration: '90 min', price: '30.00€' },
-      { id: 8, name: '1ª aplicação acrygel com extensão', duration: '90 min', price: '35.00€' },
-      { id: 9, name: 'Unha partida', duration: '15 min', price: '2.00€' },
-      { id: 10, name: 'Remoção Verniz Gel, acrygel', duration: '45 min', price: '10.00€' }
-    ],
-    pedicure: [
-      { id: 11, name: 'Pedicure simples', duration: '30 min', price: '10.00€' },
-      { id: 12, name: 'Pedicure simples com verniz', duration: '45 min', price: '10.50€' },
-      { id: 13, name: 'Pedicure completa', duration: '60 min', price: '17.00€' },
-      { id: 14, name: 'Pedicure completa com verniz', duration: '75 min', price: '17.50€' },
-      { id: 15, name: 'Pintura com verniz gel', duration: '40 min', price: '15.00€' },
-      { id: 16, name: 'Pedicure com verniz gel', duration: '90 min', price: '22.50€' }
-    ],
-    depilacao_mulher: [
-      { id: 17, name: 'Buço', duration: '10 min', price: '3.00€' },
-      { id: 18, name: 'Sobrancelha', duration: '15 min', price: '5.00€' },
-      { id: 19, name: 'Mento', duration: '10 min', price: '3.00€' },
-      { id: 20, name: 'Axilas', duration: '10 min', price: '4.00€' },
-      { id: 21, name: 'Virilha cavada', duration: '20 min', price: '6.00€' },
-      { id: 22, name: 'Virilha completa', duration: '20 min', price: '9.00€' },
-      { id: 23, name: 'Braços completos', duration: '30 min', price: '8.00€' },
-      { id: 24, name: 'Meia perna', duration: '20 min', price: '7.00€' },
-      { id: 25, name: 'Perna inteira', duration: '40 min', price: '12.00€' },
-      { id: 26, name: 'Perna inteira + virilha + axila', duration: '60 min', price: '22.00€' }
-    ],
-    depilacao_homem: [
-      { id: 27, name: 'Peito/Abdómen', duration: '20 min', price: '12.00€' },
-      { id: 28, name: 'Costas', duration: '15 min', price: '10.00€' },
-      { id: 29, name: 'Glúteos', duration: '15 min', price: '5.00€' },
-      { id: 30, name: 'Virilha', duration: '20 min', price: '8.00€' },
-      { id: 31, name: 'Axilas', duration: '10 min', price: '5.00€' },
-      { id: 32, name: 'Pernas', duration: '30 min', price: '14.00€' },
-      { id: 33, name: 'Braços completos', duration: '30 min', price: '8.00€' }
-    ],
-    depilacao_laser: [
-      { id: 34, name: '1 zona', duration: '15 min', price: '15.00€' },
-      { id: 35, name: '2 zonas', duration: '30 min', price: '20.00€' },
-      { id: 36, name: '3 zonas', duration: '45 min', price: '30.00€' },
-      { id: 37, name: '4 zonas', duration: '40 min', price: '40.00€' },
-      { id: 38, name: '5 zonas', duration: '55 min', price: '50.00€' },
-      { id: 39, name: 'Corpo inteiro', duration: '90 min', price: '70.00€' }
-    ],
-    pestanas: [
-      { id: 40, name: '1ª aplicação de pestanas brasileiras', duration: '90 min', price: '30.00€' },
-      { id: 41, name: 'Aplicação pestanas Egípcia', duration: '90 min', price: '30.00€' },
-      { id: 42, name: 'Aplicação De pestanas Híbridas', duration: '90 min', price: '30.00€' },
-      { id: 43, name: 'Manutenção (3 em 3 semanas)', duration: '90 min', price: '25.00€' }
-    ],
-    sobrancelhas: [
-      { id: 44, name: 'Brown Lamination', duration: '60 min', price: '25.00€' },
-      { id: 45, name: 'Henna', duration: '60 min', price: '15.00€' },
-      { id: 46, name: 'Microblading (inclui 2 manutenções)', duration: '90 min', price: '150.00€' }
-    ],
-    destaques: [
-      { id: 47, name: 'Micropigmentação', duration: '120 min', price: '180.00€' },
-      { id: 48, name: 'Eyeliner', duration: '90 min', price: '100.00€' },
-      { id: 49, name: 'Microagulhamento', duration: '60 min', price: 'Sob consulta' },
-      { id: 50, name: 'Micropigmentação Labial', duration: '120 min', price: '240.00€' },
-      { id: 51, name: 'Microblading', duration: '90 min', price: '150.00€' }
-    ]
-  }
 
   const professionals = [
     {
@@ -475,32 +408,32 @@ function Reservations() {
     }
   ]
 
-  // Estados para controlar as etapas e seleções
-  const [currentStep, setCurrentStep] = useState(1)
-  const [selectedService, setSelectedService] = useState(services[0])
-  const [selectedProfessional, setProfessional] = useState(null)
-  const [selectedDate, setSelectedDate] = useState('')
-  const [selectedTime, setSelectedTime] = useState('')
-  const [customerInfo, setCustomerInfo] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  })
-  const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    phone: ''
-  });
-
-  // Buscar parâmetros da URL
   const [searchParams] = useSearchParams();
-  const categoryFromUrl = searchParams.get('category');
-  const serviceFromUrl = searchParams.get('service');
-  
-  // Configurar estados com valores iniciais da URL
-  const [selectedCategory, setSelectedCategory] = useState(
-    categoryFromUrl ? serviceCategories.find(cat => cat.id === categoryFromUrl) : serviceCategories[0]
-  );
+  const categoryFromUrl = searchParams.get("category");
+  const serviceFromUrl = searchParams.get("service");
+
+  // estados de navegação
+  const [currentStep, setCurrentStep] = useState(1);
+
+  // **SERVIÇOS e CATEGORIAS** vindos do backend
+  const [servicesList, setServicesList] = useState([]);
+  const [serviceCategories, setServiceCategories] = useState([]);
+  const [loadingServices, setLoadingServices] = useState(true);
+  const [errorServices, setErrorServices] = useState(null);
+
+  // seleções
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedProfessional, setSelectedProfessional] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [customerInfo, setCustomerInfo] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
+  const stepperRef = useRef(null);
+  const [errors, setErrors] = useState({ name: "", email: "", phone: "" });
 
   const scrollToContent = useCallback(() => {
     if (stepperRef.current) {
@@ -515,26 +448,62 @@ function Reservations() {
       });
     }
   }, []);
-  
-  // Encontrar o serviço correspondente quando a página carrega
+
+  // Fetch dos serviços ao montar
   useEffect(() => {
-    if (categoryFromUrl && serviceFromUrl && services[categoryFromUrl]) {
-      const foundService = services[categoryFromUrl].find(
-        service => service.name === serviceFromUrl
-      );
-      
-      if (foundService) {
-        setSelectedService(foundService);
-        
-        // Após selecionar o serviço, avançar para a próxima etapa
-        if (currentStep === 1) {
-          nextStep();
-        }
+    async function fetchServices() {
+      try {
+        setLoadingServices(true);
+        const res = await fetch("http://127.0.0.1:5001/services");
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        const { services } = await res.json();
+        setServicesList(services);
+
+        // extrair categorias únicas
+        const unique = Array.from(
+          new Set(services.map((s) => s.category))
+        ).map((name) => ({
+          id: slugify(name),
+          name,
+        }));
+        setServiceCategories(unique);
+
+        // categoria inicial
+        const initial =
+          categoryFromUrl && unique.find((c) => c.id === categoryFromUrl)
+            ? unique.find((c) => c.id === categoryFromUrl)
+            : unique[0];
+        setSelectedCategory(initial);
+      } catch (e) {
+        console.error(e);
+        setErrorServices("Não foi possível carregar os serviços.");
+      } finally {
+        setLoadingServices(false);
       }
     }
-    scrollToContent();
-  }, [categoryFromUrl, serviceFromUrl]);
+    fetchServices();
+  }, [categoryFromUrl]);
 
+  // Se vier `serviceFromUrl`, já seleciona e avança
+  useEffect(() => {
+    if (
+      serviceFromUrl &&
+      selectedCategory &&
+      servicesList.length > 0 &&
+      currentStep === 1
+    ) {
+      const found = servicesList.find(
+        (s) =>
+          slugify(s.category) === selectedCategory.id &&
+          s.name === serviceFromUrl
+      );
+      if (found) {
+        setSelectedService(found);
+        setCurrentStep(2);
+      }
+    }
+  }, [serviceFromUrl, selectedCategory, servicesList, currentStep]);
+  
   // Adicione este useEffect para gerenciar o scroll quando o passo muda
   useEffect(() => {
     // Pequeno delay para garantir que o DOM foi atualizado
@@ -633,7 +602,7 @@ function Reservations() {
         setAvailableTimeSlots([]); 
       } else if (currentStep === 2) {
         // Se estiver saindo da etapa de Profissional, limpar seleção
-        setProfessional(null);
+        setSelectedProfessional(null);
       }
       
       setCurrentStep(currentStep - 1);
@@ -646,7 +615,7 @@ function Reservations() {
       // Se estiver indo para um passo anterior, limpar dados dos passos subsequentes
       if (step <= 1) {
         // Voltar para o início - limpar tudo exceto a categoria de serviço
-        setProfessional(null);
+        setSelectedProfessional(null);
         setSelectedDate('');
         setSelectedTime('');
         setAvailableTimeSlots([]);
@@ -690,7 +659,7 @@ function Reservations() {
   };
 
   const handleProfessionalSelect = (professional) => {
-    setProfessional(professional);
+    setSelectedProfessional(professional);
   };
 
   const handleDateSelect = (date) => {
@@ -806,7 +775,12 @@ function Reservations() {
   };
 
   // Componente para a Etapa 2: Seleção de Profissional
-  const ProfessionalSelectionStep = () => (
+  const ProfessionalSelectionStep = ({
+    selectedProfessional,
+    handleProfessionalSelect,
+    prevStep,
+    nextStep
+  }) => (
     <div className="animate-fadeIn flex flex-col items-center justify-center">
       <div className="w-full max-w-3xl mx-auto">
         <h3 className="text-2xl font-light text-[#5c7160] mb-6">Escolha a Profissional</h3>
@@ -1087,20 +1061,35 @@ function Reservations() {
 
   // Renderizar a etapa atual
   const renderStep = () => {
+    if (loadingServices) {
+      return <p className="text-center text-[#5c7160]">Carregando...</p>;
+    }
+    if (errorServices) {
+      return (
+        <p className="text-center text-red-500">{errorServices}</p>
+      );
+    }
     switch (currentStep) {
       case 1:
-        return <ServiceSelectionStep 
-          serviceCategories={serviceCategories}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          services={services}
-          selectedService={selectedService}
-          setSelectedService={setSelectedService}
-          nextStep={nextStep}
-          prevStep={prevStep}
-        />;
+        return <ServiceSelectionStep
+        serviceCategories={serviceCategories}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        servicesList={servicesList}
+        selectedService={selectedService}
+        setSelectedService={setSelectedService}
+        nextStep={nextStep}
+        prevStep={prevStep}
+      />;
       case 2:
-        return <ProfessionalSelectionStep />;
+        return (
+          <ProfessionalSelectionStep
+            selectedProfessional={selectedProfessional}
+            handleProfessionalSelect={handleProfessionalSelect}
+            prevStep={prevStep}
+            nextStep={nextStep}
+          />
+        );
       case 3:
         return <DateTimeSelectionStep />;
       case 4:
@@ -1129,7 +1118,7 @@ function Reservations() {
     // Reset all states to initial values
     setCurrentStep(1);
     setSelectedService(null);
-    setProfessional(null);
+    setSelectedProfessional(null);
     setSelectedDate('');
     setSelectedTime('');
     setCustomerInfo({
@@ -1224,7 +1213,7 @@ function Reservations() {
       </div>
 
       {/* Main Content */}
-      <section ref={contentRef} className="py-8 px-6">
+      <section className="py-8 px-6">
         <div className="container mx-auto max-w-6xl">
           {renderStep()}
         </div>
