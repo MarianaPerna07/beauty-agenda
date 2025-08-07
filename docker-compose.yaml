@@ -1,12 +1,6 @@
 version: '3.8'
 
 services:
-  backend:
-    image: backend:v1
-    container_name: backend
-    ports:
-      - "5001:5001"
-
   mongodb:
     image: mongo:6.0  # Use latest stable or specify your desired version
     container_name: mongo_container

@@ -10,7 +10,7 @@ from aux import get_available_slots
 app = Flask(__name__)
 CORS(app)
 
-mongo_uri = "mongodb://root:example@mongodb:27017/"
+mongo_uri = "mongodb://root:example@127.0.0.1:27017/"
 client = MongoClient(mongo_uri)
 
 db = client["estetica"]
