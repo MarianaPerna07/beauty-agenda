@@ -20,7 +20,7 @@ CORS(
 )
 
 # === MongoDB Connection ===
-mongo_uri = "mongodb://root:example@127.0.0.1:27017/"
+mongo_uri = "mongodb://root:example@mongodb:27017/"
 client = MongoClient(mongo_uri)
 db = client["estetica"]
 collection = db["appointements"] 
