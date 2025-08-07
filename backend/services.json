@@ -354,7 +354,7 @@
   {
     "service_id": 33,
     "name": "Pedicure com verniz gel",
-    "workers": [1],
+    "workers": [1,2],
     "price": 22.5,
     "description": ["Pedicure completa", "Aplicação de verniz gel", "Tratamento de hidratação intensiva", "Máxima durabilidade"],
     "duration": 90,
