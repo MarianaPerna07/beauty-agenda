@@ -375,38 +375,6 @@ function ConfirmationStep({
 // -----------------
 function Reservations() {
 
-  const professionals = [
-    {
-      id: 1,
-      name: 'Maria Cardoso',
-      specialty: 'Estética Avançada',
-      image: mariaImg,
-    },
-    {
-      id: 2,
-      name: 'Lara Almeida',
-      specialty: 'Manicure e Pedicure',
-      image: laraImg,
-    },
-  ]
-
-  const salons = [
-    { 
-      id: 1, 
-      name: 'Principio Ativo', 
-      address: 'Rua Júlio Dinis n.38, Gafanha da Nazaré', 
-      phone: '234 567 890',
-      mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3029.506977302153!2d-8.714771684599639!3d40.6088909793428!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd23981f7f843abd%3A0xbf2d8e74e1a1b2a!2sR.%20J%C3%BAlio%20Dinis%2038%2C%20Gafanha%20da%20Nazar%C3%A9!5e0!3m2!1spt-PT!2spt!4v1595268867362!5m2!1spt-PT!2spt'
-    },
-    { 
-      id: 2, 
-      name: 'Flora Coutinho | Cabeleireiro, Estética e Barbearia', 
-      address: 'Av. José Estevão, 290, Gafanha da Nazaré, Portugal', 
-      phone: '234 123 456',
-      mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3029.4093107372146!2d-8.751661224069252!3d40.63123994846108!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd2398456e92e8c9%3A0xa02ec9af9448e498!2sAv.%20Jos%C3%A9%20Est%C3%A9v%C3%A3o%20290%2C%203830-556%20Gafanha%20da%20Nazar%C3%A9!5e0!3m2!1spt-PT!2spt!4v1690823715893!5m2!1spt-PT!2spt'
-    }
-  ]
-
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get("category");
   const serviceFromUrl = searchParams.get("service");
@@ -543,8 +511,7 @@ function Reservations() {
   }, [currentStep, scrollToContent]);
 
   // Gerador de horários disponíveis
-  const generateAvailableTimeSlots = (date) => {
-    // Aqui você poderia implementar uma lógica para verificar os horários realmente disponíveis
+  const updateAvailableTimeSlots = (date, available_slots = {}) => {
     const timeSlots = [];
     const startHour = 9; // 9 AM
     const endHour = 19; // 7 PM
@@ -554,10 +521,10 @@ function Reservations() {
       const formattedHour = hour.toString().padStart(2, '0');
       
       if (hour < endHour) {
-        timeSlots.push({ time: `${formattedHour}:00`, available: Math.random() > 0.2 });
-        timeSlots.push({ time: `${formattedHour}:15`, available: Math.random() > 0.2 });
-        timeSlots.push({ time: `${formattedHour}:30`, available: Math.random() > 0.2 });
-        timeSlots.push({ time: `${formattedHour}:45`, available: Math.random() > 0.2 });
+        timeSlots.push({ time: `${formattedHour}:00`, available: true});
+        timeSlots.push({ time: `${formattedHour}:15`, available: true});
+        timeSlots.push({ time: `${formattedHour}:30`, available: true});
+        timeSlots.push({ time: `${formattedHour}:45`, available: true});
       } 
 
     }
@@ -571,12 +538,10 @@ function Reservations() {
 
     //DEBUG
     // let currentHour = 10;
-    console.log('Current Hour:', currentHour);
     if (date && new Date(date).getDate() === currentDateTomorrow.getDate()) {
       timeSlots.forEach(slot => {
-        console.log('Slot Time:', slot.time);
         if (parseInt(slot.time.split(':')[0]) < currentHour) {
-          slot.available = false; // Disable past hours
+          slot.available = 1; // Disable past hours
         }
       });
     }
@@ -589,8 +554,18 @@ function Reservations() {
       timeSlots.forEach(slot => {
         const [hour, minute] = slot.time.split(':').map(Number);
         if (hour === currentHour && minute <= currentMinutes - 15) {
-          slot.available = false; // Disable past minutes
+          slot.available = 1; // Disable past minutes
         }
+      });
+    }
+
+    // Apply the available slots from the API 
+    let index = 0;
+    if (available_slots && date) {
+      timeSlots.forEach(slot => {
+        let slotStatus = available_slots[index];
+        slot.available = slotStatus; 
+        index++;
       });
     }
     
@@ -598,13 +573,7 @@ function Reservations() {
   }
 
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
-  
-  // Atualizar horários disponíveis quando a data for alterada
-  useEffect(() => {
-    if (selectedDate) {
-      setAvailableTimeSlots(generateAvailableTimeSlots(selectedDate));
-    }
-  }, [selectedDate]);
+
 
   // Funções para navegação entre etapas
   const nextStep = () => {
@@ -786,7 +755,7 @@ function Reservations() {
     
     // Criar objeto simplificado com os dados da reserva
     const reservationData = {
-      service_id: selectedService.id,
+      service_id: selectedService.service_id,
       worker_id: selectedProfessional.id,
       reservation_time: reservationTimeISO,
       client_name: customerInfo.name, 
@@ -912,40 +881,45 @@ function Reservations() {
     if (today.getHours() >= 19) {
       today.setDate(today.getDate() + 1);
     }
-    
-    // Agrupa os horários disponíveis em períodos do dia
-    const morningSlots = availableTimeSlots.filter(slot => {
-      const hour = parseInt(slot.time.split(':')[0]);
-      return hour >= 9 && hour < 12;
-    });
-    
-    const afternoonSlots = availableTimeSlots.filter(slot => {
-      const hour = parseInt(slot.time.split(':')[0]);
-      return hour >= 12 && hour < 17;
-    });
-    
-    const eveningSlots = availableTimeSlots.filter(slot => {
-      const hour = parseInt(slot.time.split(':')[0]);
-      return hour >= 17;
-    });
+
     
     // Função para manipular a mudança de data
     const handleDateChange = (date) => {
+
       const localDate = new Date(date);
       const year = localDate.getFullYear();
       const month = String(localDate.getMonth() + 1).padStart(2, '0');
       const day = String(localDate.getDate()).padStart(2, '0');
       
       // Formato com data e hora (meia-noite)
-      const formattedDate = `${year}-${month}-${day}T00:00:00+01:00`;
+      const formattedDate = `${year}-${month}-${day}T00%3A00%3A00%2B01%3A00`;
       
       // Simular requisição GET para backend
       console.log("VERIFICAR DISPONIBILIDADE:");
       console.log(JSON.stringify({
         date: formattedDate,
-        service_id: selectedService?.id || "todos",   
-        worker_id: selectedProfessional?.id || "todos"
+        service_id: selectedService.service_id,
+        worker_id: selectedProfessional.id
       }, null, 2));
+
+      // Request API on endpoint /availability with arguments date, service_id and worker_id
+      async function fetchAvailableTimeSlots() {
+        try {
+          const res = await fetch(`http://127.0.0.1:5001/availability?date=${formattedDate}&service_id=${selectedService.service_id}&worker_id=${selectedProfessional.id}`);
+          if (!res.ok) throw new Error(`Status ${res.status}`);
+          const { available_slots } = await res.json();
+          console.log("Horários disponíveis:", available_slots);
+
+          //The available_slots is a json object that maps an ID (0 - 39) to a int (0 - available, 1 - reserved, 2 - unavailable)
+
+          setAvailableTimeSlots(updateAvailableTimeSlots(selectedDate, available_slots));
+        } catch (e) {
+          console.error("Erro ao buscar horários disponíveis:", e);
+          // Em caso de erro, manter os slots anteriores
+        }
+      }
+
+      fetchAvailableTimeSlots();
       
       // Para o seletor de data, continuamos usando apenas a parte da data
       handleDateSelect(`${year}-${month}-${day}`);
@@ -1046,15 +1020,17 @@ function Reservations() {
                             {availableTimeSlots.map((slot) => (
                               <button
                                 key={slot.time}
-                                onClick={() => slot.available && handleTimeSelect(slot.time)}
-                                disabled={!slot.available}
+                                onClick={() => slot.available === 0 && handleTimeSelect(slot.time)}
+                                // disabled={slot.available === 1 || slot.available === 2}
                                 className={`
                                   px-3 py-2 rounded-md transition-all w-[85px] h-[40px] flex items-center justify-center
-                                  ${!slot.available
-                                    ? "text-white cursor-not-allowed border border-gray-100"
-                                    : selectedTime === slot.time
-                                      ? "bg-[#a5bf99] text-white"
-                                      : "bg-white border border-[#a5bf99]/30 text-[#a5bf99] hover:border-[#a5bf99]"
+                                  ${slot.available === 2
+                                    ? "bg-red-300 text-white cursor-not-allowed"
+                                    : slot.available === 1
+                                      ? "bg-[#a3a3a3] bg-opacity-50 text-white cursor-not-allowed"
+                                      : selectedTime === slot.time
+                                        ? "bg-[#a5bf99]  text-white"
+                                        : "bg-white border border-[#a5bf99]/30 text-[#a5bf99] hover:border-[#a5bf99]"
                                   }
                                 `}
                               >

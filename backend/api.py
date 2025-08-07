@@ -20,7 +20,7 @@ CORS(
 )
 
 # === MongoDB Connection ===
-mongo_uri = "mongodb://root:example@mongodb:27017/"
+mongo_uri = "mongodb://root:example@127.0.0.1:27017/"
 client = MongoClient(mongo_uri)
 db = client["estetica"]
 collection = db["appointements"] 
@@ -186,23 +186,23 @@ def get_availability():
         #print(date.replace(hour=9, minute=0, second=0, microsecond=0))
         #print(date.replace(hour=18, minute=45, second=0, microsecond=0))
         # Use UTC-aware datetime objects
-        start_time = datetime(2025, 8, 6, 9, 0, 0, tzinfo=timezone.utc)
-        end_time = datetime(2025, 8, 6, 19, 0, 0, tzinfo=timezone.utc)
-        print(f"Start time: {start_time}, End time: {end_time}")
+        # start_time = datetime(2025, 8, 6, 9, 0, 0, tzinfo=timezone.utc)
+        # end_time = datetime(2025, 8, 6, 19, 0, 0, tzinfo=timezone.utc)
+        # print(f"Start time: {start_time}, End time: {end_time}")
 
-        # Query to match datetime_service_start in interval
-        query = {
-            "worker_id": worker_id,
-            "datetime_service_start": {
-                "$gte": start_time,
-                "$lte": end_time
-            }
-        }
+        # # Query to match datetime_service_start in interval
+        # query = {
+        #     "worker_id": worker_id,
+        #     "datetime_service_start": {
+        #         "$gte": start_time,
+        #         "$lte": end_time
+        #     }
+        # }
 
         #Query database appointments collection for the slots with the worker_id and date
         collection = db["appointements"]
-        #appointments = list(collection.find({"worker_id": worker_id, "datetime_service_start": {"$gte": date.replace(hour=9, minute=0, second=0, microsecond=0), "$lt": date.replace(hour=18, minute=45, second=0, microsecond=0)}}, {"_id": 0}))
-        appointments = list(collection.find(query))
+        appointments = list(collection.find({"worker_id": worker_id, "datetime_service_start": {"$gte": date.replace(hour=9, minute=0, second=0, microsecond=0), "$lt": date.replace(hour=18, minute=45, second=0, microsecond=0)}}, {"_id": 0}))
+        # appointments = list(collection.find(query))
 
         slots_availability = get_available_slots(slots_number, worker_id, date, appointments)
 
