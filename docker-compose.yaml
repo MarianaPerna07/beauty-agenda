@@ -1,15 +1,6 @@
 version: '3.8'
 
 services:
-  backend:
-    image: beauty-agenda-backend
-    ports:
-      - "5001:5001"
-    environment:
-      GOOGLE_CLIENT_ID: "<client-id>.apps.googleusercontent.com"
-      JWT_SECRET: "token-secret"
-      ALLOWED_EMAIL: "mail@gmail.com"
-
   mongodb:
     image: mongo:6.0  # Use latest stable or specify your desired version
     container_name: mongo_container

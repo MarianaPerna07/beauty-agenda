@@ -883,47 +883,42 @@ function Reservations() {
     }
 
     
-    // Função para manipular a mudança de data
-    const handleDateChange = (date) => {
+    // Função para manipular a mudança de data - corrigido
+const handleDateChange = async (date) => {
+  const localDate = new Date(date);
+  const year = localDate.getFullYear();
+  const month = String(localDate.getMonth() + 1).padStart(2, '0');
+  const day = String(localDate.getDate()).padStart(2, '0');
+  
+  // Formato com data e hora (meia-noite)
+  const formattedDate = `${year}-${month}-${day}T00%3A00%3A00%2B01%3A00`;
+  
+  // Simular requisição GET para backend
+  console.log("VERIFICAR DISPONIBILIDADE:");
+  console.log(JSON.stringify({
+    date: formattedDate,
+    service_id: selectedService.service_id,
+    worker_id: selectedProfessional.id
+  }, null, 2));
 
-      const localDate = new Date(date);
-      const year = localDate.getFullYear();
-      const month = String(localDate.getMonth() + 1).padStart(2, '0');
-      const day = String(localDate.getDate()).padStart(2, '0');
-      
-      // Formato com data e hora (meia-noite)
-      const formattedDate = `${year}-${month}-${day}T00%3A00%3A00%2B01%3A00`;
-      
-      // Simular requisição GET para backend
-      console.log("VERIFICAR DISPONIBILIDADE:");
-      console.log(JSON.stringify({
-        date: formattedDate,
-        service_id: selectedService.service_id,
-        worker_id: selectedProfessional.id
-      }, null, 2));
+  // Para o seletor de data, atualizamos primeiro para mostrar a seleção visual
+  handleDateSelect(`${year}-${month}-${day}`);
+  
+  // Agora fazemos a chamada da API e aguardamos o resultado
+  try {
+    const res = await fetch(`http://127.0.0.1:5001/availability?date=${formattedDate}&service_id=${selectedService.service_id}&worker_id=${selectedProfessional.id}`);
+    if (!res.ok) throw new Error(`Status ${res.status}`);
+    const { available_slots } = await res.json();
+    console.log("Horários disponíveis:", available_slots);
 
-      // Request API on endpoint /availability with arguments date, service_id and worker_id
-      async function fetchAvailableTimeSlots() {
-        try {
-          const res = await fetch(`http://127.0.0.1:5001/availability?date=${formattedDate}&service_id=${selectedService.service_id}&worker_id=${selectedProfessional.id}`);
-          if (!res.ok) throw new Error(`Status ${res.status}`);
-          const { available_slots } = await res.json();
-          console.log("Horários disponíveis:", available_slots);
-
-          //The available_slots is a json object that maps an ID (0 - 39) to a int (0 - available, 1 - reserved, 2 - unavailable)
-
-          setAvailableTimeSlots(updateAvailableTimeSlots(selectedDate, available_slots));
-        } catch (e) {
-          console.error("Erro ao buscar horários disponíveis:", e);
-          // Em caso de erro, manter os slots anteriores
-        }
-      }
-
-      fetchAvailableTimeSlots();
-      
-      // Para o seletor de data, continuamos usando apenas a parte da data
-      handleDateSelect(`${year}-${month}-${day}`);
-    };
+    // Atualiza os slots disponíveis com o resultado da API
+    setAvailableTimeSlots(updateAvailableTimeSlots(`${year}-${month}-${day}`, available_slots));
+  } catch (e) {
+    console.error("Erro ao buscar horários disponíveis:", e);
+    // Em caso de erro, mostrar slots vazios
+    setAvailableTimeSlots([]);
+  }
+};
     
     const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
     
@@ -988,18 +983,39 @@ function Reservations() {
                     )}
                   />
                 </div>
-                
-                {/* Seção de ajuda com a mesma largura que o datepicker */}
-                <div className="bg-[#F5F1E9] border border-[#5c7160]/20 rounded-lg p-4 shadow-sm mt-2 w-full max-w-[360px]">
-                  <div className="flex items-center">
-                    <div className="bg-[#5c7160]/10 rounded-full p-2 mr-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {/* Legenda e Ajuda em coluna - mais compacto */}
+                <div className="w-full max-w-[360px] flex flex-col gap-2 mt-2">
+                  {/* Cartão: Legenda */}
+                  <div className="bg-[#F5F1E9] border border-[#5c7160]/20 rounded-lg p-4 shadow-sm w-full">
+                    <ul className="space-y-2">
+                      <li className="flex items-center">
+                        {/* Mini retângulo estilo "livre" (mais semelhante ao botão real) */}
+                        <span className="inline-block w-14 h-6 rounded-md border border-[#a5bf99]/30 bg-white mr-2 flex-shrink-0 shadow-sm"></span>
+                        <span className="text-[#5c7160] text-sm">Horário livre</span>
+                      </li>
+                      <li className="flex items-center">
+                        {/* Mini retângulo estilo "reservado" */}
+                        <span className="inline-block w-14 h-6 rounded-md mr-2 bg-[#a3a3a3]/70 flex-shrink-0 shadow-sm"></span>
+                        <span className="text-[#5c7160] text-sm">Horário já reservado</span>
+                      </li>
+                      <li className="flex items-center">
+                        {/* Mini retângulo estilo "não pode começar" */}
+                        <span className="inline-block w-14 h-6 rounded-md mr-2 bg-red-300 flex-shrink-0 shadow-sm"></span>
+                        <span className="text-[#5c7160] text-sm">Horário sobrepõe reservas</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  {/* Precisa de ajuda - more compact */}
+                  <div className="bg-white border border-[#5c7160]/20 rounded-lg p-3 shadow-sm w-full flex items-center">
+                    <div className="bg-[#5c7160]/10 rounded-full p-1.5 mr-3 flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
                     <div>
-                      <div className="text-[#5c7160] font-medium text-sm">Precisa de Ajuda?</div>
-                      <div className="text-[#5c7160] font-bold">965593794</div>
+                      <div className="text-[#5c7160] font-medium text-xs">Precisa de Ajuda?</div>
+                      <div className="text-[#5c7160] font-bold text-sm leading-tight">965593794</div>
                     </div>
                   </div>
                 </div>
@@ -1063,6 +1079,7 @@ function Reservations() {
               </div>
             )}
           </div>
+          
 
           <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
             <button
