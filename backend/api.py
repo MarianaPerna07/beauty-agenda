@@ -34,7 +34,7 @@ GOOGLE_CLIENT_ID = os.environ.get(
     "<your-google-client-id>.apps.googleusercontent.com",
 )
 JWT_SECRET = os.environ.get("JWT_SECRET", "change_this_to_a_strong_random_value")
-ALLOWED_EMAILS = {os.environ.get("ALLOWED_EMAIL", "yourmomentsestetica@gmail.com")}
+ALLOWED_EMAILS = {os.environ.get("ALLOWED_EMAIL", "<mail>@gmail.com")}
 
 # === Token Lifetime ===
 ACCESS_TTL = 24 * 60 * 60  # seconds
