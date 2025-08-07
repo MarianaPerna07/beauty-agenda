@@ -12,13 +12,13 @@ services:
     restart: unless-stopped
 
   backend:
-    image: gonperna/beautyagenda:backendv1
+    image: gonperna/beautyagenda:backendv3
     container_name: backend
     ports:
       - "5001:5001"
 
   beautyagenda:
-    image: gonperna/beautyagenda:v1
+    image: gonperna/beautyagenda:v3
     container_name: beautyagenda
     ports: 
       - "3000:3000"
@@ -48,3 +48,6 @@ services:
     command: >
       "trap exit TERM; while :; do sleep 6h & wait $${!}; certbot renew; done"
     restart: unless-stopped
+
+volumes:
+  mongo_data:

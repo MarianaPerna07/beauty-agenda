@@ -1,0 +1,230 @@
+---
+- name: Install Docker and Docker Compose on Ubuntu
+  hosts: all
+  become: yes
+
+  vars:
+    docker_apt_key_url: https://download.docker.com/linux/ubuntu/gpg
+    docker_keyring_path: /etc/apt/keyrings/docker.asc
+    docker_repo: "deb [arch=amd64 signed-by={{ docker_keyring_path }}] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    docker_packages:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+
+  tasks:
+    - name: Install required apt packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
+      tags:
+        - docker
+
+    - name: Create keyrings directory if it doesn't exist
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+      tags:
+        - docker
+
+    - name: Download Docker GPG key
+      get_url:
+        url: "{{ docker_apt_key_url }}"
+        dest: "{{ docker_keyring_path }}"
+        mode: '0644'
+      tags:
+        - docker
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: "{{ docker_repo }}"
+        filename: docker
+        state: present
+      tags:
+        - docker
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      tags:
+        - docker
+
+    - name: Install Docker packages
+      apt:
+        name: "{{ docker_packages }}"
+        state: present
+      tags:
+        - docker
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+      tags:
+        - docker
+
+    - name: Add current user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+      tags:
+        - docker
+
+
+- name: Prepare Certs 
+  hosts: all
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+
+    - name: Ensure app dir is clean
+      ansible.builtin.file:
+        path: /home/ubuntu/app
+        state: absent
+      tags:
+        - deploy
+
+    - name: Clone full repo into temp dir
+      ansible.builtin.git:
+        repo: https://github.com/MarianaPerna07/beauty-agenda
+        dest: /home/ubuntu/app
+        version: main
+      tags:
+        - deploy
+
+    - name: Create a directory at /home/ubuntu/app/deployment-scripts/deployment-folder/certbot/
+      ansible.builtin.file:
+        path: /home/ubuntu/app/deployment-scripts/deployment-folder/certbot/
+        state: directory
+        mode: '0755'
+        owner: ubuntu
+        group: ubuntu
+      tags:
+        - deploy
+
+    - name: Create a directory www
+      ansible.builtin.file:
+        path: /home/ubuntu/app/deployment-scripts/deployment-folder/certbot/www
+        state: directory
+        mode: '0755'
+        owner: ubuntu
+        group: ubuntu
+      tags:
+        - deploy
+
+    - name: Create a directory conf
+      ansible.builtin.file:
+        path: /home/ubuntu/app/deployment-scripts/deployment-folder/certbot/conf
+        state: directory
+        mode: '0755'
+        owner: ubuntu
+        group: ubuntu
+      tags:
+        - deploy
+
+    - name: Run Certbot to generate SSL certificates using webroot
+      community.docker.docker_container:
+        name: certbot_temp
+        image: certbot/certbot
+        state: started
+        auto_remove: true
+        command: >-
+          certonly
+          --webroot
+          --webroot-path=/var/www/certbot
+          --agree-tos
+          --no-eff-email
+          --email gonperna@gmail.com
+          -d pernalix.pt
+          -d www.pernalix.pt
+        volumes:
+          - "/home/ubuntu/app/deployment-scripts/deployment-folder/certbot/www:/var/www/certbot"
+          - "/home/ubuntu/app/deployment-scripts/deployment-folder/certbot/conf:/etc/letsencrypt"
+      tags:
+        - deploy
+
+
+    - name: Start temporary Nginx container to serve Certbot challenge files
+      community.docker.docker_container:
+        name: nginx_certbot
+        image: nginx
+        state: started
+        detach: true
+        published_ports:
+          - "80:80"
+        volumes:
+          - "/home/ubuntu/app/deployment-scripts/deployment-folder/certbot/www:/usr/share/nginx/html:ro"
+        restart_policy: no
+      tags:
+        - deploy
+
+    - name: Wait a few seconds to ensure Nginx is up
+      ansible.builtin.pause:
+        seconds: 3
+      tags:
+        - deploy
+
+    - name: Run Certbot to generate SSL certificates using webroot v2
+      community.docker.docker_container:
+        name: certbot_tempv2
+        image: certbot/certbot
+        state: started
+        auto_remove: true
+        command: >-
+          certonly
+          --webroot
+          --webroot-path=/var/www/certbot
+          --agree-tos
+          --no-eff-email
+          --email gonperna@gmail.com
+          -d pernalix.pt
+          -d www.pernalix.pt
+        volumes:
+          - "/home/ubuntu/app/deployment-scripts/deployment-folder/certbot/www:/var/www/certbot"
+          - "/home/ubuntu/app/deployment-scripts/deployment-folder/certbot/conf:/etc/letsencrypt"
+      tags:
+        - deploy
+
+    - name: Stop and remove the Nginx container
+      community.docker.docker_container:
+        name: nginx_certbot
+        state: absent
+      tags:
+        - deploy
+
+    - name: Log in to Docker registry
+      community.docker.docker_login:
+        registry_url: https://index.docker.io/v1/
+        username: "{{ docker_username }}"
+        password: "{{ docker_password }}"
+      tags:
+        - deploy
+        - run
+
+
+    - name: Run docker-compose from ~/Desktop
+      ansible.builtin.command: docker compose up -d
+      args:
+        chdir: "/home/ubuntu/app/deployment-scripts/deployment-folder"
+      tags:
+        - deploy
+        - run
+
+
+
+
+      
+
+
