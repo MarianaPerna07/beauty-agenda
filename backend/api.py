@@ -20,7 +20,7 @@ CORS(
 )
 
 # === MongoDB Connection ===
-mongo_uri = "mongodb://root:example@127.0.0.1:27017/"
+mongo_uri = "mongodb://root:example@mongodb:27017/"
 client = MongoClient(mongo_uri)
 db = client["estetica"]
 collection = db["appointements"] 
@@ -163,9 +163,9 @@ def get_availability():
             print(f"Invalid service_id: {service_id} or worker_id: {worker_id}")
             return jsonify({"error": "Invalid request parameters"}), 400
             
-        if date < datetime.now(timezone.utc):
-            print(f"Invalid date: {date} is in the past.")
-            return jsonify({"error": "Invalid request parameters"}), 400
+        #if date < datetime.now(timezone.utc):
+        #    print(f"Invalid date: {date} is in the past.")
+        #    return jsonify({"error": "Invalid request parameters"}), 400
         
         print(f"Checking availability for service {service_id}, worker {worker_id}")
         
@@ -206,7 +206,7 @@ def get_availability():
 
         slots_availability = get_available_slots(slots_number, worker_id, date, appointments)
 
-        print(f"Available slots: {slots_availability}")
+        #print(f"Available slots: {slots_availability}")
         return jsonify({"available_slots": slots_availability}), 200
         
     except Exception as e:
