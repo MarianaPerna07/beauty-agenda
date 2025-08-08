@@ -406,6 +406,7 @@ function Reservations() {
   });
   const stepperRef = useRef(null);
   const [errors, setErrors] = useState({ name: "", email: "", phone: "" });
+  const [occupiedSlots, setOccupiedSlots] = useState([]);
 
   const scrollToContent = useCallback(() => {
     if (stepperRef.current) {
@@ -665,11 +666,37 @@ function Reservations() {
   };
 
   const handleTimeSelect = (time) => {
-    // Só permite selecionar horários disponíveis
-    setSelectedTime(time);
-    //allow disselecting the same time
+    // If clicking on the same time, deselect
     if (selectedTime === time) {
       setSelectedTime('');
+      setOccupiedSlots([]);
+      return;
+    }
+
+    // Set the selected time
+    setSelectedTime(time);
+    
+    // Calculate which slots will be occupied based on service duration
+    if (selectedService?.duration) {
+      const duration = parseInt(selectedService.duration);
+      const slotsNeeded = Math.ceil(duration / 15); // 15 minutes per slot
+      
+      // Find the index of the selected slot
+      const selectedIndex = availableTimeSlots.findIndex(slot => slot.time === time);
+      
+      if (selectedIndex !== -1) {
+        // Get the slots that will be occupied (not including the selected one)
+        const occupied = [];
+        
+        for (let i = 1; i < slotsNeeded; i++) {
+          // Check if there are enough subsequent slots
+          if (selectedIndex + i < availableTimeSlots.length) {
+            occupied.push(availableTimeSlots[selectedIndex + i].time);
+          }
+        }
+        
+        setOccupiedSlots(occupied);
+      }
     }
   };
 
@@ -1037,16 +1064,17 @@ const handleDateChange = async (date) => {
                               <button
                                 key={slot.time}
                                 onClick={() => slot.available === 0 && handleTimeSelect(slot.time)}
-                                // disabled={slot.available === 1 || slot.available === 2}
                                 className={`
                                   px-3 py-2 rounded-md transition-all w-[85px] h-[40px] flex items-center justify-center
-                                  ${slot.available === 2
-                                    ? "bg-red-300 text-white cursor-not-allowed"
-                                    : slot.available === 1
-                                      ? "bg-[#a3a3a3] bg-opacity-50 text-white cursor-not-allowed"
-                                      : selectedTime === slot.time
-                                        ? "bg-[#a5bf99]  text-white"
-                                        : "bg-white border border-[#a5bf99]/30 text-[#a5bf99] hover:border-[#a5bf99]"
+                                  ${occupiedSlots.includes(slot.time)
+                                    ? "bg-[#a5bf99]/60 text-white cursor-not-allowed" // Highest priority - shows occupied slots
+                                    : slot.available === 2
+                                      ? "bg-red-300 text-white cursor-not-allowed"
+                                      : slot.available === 1
+                                        ? "bg-[#a3a3a3] bg-opacity-50 text-white cursor-not-allowed"
+                                        : selectedTime === slot.time
+                                          ? "bg-[#a5bf99] text-white"
+                                          : "bg-white border border-[#a5bf99]/30 text-[#a5bf99] hover:border-[#a5bf99]"
                                   }
                                 `}
                               >
