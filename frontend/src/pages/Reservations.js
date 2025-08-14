@@ -530,12 +530,22 @@ function Reservations() {
 
     }
 
+    // Apply the available slots from the API 
+    let index = 0;
+    if (available_slots && date) {
+      timeSlots.forEach(slot => {
+        let slotStatus = available_slots[index];
+        slot.available = slotStatus; 
+        index++;
+      });
+    }
+
     // Disable the hours that are already past
     const currentHour = new Date().getHours();
 
     let currentDateTomorrow = new Date();
     // currentDateTomorrow.setDate(currentDateTomorrow.getDate() + 1);
-    // console.log('Current Date:', currentDateTomorrow);
+    console.log('Current Date:', currentDateTomorrow);
 
     //DEBUG
     // let currentHour = 10;
@@ -557,16 +567,6 @@ function Reservations() {
         if (hour === currentHour && minute <= currentMinutes - 15) {
           slot.available = 1; // Disable past minutes
         }
-      });
-    }
-
-    // Apply the available slots from the API 
-    let index = 0;
-    if (available_slots && date) {
-      timeSlots.forEach(slot => {
-        let slotStatus = available_slots[index];
-        slot.available = slotStatus; 
-        index++;
       });
     }
     
