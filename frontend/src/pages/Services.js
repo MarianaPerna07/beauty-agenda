@@ -103,7 +103,7 @@ function Services() {
       )
       .map(svc => ({
         title: svc.name,
-        price: `${svc.price}€`, 
+        price: typeof svc.price === 'number' ? `${svc.price.toFixed(2)} €` : svc.price,
         duration: `${svc.duration} min`, 
         image: `/${svc.service_image}`,
         details: svc.description,
@@ -127,8 +127,8 @@ function Services() {
       </div>
 
       {/* Categories */}
-      <section className="pt-2">
-        <div className="container mx-auto hide-scrollbar">
+      <section className="pt-2 max-w-7xl justify-center mx-auto">
+        <div className="relative overflow-hidden container mx-auto hide-scrollbar">
           <div ref={scrollContainerRef} className="flex overflow-x-auto space-x-4 px-6 py-2 hide-scrollbar">
             {loading
               ? Array(6).fill().map((_, i) => (<div key={i} className="w-24 h-8 bg-gray-200 rounded-full animate-pulse" />))

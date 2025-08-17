@@ -66,14 +66,14 @@ def get_available_slots(service_duration: int, worker_id: int, date: datetime, a
     # This function should implement the logic to fetch available slots
     # based on the service_duration, worker_id, and date_str
     # service duration is in number of 15 minute slots
-    print(f"Fetching available slots for worker {worker_id} on {date} with service duration {service_duration} slots.")
+    # print(f"Fetching available slots for worker {worker_id} on {date} with service duration {service_duration} slots.")
 
     # Calculate available slots based on the appointments
     # slot_availability will be a dictionary with the slots as indexes from 0 39, with the value being 0: available, 1: reserved, 2: unavailable
     slot_availability = {i: 0 for i in range(40)}  # Assuming 40 slots in a day
     for appointment in appointments:
         start_slot = get_slot_from_datetime(appointment["datetime_service_start"])
-        print("Start slot:", start_slot)
+        # print("Start slot:", start_slot)
         slots_number = appointment["slots_number"]
         for i in range(start_slot, start_slot + slots_number):
             if i in slot_availability:

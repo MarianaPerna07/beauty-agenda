@@ -514,8 +514,8 @@ function Reservations() {
   // Gerador de horários disponíveis
   const updateAvailableTimeSlots = (date, available_slots = {}) => {
     const timeSlots = [];
-    const startHour = 9; // 9 AM
-    const endHour = 19; // 7 PM
+    const startHour = 9; 
+    const endHour = 19;
     
     for (let hour = startHour; hour <= endHour; hour++) {
       // Adiciona slots a cada 15 minutos (00, 15, 30, 45)
@@ -766,7 +766,7 @@ function Reservations() {
   };
 
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Criar string ISO para o datetime da reserva que preserva o fuso horário local
@@ -785,17 +785,32 @@ function Reservations() {
       service_id: selectedService.service_id,
       worker_id: selectedProfessional.id,
       reservation_time: reservationTimeISO,
-      client_name: customerInfo.name, 
-      client_email: customerInfo.email,
-      client_phone: customerInfo.phone
+      name: customerInfo.name, 
+      email: customerInfo.email,
+      phone: customerInfo.phone
     };
     
     // Simular envio para o backend com console.log
     console.log("DADOS DA RESERVA:");
     console.log(JSON.stringify(reservationData, null, 2));
-    
-    // Em vez do alerta básico, mostrar o modal de confirmação
-    setShowConfirmation(true);
+
+    const res = await fetch("http://127.0.0.1:5001/reservation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(reservationData)
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error("Erro ao criar reserva:", errorData);
+      alert("Ocorreu um erro ao criar a reserva. Por favor, tente novamente.");
+      return;
+    } else {
+      console.log("Reserva criada com sucesso!");
+      setShowConfirmation(true);
+    }
   };
 
   // Componente para a Etapa 2: Seleção de Profissional
@@ -1216,6 +1231,7 @@ const handleDateChange = async (date) => {
       email: '',
       phone: ''
     });
+    setSelectedCategory({ id: '', name: '' });
   };
 
   return (

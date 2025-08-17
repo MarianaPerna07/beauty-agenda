@@ -6,6 +6,7 @@ from google.oauth2 import id_token
 from google.auth.transport import requests as grequests
 import time, jwt, os, hashlib, uuid
 from functools import wraps
+import pytz
 
 from aux import get_available_slots
 
@@ -18,9 +19,10 @@ CORS(
     allow_headers="*",
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 )
+LOCAL_TZ = pytz.timezone('Europe/Lisbon')  
 
 # === MongoDB Connection ===
-mongo_uri = "mongodb://root:example@mongodb:27017/"
+mongo_uri = "mongodb://root:example@127.0.0.1:27017/"
 client = MongoClient(mongo_uri)
 db = client["estetica"]
 collection = db["appointements"] 
@@ -254,9 +256,10 @@ def create_reservation():
         worker_id = int(data.get("worker_id"))
         if worker_id <= 0:
             return jsonify({"error": "Invalid request data"}), 400
-            
+        
         date = datetime.fromisoformat(data.get("reservation_time"))
-        if date < datetime.now(timezone.utc):
+        local_date = date.astimezone(LOCAL_TZ).replace(tzinfo=None)  
+        if local_date < datetime.now(LOCAL_TZ).replace(tzinfo=None):
             return jsonify({"error": "Invalid request data"}), 400
         
         print(f"Creating reservation for: {name[:3]}*** at {date}")
@@ -270,7 +273,7 @@ def create_reservation():
 
         # If user does not exist, create a new client record
         if result is None:
-            print(f"Creating new client record for phone: {phone}")
+            # print(f"Creating new client record for phone: {phone}")
             client = {
                 "name" : name,
                 "email" : email,
@@ -300,7 +303,7 @@ def create_reservation():
             "service_id" : service_id,
             "worker_id" : worker_id,
             "slots_number" : slots_number,
-            "datetime_service_start" : date
+            "datetime_service_start" : local_date
         }
 
         collection = db["appointements"]

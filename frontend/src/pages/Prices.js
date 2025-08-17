@@ -41,7 +41,7 @@ function Prices() {
 
   // função para formatar o preço
   const formatPrice = (p) =>
-    typeof p === "number" ? `${p.toFixed(2).replace(".", ",")}€` : p;
+    typeof p === "number" ? `${p.toFixed(2).replace(".", ",")} €` : p;
 
   return (
     <div className="min-h-screen bg-[#F5F1E9]">
