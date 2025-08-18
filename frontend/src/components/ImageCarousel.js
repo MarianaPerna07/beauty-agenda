@@ -16,7 +16,7 @@ const numberWithinRange = (number, min, max) =>
   Math.min(Math.max(number, min), max)
 
 const ImageCarousel = (props) => {
-  const { slides, options } = props
+  const { slides, options, onSlideClick } = props
   
   // Configuração do autoplay
   const autoplayOptions = {
@@ -49,20 +49,6 @@ const ImageCarousel = (props) => {
     onPrevButtonClick,
     onNextButtonClick
   } = usePrevNextButtons(emblaApi)
-
-  // Função atualizada para lidar com categorias diferentes
-  const handleSlideClick = (serviceTitle) => {
-    // Mapeia serviços específicos para suas categorias apropriadas
-    let category = 'destaques';
-    
-    // Verifica o título do serviço para determinar a categoria correta
-    if (serviceTitle === 'Depilação a Laser') {
-      category = 'depilacao_laser'; 
-    }
-    
-    // Navega para a página de serviços com a categoria correta
-    navigate(`/services?category=${category}&service=${encodeURIComponent(serviceTitle)}`);
-  }
 
   const setTweenFactor = useCallback((emblaApi) => {
     tweenFactor.current = TWEEN_FACTOR_BASE * emblaApi.scrollSnapList().length
@@ -125,7 +111,7 @@ const ImageCarousel = (props) => {
             <div 
               className="embla__slide cursor-pointer select-none"
               key={idx}
-              onClick={() => handleSlideClick(slide.title)}
+              onClick={() => onSlideClick?.(slide)}  // Use the prop function
               style={{ userSelect: 'none', outline: 'none', border: 'none' }}
               onMouseDown={(e) => e.preventDefault()}
             >

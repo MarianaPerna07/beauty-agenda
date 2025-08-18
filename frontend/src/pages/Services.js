@@ -1,12 +1,26 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import scrollToTop from '../helpers/scrollToTop'
 import bannerImage from '../images/banner-image.png'
 import ServiceModal from '../components/ServiceModal'
 import BookingButton from '../components/BookingButton'
 
+const slugify = (str) => str.toLowerCase().replace(/\s+/g, '_').replace(/ç/g, 'c')
+
+// NEW: find a service by id OR by name
+const findServiceFromParam = (services, serviceParam) => {
+  if (!serviceParam) return null
+  const decoded = decodeURIComponent(serviceParam)
+  // try by numeric id first
+  let svc = services.find(s => String(s.service_id) === decoded)
+  if (svc) return svc
+  // fallback by name (case-insensitive)
+  return services.find(s => s.name.toLowerCase() === decoded.toLowerCase())
+}
+
 function Services() {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
   const categoryFromUrl = searchParams.get('category')
   const serviceFromUrl = searchParams.get('service')
 
@@ -14,8 +28,7 @@ function Services() {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  // ativo: usa valor da URL ou vazio — será ajustado depois que categories carregar
-  const [activeCategory, setActiveCategory] = useState(categoryFromUrl || 'manicure')
+  const [activeCategory, setActiveCategory] = useState('')
   const [selectedService, setSelectedService] = useState(null)
 
   const scrollContainerRef = useRef(null)
@@ -33,7 +46,7 @@ function Services() {
         // extrai categorias únicas
         const uniqueCats = [...new Set(json.services.map(s => s.category))]
         const formatted = uniqueCats.map(cat => ({
-          id: cat.toLowerCase().replace(/\s+/g, '_').replace(/ç/g, 'c'),
+          id: slugify(cat),
           name: cat
         }))
         setCategories(formatted)
@@ -48,41 +61,86 @@ function Services() {
     fetchServices()
   }, [])
 
-  // define categoria ativa após categorias carregarem
+  // Set initial category after categories load
   useEffect(() => {
-    if (!loading && categories.length) {
-      if (categoryFromUrl) {
-        setActiveCategory(categoryFromUrl)
-      } else {
-        setActiveCategory(categories[0].id)
-      }
-    }
-  }, [loading, categories, categoryFromUrl])
+    if (loading || !categories.length) return
 
-  // scroll e highlight se serviço direto
-  useEffect(() => {
-    scrollToTop()
-    if (serviceFromUrl && !loading) {
-      setTimeout(() => {
-        const el = document.getElementById(`service-${serviceFromUrl}`)
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-          el.classList.add('highlight-service')
-          setTimeout(() => el.classList.remove('highlight-service'), 2000)
-        }
-      }, 500)
+    // If a specific service is requested, prefer its category
+    const svc = findServiceFromParam(services, serviceFromUrl)
+    if (svc) {
+      const svcCatId = slugify(svc.category)
+      setActiveCategory(svcCatId)
+      return
     }
-  }, [serviceFromUrl, loading])
+
+    // Otherwise use categoryFromUrl or first category
+    if (categoryFromUrl && categories.find(c => c.id === categoryFromUrl)) {
+      setActiveCategory(categoryFromUrl)
+    } else {
+      setActiveCategory(categories[0].id)
+    }
+  }, [loading, categories, services, categoryFromUrl, serviceFromUrl])
+
+  // Handle service highlighting and modal opening
+  useEffect(() => {
+    if (loading) return
+    scrollToTop()
+
+    const svc = findServiceFromParam(services, serviceFromUrl)
+    if (!svc) return
+
+    // ensure the right category is selected
+    const svcCatId = slugify(svc.category)
+    if (activeCategory !== svcCatId) {
+      setActiveCategory(svcCatId)
+    }
+
+    // Build the card data the same way your grid does
+    const svcCardData = {
+      title: svc.name,
+      price: typeof svc.price === 'number' ? `${svc.price.toFixed(2)} €` : svc.price,
+      duration: `${svc.duration} min`,
+      image: `/${svc.service_image}`,
+      details: svc.description,
+      rawId: svc.service_id
+    }
+
+    // open the modal with details
+    setSelectedService(svcCardData)
+
+    // scroll & highlight by numeric id
+    setTimeout(() => {
+      const el = document.getElementById(`service-${svc.service_id}`)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        el.classList.add('highlight-service')
+        setTimeout(() => el.classList.remove('highlight-service'), 2000)
+      }
+    }, 300)
+  }, [loading, services, serviceFromUrl, activeCategory])
 
   const handleCategoryClick = (catId, e) => {
+    e.preventDefault()
+    
+    // Update active category immediately for UI responsiveness
     setActiveCategory(catId)
-    // centra botão
+    
+    // Update URL parameters - remove service param when changing category
+    const newParams = new URLSearchParams()
+    newParams.set('category', catId)
+    setSearchParams(newParams)
+    
+    // Center the clicked button
     const cont = scrollContainerRef.current
     const btn = e.currentTarget
     if (cont && btn) {
-      cont.scrollTo({ left: btn.offsetLeft - cont.clientWidth/2 + btn.clientWidth/2, behavior: 'smooth' })
+      cont.scrollTo({ 
+        left: btn.offsetLeft - cont.clientWidth/2 + btn.clientWidth/2, 
+        behavior: 'smooth' 
+      })
     }
-    // scroll para secção
+    
+    // Scroll to services section
     if (servicesSectionRef.current) {
       setTimeout(() => {
         const yOff = -80
@@ -96,11 +154,11 @@ function Services() {
   const closeServiceModal = () => setSelectedService(null)
 
   // retorna lista de serviços da categoria, com image path local
-  const getServicesByCategory = catId =>
-    services
-      .filter(s =>
-        s.category.toLowerCase().replace(/\s+/g, '_').replace(/ç/g, 'c') === catId
-      )
+  const getServicesByCategory = catId => {
+    if (!catId || !services.length) return []
+    
+    return services
+      .filter(s => slugify(s.category) === catId)
       .map(svc => ({
         title: svc.name,
         price: typeof svc.price === 'number' ? `${svc.price.toFixed(2)} €` : svc.price,
@@ -109,6 +167,7 @@ function Services() {
         details: svc.description,
         rawId: svc.service_id
       }))
+  }
 
   return (
     <div className="min-h-screen bg-[#F5F1E9]">
@@ -136,8 +195,14 @@ function Services() {
                   <button
                     key={cat.id}
                     onClick={e => handleCategoryClick(cat.id, e)}
-                    className={`flex-shrink-0 px-4 py-2 rounded-full transition-all ${activeCategory === cat.id ? 'bg-[#5c7160] text-white shadow-md' : 'bg-white text-[#5c7160] hover:bg-[#a5bf99]/20'}`}
-                  >{cat.name}</button>
+                    className={`flex-shrink-0 px-4 py-2 rounded-full transition-all ${
+                      activeCategory === cat.id 
+                        ? 'bg-[#5c7160] text-white shadow-md' 
+                        : 'bg-white text-[#5c7160] hover:bg-[#a5bf99]/20'
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
                 ))}
           </div>
         </div>
@@ -167,7 +232,7 @@ function Services() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {getServicesByCategory(activeCategory).map((svc, idx) => (
                 <div
-                  key={idx}
+                  key={`${activeCategory}-${svc.rawId}`} // Unique key based on category and service
                   id={`service-${svc.rawId}`}
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
                   onClick={() => openServiceModal(svc)}
@@ -182,7 +247,12 @@ function Services() {
                       <span className="font-bold text-[#c0a080]">{svc.price}</span>
                     </div>
                     <ul className="space-y-1">
-                      {svc.details.slice(0, 3).map((d, i) => <li key={i} className="text-[#5c7160]/80 text-sm">• {d}</li>)}
+                      {Array.isArray(svc.details) ? 
+                        svc.details.slice(0, 3).map((d, i) => 
+                          <li key={i} className="text-[#5c7160]/80 text-sm">• {d}</li>
+                        ) : 
+                        <li className="text-[#5c7160]/80 text-sm">• {svc.details}</li>
+                      }
                     </ul>
                   </div>
                 </div>

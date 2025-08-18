@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import VideoBanner from "./components/VideoBanner";
 import ImageCarousel from "./components/ImageCarousel";
 import scrollToTop from "./helpers/scrollToTop";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./css/embla.css";
 import ImagemAboutUs from "./components/images/elas_imagem_fake.png";
 
 const OPTIONS = { loop: true };
 
+const slugify = (str) =>
+  str.toLowerCase().replace(/\s+/g, "_").replace(/ç/g, "c");
+
 function App() {
   const [slides, setSlides] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     scrollToTop();
@@ -20,18 +24,17 @@ function App() {
         setLoading(true);
         const res = await fetch("http://127.0.0.1:5001/services");
         if (!res.ok) throw new Error(`Status ${res.status}`);
+
         const { services } = await res.json();
 
         // Filtra apenas o campo "featured": true
-        const especializados = services.filter(
-          (svc) => svc.featured === true
-        );
+        const especializados = services.filter((svc) => svc.featured === true);
 
-        // Mapeia para o formato que o ImageCarousel espera
+        // map to carousel props + add category/service ids for routing
         const mapped = especializados.map((svc) => {
-          // remove o prefixo "images/" e usa require dinâmico
           const imgPath = svc.service_image.replace(/^images\//, "");
           return {
+            // existing fields used by ImageCarousel
             src: require(`./images/${imgPath}`),
             alt: svc.name,
             title: svc.name,
@@ -39,7 +42,12 @@ function App() {
               Array.isArray(svc.description) && svc.description.length
                 ? svc.description[0]
                 : "",
-            price: typeof svc.price === "number" ? `${svc.price}€` : svc.price,
+            price:
+              typeof svc.price === "number" ? `${svc.price}€` : svc.price,
+
+            // ⬅️ NEW: fields we need to route correctly
+            serviceId: svc.service_id,
+            categoryId: slugify(svc.category),
           };
         });
 
@@ -53,6 +61,11 @@ function App() {
 
     fetchSlides();
   }, []);
+
+  const handleFeaturedClick = (slide) => {
+    if (!slide?.categoryId || !slide?.serviceId) return;
+    navigate(`/services?category=${slide.categoryId}&service=${slide.serviceId}`);
+  };
 
   return (
     <div className="relative bg-[#F5F1E9]">
@@ -81,7 +94,11 @@ function App() {
         {loading ? (
           <p className="text-center text-[#5c7160]">Carregando destaques…</p>
         ) : (
-          <ImageCarousel slides={slides} options={OPTIONS} />
+          <ImageCarousel
+            slides={slides}
+            options={OPTIONS}
+            onSlideClick={handleFeaturedClick}
+          />
         )}
       </section>
 
