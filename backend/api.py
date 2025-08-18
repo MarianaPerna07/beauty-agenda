@@ -8,7 +8,7 @@ import time, jwt, os, hashlib, uuid
 from functools import wraps
 import pytz
 
-from aux import get_available_slots
+from aux import get_available_slots, get_slot_from_datetime
 
 # === Application Setup ===
 app = Flask(__name__)
@@ -307,6 +307,17 @@ def create_reservation():
         }
 
         collection = db["appointements"]
+
+        # Check if any existing appointment conflicts with the new on
+        # Use the get_available_slots function to check for conflicts
+        appointments = list(collection.find({"worker_id": worker_id, "datetime_service_start": {"$gte": local_date.replace(hour=9, minute=0, second=0, microsecond=0), "$lt": local_date.replace(hour=18, minute=45, second=0, microsecond=0)}}, {"_id": 0}))
+        slots_availability = get_available_slots(slots_number, worker_id, local_date, appointments)
+
+        # Check if the requested slot is available
+        start_slot = get_slot_from_datetime(local_date)
+        if slots_availability.get(start_slot) != 0:
+            return jsonify({"error": "Requested time slot is not available"}), 400
+
         result = collection.insert_one(appointment)
         
         if result.inserted_id:
