@@ -178,13 +178,8 @@ const ServiceSelectionStep = ({
           </>
         )}
 
-        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-md mx-auto">
-          <button
-            onClick={prevStep}
-            className="w-full sm:w-auto px-6 py-3 bg-white border border-[#5c7160] text-[#5c7160] rounded-full hover:bg-[#5c7160]/10 flex items-center justify-center"
-          >
-            ← Anterior
-          </button>
+        <div className="mt-8 flex flex-col sm:flex-row justify-end items-end gap-4 w-full max-w-md mx-auto">
+          
           <button
             onClick={nextStep}
             disabled={!selectedService}

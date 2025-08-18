@@ -84,10 +84,12 @@ function Services() {
   // Handle service highlighting and modal opening
   useEffect(() => {
     if (loading) return
-    scrollToTop()
-
+    
     const svc = findServiceFromParam(services, serviceFromUrl)
     if (!svc) return
+    
+    // Only scroll to top when opening a specific service
+    scrollToTop()
 
     // ensure the right category is selected
     const svcCatId = slugify(svc.category)
@@ -122,6 +124,9 @@ function Services() {
   const handleCategoryClick = (catId, e) => {
     e.preventDefault()
     
+    // Preserve current scroll position
+    const currentScrollY = window.pageYOffset
+    
     // Update active category immediately for UI responsiveness
     setActiveCategory(catId)
     
@@ -129,6 +134,11 @@ function Services() {
     const newParams = new URLSearchParams()
     newParams.set('category', catId)
     setSearchParams(newParams)
+    
+    // Restore scroll position after URL update
+    setTimeout(() => {
+      window.scrollTo(0, currentScrollY)
+    }, 0)
     
     // Center the clicked button
     const cont = scrollContainerRef.current

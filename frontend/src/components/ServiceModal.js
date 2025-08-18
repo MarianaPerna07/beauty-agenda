@@ -37,7 +37,7 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative animate-scaleIn overflow-hidden"
+        className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto relative animate-scaleIn overflow-hidden"
         onClick={handleModalContentClick}
       >
         {/* Decorative top border */}
@@ -46,10 +46,10 @@ const ServiceModal = ({ service, onClose, categoryId }) => {
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#5c7160]/20 transition-colors z-10"
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-[#5c7160]/10 transition-colors z-10"
           aria-label="Fechar"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#5c7160]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#F5F1E9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
