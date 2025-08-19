@@ -7,6 +7,7 @@ import AdminPage from "./pages/auth/Admin";
 import DashboardPage from "./pages/Dashboard";
 import SettingsPage from "./pages/Settings";
 import PrivateLayout from "./layouts/PrivateLayout";
+import ClientsPage from "./pages/Clients";
 
 function AppRoutes() {
     const { token, expiresAt } = useAuth();
@@ -29,6 +30,10 @@ function AppRoutes() {
 
             <PrivateLayout path="/dashboard">
                 {token ? <DashboardPage /> : <Redirect to="/login" />}
+            </PrivateLayout>
+
+            <PrivateLayout path="/clients">
+                {token ? <ClientsPage /> : <Redirect to="/login" />}
             </PrivateLayout>
 
             <PrivateLayout path="/settings">
