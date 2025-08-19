@@ -424,6 +424,89 @@ def delete_reservations():
 
 # [ADMIN]
 # Endpoint to get all clients 
+@app.route("/detailedReservations", methods=["POST"])
+@require_jwt
+def get_detailed_reservations():
+    try:
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "Invalid request format"}), 400
+        
+        # Define required fields (email is optional)
+        required_fields = ["scope", "worker_id", "datetime_check"]
+        
+        # Check all required fields are present
+        for field in required_fields:
+            if field not in data or data[field] is None:
+                return jsonify({"error": "Invalid request data"}), 400
+        
+        
+        scope = data.get("scope")
+        if scope not in ["daily", "monthly"]:
+            return jsonify({"error": "Invalid request data"}), 400
+            
+        worker_id = int(data.get("worker_id"))
+        if worker_id <= 0:
+            return jsonify({"error": "Invalid request data"}), 400
+
+        date = datetime.fromisoformat(data.get("datetime_check"))
+        local_date = date.astimezone(LOCAL_TZ).replace(tzinfo=None)  
+        #if local_date < datetime.now(LOCAL_TZ).replace(tzinfo=None):
+            #return jsonify({"error": "Invalid request data"}), 400
+        
+                
+        print(f"Getting detailed reservations for worker {worker_id} on {date} with scope {scope}")
+
+        # Query the database for detailed reservations
+        collection = db["appointements"]
+        if scope == "daily":
+            start_time = local_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            end_time = local_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+            appointments = list(collection.find({"worker_id": worker_id, "datetime_service_start": {"$gte": start_time, "$lt": end_time}}, {"_id": 0}))
+        elif scope == "monthly":
+            start_time = local_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            #end_time = (start_time + pd.DateOffset(months=1)).replace(hour=23, minute=59, second=59, microsecond=999999)
+            end_time = start_time.replace(month=start_time.month % 12 + 1, day=1, hour=0, minute=0, second=0, microsecond=0)
+            appointments = list(collection.find({"worker_id": worker_id, "datetime_service_start": {"$gte": start_time, "$lt": end_time}}, {"_id": 0}))
+            
+        else:
+            return jsonify({"error": "Invalid request data"}), 400  
+        
+        #expand each appointment with client details
+        clients_list = list(collection.find({}, {"_id": 0}))
+        for appointment in appointments:
+            client = next((client for client in clients_list if client["phone"] == appointment["phone"]), None)
+            if client:
+                appointment["client"] = client
+                del appointment["phone"]
+
+        #expand each appointment with service details
+        services_list = list(db["services"].find({}, {"_id": 0}))
+        for appointment in appointments:
+            service = next((service for service in services_list if service["service_id"] == appointment["service_id"]), None)
+            if service:
+                appointment["service"] = service
+                del appointment["service_id"]
+
+        #expand each appointment with worker details
+        workers_list = list(db["workers"].find({}, {"_id": 0}))
+        for appointment in appointments:
+            worker = next((worker for worker in workers_list if worker["worker_id"] == appointment["worker_id"]), None)
+            if worker:
+                appointment["worker"] = worker
+                del appointment["worker_id"] 
+        
+        return jsonify({"appointments": appointments}), 200
+    
+    except Exception as e:
+        print(f"Error accessing reservation: {str(e)}")
+        return jsonify({"error": "Unable to access reservations"}), 500
+        
+
+
+# [ADMIN]
+# Endpoint to get all clients 
 @app.route("/clients", methods=["GET"])
 @require_jwt
 def get_clients():
