@@ -108,7 +108,10 @@ def auth_google():
     # Verify Google ID token
     try:
         info = id_token.verify_oauth2_token(
-            idt, grequests.Request(), GOOGLE_CLIENT_ID
+            idt, 
+            grequests.Request(), 
+            GOOGLE_CLIENT_ID,
+            clock_skew_in_seconds=60
         )
     except Exception as e:
         return jsonify({"error": "invalid google token", "details": str(e)}), 401
