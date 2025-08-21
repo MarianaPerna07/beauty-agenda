@@ -427,11 +427,11 @@ def delete_reservations():
 
 # [ADMIN]
 # Endpoint to get all clients 
-@app.route("/detailedReservations", methods=["POST"])
-@require_jwt
+@app.route("/detailedReservations", methods=["GET"])
+# @require_jwt
 def get_detailed_reservations():
     try:
-        data = request.get_json()
+        data = request.args
         
         if not data:
             return jsonify({"error": "Invalid request format"}), 400
@@ -446,15 +446,18 @@ def get_detailed_reservations():
         
         
         scope = data.get("scope")
+        print(f"scope: {scope}")
         if scope not in ["daily", "monthly"]:
             return jsonify({"error": "Invalid request data"}), 400
             
         worker_id = int(data.get("worker_id"))
+        print(f"worker_id: {worker_id}")
         if worker_id <= 0:
             return jsonify({"error": "Invalid request data"}), 400
 
         date = datetime.fromisoformat(data.get("datetime_check"))
-        local_date = date.astimezone(LOCAL_TZ).replace(tzinfo=None)  
+        local_date = date.astimezone(LOCAL_TZ).replace(tzinfo=None)
+        print(f"local_date: {local_date}")
         #if local_date < datetime.now(LOCAL_TZ).replace(tzinfo=None):
             #return jsonify({"error": "Invalid request data"}), 400
         
@@ -472,7 +475,7 @@ def get_detailed_reservations():
             #end_time = (start_time + pd.DateOffset(months=1)).replace(hour=23, minute=59, second=59, microsecond=999999)
             end_time = start_time.replace(month=start_time.month % 12 + 1, day=1, hour=0, minute=0, second=0, microsecond=0)
             appointments = list(collection.find({"worker_id": worker_id, "datetime_service_start": {"$gte": start_time, "$lt": end_time}}, {"_id": 0}))
-            
+
         else:
             return jsonify({"error": "Invalid request data"}), 400  
         

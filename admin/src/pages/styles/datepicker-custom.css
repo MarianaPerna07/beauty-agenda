@@ -223,7 +223,10 @@
     border: 0;
   }
 
-  /* Reforçar para Safari */
-  .react-datepicker * {
-    -webkit-appearance: none;
-  }
+  /* dias passados a cinzento */
+.rdp-past {
+  color: #94a3a8 !important;         /* texto cinzento */
+}
+.rdp-past:hover {
+  background: rgba(148,163,168,0.15) !important;
+}
