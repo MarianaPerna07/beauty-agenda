@@ -6,6 +6,7 @@ import Divider from "@material-ui/core/Divider";
 import { makeStyles } from "@material-ui/core/styles";
 import logo from "../assets/images/Logo-YourMoments.png";
 import { useAuth } from "../AuthContext";
+import WorkerSwitcher from "../components/WorkerSwitcher";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -61,10 +62,19 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+function getInitials(name = "") {
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 const PrivateNavHeader = ({ collapsed }) => {
   const classes = useStyles({ collapsed });
-  const initials = "YM"; // Your Moments initials
-  const { token, email } = useAuth();
+  const { token, email, selectedWorker } = useAuth();
 
   if (!token) {
     return null; // Don't render if not authenticated
@@ -77,18 +87,21 @@ const PrivateNavHeader = ({ collapsed }) => {
         
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <Avatar className={classes.avatar}>
-            {initials}
+            {getInitials(selectedWorker?.name) || "YM"}
           </Avatar>
           
           <div style={{ paddingBottom: collapsed ? 8 : 16 }} />
           
           {!collapsed && (
             <>
-              <Typography variant="h6" noWrap className={classes.nameText}>
-                Admin
-              </Typography>
+               <div style={{ display: "flex", alignItems: "center" }}>
+                <Typography variant="h6" noWrap className={classes.nameText}>
+                  {selectedWorker?.name || "Admin"}
+                </Typography>
+                <WorkerSwitcher />
+              </div>
               <Typography noWrap gutterBottom className={classes.emailText}>
-                {email}
+                {selectedWorker?.email || email || ""}
               </Typography>
             </>
           )}

@@ -46,8 +46,8 @@ export default function LoginPage() {
                 console.log("Access token set in context:", data.access_token);
                 setExpiresAt(Date.now() + data.expires_in * 1000);
                 setEmail(data.email);
-                setError("Redirecting to admin page...");
-                history.replace("/dashboard");
+                setError("Redirecting to esthetician selection...");
+                history.replace("/choose-esthetician");
             } catch {
                 setError("Error during login.");
             } finally {

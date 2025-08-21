@@ -54,15 +54,22 @@ function DashboardPage() {
     const [selectedDate, setSelectedDate] = useState(null);
     const today = new Date();
 
-    const { token, setEmail, setToken, setExpiresAt } = useAuth();
+    const { token, setEmail, setToken, setExpiresAt, selectedWorker: chosenWorker } = useAuth();
     const history = useHistory();
     const [result, setResult] = useState(null);
+    const [selectedWorker, setSelectedWorker] = useState(null); 
 
     useEffect(() => {
         if (!token) {
             history.replace("/login");
         }
     }, [token, history]);
+
+    useEffect(() => {
+      if (chosenWorker?.worker_id) {
+        setSelectedWorker(chosenWorker.worker_id);
+      }
+    }, [chosenWorker]);
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
