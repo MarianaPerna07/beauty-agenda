@@ -477,7 +477,7 @@ def get_detailed_reservations():
             return jsonify({"error": "Invalid request data"}), 400  
         
         #expand each appointment with client details
-        clients_list = list(collection.find({}, {"_id": 0}))
+        clients_list = list(db["clients"].find({}, {"_id": 0}))
         for appointment in appointments:
             client = next((client for client in clients_list if client["phone"] == appointment["phone"]), None)
             if client:
@@ -520,6 +520,46 @@ def get_clients():
     except Exception as e:
         print(f"Error fetching clients: {str(e)}")
         return jsonify({"error": "Unable to fetch clients"}), 500
+    
+
+
+# [ADMIN]
+# Clientes do worker, derivados dos appointments
+@app.route("/clients/worker/<int:worker_id>", methods=["GET"])
+@require_jwt
+def get_clients_by_worker_via_appointments(worker_id):
+    try:
+        if worker_id <= 0:
+            return jsonify({"error": "Invalid worker id"}), 400
+
+        # 1) Agrupar appointments por phone para este worker (e contar)
+        pipeline = [
+            {"$match": {"worker_id": worker_id}},
+            {"$group": {"_id": "$phone", "count": {"$sum": 1}}},
+        ]
+        grouped = list(db["appointements"].aggregate(pipeline))
+        phones = [g["_id"] for g in grouped if g.get("_id")]
+        counts_by_phone = {g["_id"]: g["count"] for g in grouped}
+
+        if not phones:
+            return jsonify({"clients": []}), 200
+
+        # 2) Buscar documentos dos clients por phones
+        clients = list(db["clients"].find({"phone": {"$in": phones}}, {"_id": 0}))
+
+        # 3) (opcional) sobrepor/atribuir total_reservations para este worker
+        for c in clients:
+            c["total_reservations"] = counts_by_phone.get(c.get("phone"), 0)
+
+        # 4) Ordenar por nome para UI mais agradável
+        clients.sort(key=lambda c: (c.get("name") or "").lower())
+
+        return jsonify({"clients": clients}), 200
+
+    except Exception as e:
+        print(f"Error fetching clients by worker via appointments: {str(e)}")
+        return jsonify({"error": "Unable to fetch clients"}), 500
+
 
 
 # [ADMIN]
