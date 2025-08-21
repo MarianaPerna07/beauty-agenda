@@ -109,7 +109,7 @@ function Clients() {
   return (
     <div className="p-6 bg-[#F5F1E9] min-h-screen">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-medium text-[#5c7160] mb-6">Gerenciamento de Clientes</h1>
+        <h1 className="text-2xl font-medium text-[#5c7160] mb-6">Gestor de clientes</h1>
         
         {/* Search Box */}
         <div className="mb-6">
@@ -140,7 +140,7 @@ function Clients() {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Clients List */}
           <div className="w-full md:w-1/2 bg-white p-5 rounded-lg shadow-md overflow-hidden">
-            <h2 className="text-xl text-[#5c7160] mb-4 font-medium">Lista de Clientes</h2>
+            <h2 className="text-xl text-[#5c7160] mb-4 font-medium">Lista de clientes</h2>
             {loading && !filteredClients.length ? (
               <div className="flex justify-center items-center h-64">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5c7160]"></div>

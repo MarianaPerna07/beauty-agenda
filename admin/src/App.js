@@ -19,12 +19,10 @@ function AppRoutes() {
             </Route>
 
             <Route path="/login">
-                {/* If already logged in, go straight to /admin */}
                 {token ? <Redirect to="/admin" /> : <LoginPage />}
             </Route>
 
             <Route path="/admin">
-                {/* Admin is protected, so redirect if not logged in */}
                 {token ? <AdminPage /> : <Redirect to="/login" />}
             </Route>
 
