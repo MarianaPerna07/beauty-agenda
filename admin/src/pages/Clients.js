@@ -231,7 +231,7 @@ useEffect(() => {
               </p>
             </div>
           ) : (
-            <div className="overflow-y-auto max-h-[calc(100vh-260px)]">
+            <div className="overflow-hidden"> 
               <ul className="divide-y divide-[#c0a080]/10">
                 {filteredClients.map((client, index) => (
                   <li

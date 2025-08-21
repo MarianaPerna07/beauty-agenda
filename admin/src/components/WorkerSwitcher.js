@@ -91,10 +91,6 @@ export default function WorkerSwitcher({ anchorAlignment = "right" }) {
           const active = selectedWorker?.worker_id === w.worker_id;
           return (
             <MenuItem key={w.worker_id} onClick={() => choose(w)} selected={active}>
-              <ListItemIcon>
-                {/* bolinha no mesmo verde da identidade */}
-                <span className={classes.dot} />
-              </ListItemIcon>
               <ListItemText
                 primary={w.name}
                 secondary={w.email || null}

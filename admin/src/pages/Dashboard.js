@@ -122,44 +122,9 @@ function DashboardPage() {
         );
     };
 
-    const callProtected = async () => {
-
-        if (!token) {
-            window.alert("You must be logged in to access this page.");
-            history.replace("/login");
-            return;
-        }
-
-        try {
-            const res = await fetch("http://127.0.0.1:5000/protected-api", {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            if (!res.ok) {
-                if (res.status === 401) {
-                    window.alert("Unauthorized—token expired or invalid. Please log in again.");
-                    setToken(null);
-                    setEmail(null);
-                    setExpiresAt(null);
-                    history.replace("/login");
-                } else {
-                    const payload = await res.json().catch(() => ({}));
-                }
-                return;
-            }
-            const { message } = await res.json()
-            setResult(JSON.stringify(message, null, 2));
-        } catch {
-            window.alert("Network error calling protected API.");
-        }
-    };
-
 
     return (
-        <div className="px-4 py-8 w-full max-w-screen-xl mx-auto bg-[#F5F1E9] min-h-screen">
+        <div className="px-4 py-8 w-full max-w-screen-xl mx-auto bg-[#F5F1E9]">
             <div className="mb-8">
                 <Typography
                     variant="h4"
@@ -361,37 +326,32 @@ function DashboardPage() {
                 </div>
             </div>
 
-            <span className="block text-center text-xs text-[#5c7160]/60 mt-8">
-                © {new Date().getFullYear()} Your Moments Estética
-            </span>
-
-            {/* Botão flutuante para adicionar nova reserva - positioned higher */}
             <div className="fixed bottom-16 right-8 z-20">
-                <button
-                    className="bg-[#5c7160] hover:bg-[#5c7160]/90 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
-                    title="Adicionar nova reserva"
-                    onClick={callProtected}
+            <button
+                className="bg-[#5c7160] hover:bg-[#5c7160]/90 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105"
+                title="Adicionar nova reserva"
+                onClick={() => window.open("https://www.pernalix.pt/reservations", "_blank")}
+            >
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                        />
-                    </svg>
-                </button>
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+                </svg>
+            </button>
             </div>
             <span className="text-xs text-[#5c7160] mt-1">{result}</span>
-        </div>
-        
-    );
-}
+                    </div>
+                    
+                );
+            }
 
 export default DashboardPage;

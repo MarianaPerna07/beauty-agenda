@@ -11,7 +11,6 @@ import {
     getSidebarContent,
     getFooter,
     getSidebarTrigger,
-    getCollapseBtn,
     getFixedScheme,
 } from '@mui-treasury/layout';
 
@@ -27,10 +26,8 @@ const DrawerSidebar = getDrawerSidebar(styled);
 const SidebarContent = getSidebarContent(styled);
 const Footer = getFooter(styled);
 const SidebarTrigger = getSidebarTrigger(styled);
-const CollapseBtn = getCollapseBtn(styled);
 
 const fixedScheme = getFixedScheme();
-
 
 const PrivateLayout = ({children}) => {
     return (
@@ -38,7 +35,7 @@ const PrivateLayout = ({children}) => {
             <CssBaseline />
             <Root scheme={fixedScheme}>
                 {({ state: { sidebar } }) => (
-                    <>
+                    <div className="flex flex-col h-screen overflow-hidden">
                         <Header style={{ 
                           backgroundColor: '#F5F1E9', 
                           boxShadow: 'none', 
@@ -47,26 +44,36 @@ const PrivateLayout = ({children}) => {
                         }}>
                             <Toolbar style={{ minHeight: '48px', padding: '0 16px' }}>
                                 <SidebarTrigger sidebarId="primarySidebar" />
-                                {/* <PrivateHeader/> */}
                             </Toolbar>
                         </Header>
 
-                        <DrawerSidebar sidebarId="primarySidebar">
+                        <DrawerSidebar 
+                            sidebarId="primarySidebar"
+                            PaperProps={{
+                                style: { 
+                                   width: '260px',
+                                   height: '100%',
+                                   backgroundColor: '#F5F1E9',
+                                   borderRight: '1px solid rgba(192, 160, 128, 0.1)',
+                                }
+                            }}
+                        >
                             <SidebarContent>
                                 <PrivateNavHeader collapsed={sidebar.primarySidebar.collapsed} />
-                                <PrivateNavContent/>
+                                <PrivateNavContent />
                             </SidebarContent>
-                            <CollapseBtn />
                         </DrawerSidebar>
 
                         <Content>
-                            <PrivateContent>{children}</PrivateContent>
+                            <main className="flex-1 overflow-auto">
+                                <PrivateContent>{children}</PrivateContent>
+                            </main>
                         </Content>
 
                         <Footer>
                             <SharedFooter />
                         </Footer>
-                    </>
+                    </div>
                 )}
             </Root>
         </StylesProvider>

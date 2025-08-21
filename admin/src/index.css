@@ -8,3 +8,41 @@ html, body {
   padding: 0;
   font-family: 'Quicksand', sans-serif;
 }
+
+/* Garantir que o conteúdo ocupe toda altura disponível sem criar barras desnecessárias */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Previne rolagem no documento principal */
+}
+
+/* Melhoria nas barras de rolagem quando necessárias */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(92, 113, 96, 0.3) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 4px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(92, 113, 96, 0.2);
+  border-radius: 20px;
+}
+
+/* Seletor para o sidebar do MUI Treasury Layout */
+.MuiPaper-root {
+  overflow: hidden !important;
+}
+
+/* Seletor específico para o conteúdo da sidebar */
+.MuiPaper-root .SidebarContent-root {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+}

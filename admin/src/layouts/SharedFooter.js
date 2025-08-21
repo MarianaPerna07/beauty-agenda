@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 
 const SharedFooter = () => (
-    <div className="relative bg-[#F5F1E9] pt-3 pb-2 mt-auto z-10">
+    <div className="relative bg-[#F5F1E9] pt-3 pb-2 z-10">
         {/* Gold accent line */}
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-[#c0a080] to-transparent opacity-50"></div>
         
