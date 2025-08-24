@@ -52,14 +52,20 @@ function DashboardPage() {
         (data.appointments || []).forEach((a) => {
           const dStr = format(new Date(a.datetime_service_start), "yyyy-MM-dd");
 
+        //Hour is wrong, go back 1 hour
         const normalized = {
           ...a,
-          time: format(new Date(a.datetime_service_start), "HH:mm"),
+          time: a.datetime_service_start.substring(16, 22), // "HH:mm" from ISO string
           client: a.client?.name || "",
+          client_phone: a.client?.phone || "",
           service: a.service?.name || "",
           confirmed: true,
         };
         (grouped[dStr] = grouped[dStr] || []).push(normalized);
+
+        // Sort by time
+        grouped[dStr].sort((r1, r2) => r1.time.localeCompare(r2.time));
+
       });
 
       setReservationsByDate(grouped);
@@ -269,7 +275,8 @@ function DashboardPage() {
                                         </div>
                                         <div>
                                             <p className="text-[#415140] font-medium">{r.client}</p>
-                                            <p className="text-[#5c7160]/70 text-sm">{r.service}</p>
+                                            <p className="text-[#5c7160]/70 text-sm">{r.client_phone}</p>
+                                            <p className="text-[#5c7160]text-sm"> • {r.service}</p>
                                         </div>
                                         </div>
 
@@ -338,7 +345,7 @@ function DashboardPage() {
                                                     key={idx}
                                                     className="flex items-center p-3 bg-[#F5F1E9]/80 rounded-lg border-l-2 border-[#a5bf99]/40"
                                                 >
-                                                    <div className="h-8 w-8 rounded-full bg-[#5c7160]/10 flex items-center justify-center mr-3">
+                                                    <div className="h-10 w-10 rounded-full bg-[#5c7160]/10 flex items-center justify-center mr-3">
                                                         <span className="text-[#5c7160] text-sm">
                                                             {item.time}
                                                         </span>

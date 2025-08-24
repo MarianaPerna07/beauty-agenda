@@ -593,6 +593,7 @@ function Reservations() {
         setSelectedDate('');
         setSelectedTime('');
         setAvailableTimeSlots([]); 
+        setOccupiedSlots([]);
       } else if (currentStep === 2) {
         // Se estiver saindo da etapa de Profissional, limpar seleção
         setSelectedProfessional(null);
@@ -611,6 +612,7 @@ function Reservations() {
         setSelectedProfessional(null);
         setSelectedDate('');
         setSelectedTime('');
+        setOccupiedSlots([]);
         setAvailableTimeSlots([]);
         setCustomerInfo({
           name: '',
@@ -621,6 +623,7 @@ function Reservations() {
         // Voltar para seleção de profissional - limpar datas e cliente
         setSelectedDate('');
         setSelectedTime('');
+        setOccupiedSlots([]);
         setAvailableTimeSlots([]);
         setCustomerInfo({
           name: '',
@@ -631,6 +634,7 @@ function Reservations() {
         // Voltar para seleção de salão - limpar datas e cliente
         setSelectedDate('');
         setSelectedTime('');
+        setOccupiedSlots([]);
         setAvailableTimeSlots([]);
         setCustomerInfo({
           name: '',
@@ -658,6 +662,7 @@ function Reservations() {
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     setSelectedTime(''); // Reset time when date changes
+    setOccupiedSlots([]);
   };
 
   const handleTimeSelect = (time) => {
@@ -1216,6 +1221,7 @@ const handleDateChange = async (date) => {
     setSelectedProfessional(null);
     setSelectedDate('');
     setSelectedTime('');
+    setOccupiedSlots([]);
     setCustomerInfo({
       name: '',
       email: '',
@@ -1227,6 +1233,7 @@ const handleDateChange = async (date) => {
       phone: ''
     });
     setSelectedCategory({ id: '', name: '' });
+    window.location.href = '/'; // Redirect to homepage or desired page
   };
 
   return (

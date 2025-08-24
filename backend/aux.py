@@ -78,6 +78,8 @@ def get_available_slots(service_duration: int, worker_id: int, date: datetime, a
         for i in range(start_slot, start_slot + slots_number):
             if i in slot_availability:
                 slot_availability[i] = 1 # Mark as reserved
+    print(appointments)
+    print(slot_availability)
 
     # Mark slots as unavailable based on service duration
     for i in range(0, 40):

@@ -25,3 +25,5 @@ requests==2.32.4
 rsa==4.9.1
 urllib3==2.5.0
 Werkzeug==3.0.6
+Flask-Limiter==3.5.0
+marshmallow==3.20.1
